@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Drachin - Stream & Download</title>
+    <meta name="theme-color" content="#0f0f0f">
+    <meta name="description" content="Watch high quality videos and download for free.">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* === DARK MODE THEME === */
+        :root { --bg: #0f0f0f; --surface: #1e1e1e; --text: #fff; --gray: #aaa; --red: #ff0000; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+
+        /* NAVBAR */
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 60px; background: rgba(15,15,15,0.98); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
+        .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .logo span { color: var(--red); font-size: 24px; }
+        .btn-vip { background: var(--red); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; text-transform: uppercase; }
+
+        /* CONTAINER */
+        .wrapper { max-width: 1000px; margin: 0 auto; min-height: 90vh; }
+
+        /* === PLAYER VIDEO === */
+        #playerView { display: none; }
+        
+        .player-box { 
+            position: relative; 
+            width: 100%; 
+            background: #000; 
+            margin: 0 auto;
+            transition: aspect-ratio 0.3s ease;
+        }
+
+        /* Screen Modes */
+        .mode-vertical { aspect-ratio: 9/16; max-height: 85vh; width: 100%; } 
+        .mode-landscape { aspect-ratio: 16/9; max-width: 100%; }
+
+        .player-box iframe, .player-box video { width: 100%; height: 100%; border: 0; display: block; position: absolute; top:0; left:0; }
+
+        /* OVERLAY FAKE PLAYER (Money Maker) */
+        #overlayLayer {
+            position: absolute; inset: 0; z-index: 20;
+            background: url('https://cdn.videy.co/DEFAULT_THUMB.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #overlayBackdrop {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+        }
+        .play-btn-fake {
+            position: relative; z-index: 21;
+            width: 75px; height: 75px;
+            background: rgba(255,0,0,0.9);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255,0,0,0.6);
+            animation: pulse 2s infinite;
+        }
+        .play-btn-fake::after { content: '▶'; font-size: 32px; color: white; margin-left: 5px; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* INFO AREA */
+        .info-area { padding: 15px; }
+        .main-title { font-size: 18px; font-weight: 700; line-height: 1.4; margin-bottom: 15px; }
+        
+        /* Native Ad Container */
+        .native-ad { 
+            background: #111; 
+            border: 1px dashed #333; 
+            border-radius: 8px; 
+            padding: 10px; 
+            margin: 20px 0; 
+            min-height: 250px; 
+            display: flex; align-items: center; justify-content: center; 
+            width: 100%; 
+            overflow: hidden;
+        }
+
+        /* DOWNLOAD BUTTON (Direct Link) */
+        .dl-btn {
+            display: block; width: 100%; background: #fff; color: #000;
+            text-align: center; padding: 14px; border-radius: 8px;
+            font-weight: 800; font-size: 16px; cursor: pointer; border: none;
+            margin-bottom: 10px; text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+        .dl-btn:hover { background: #eee; }
+
+        /* === GALLERY (HOME) === */
+        #homeView { display: block; padding: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; row-gap: 20px; }
+        @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; } }
+
+        .card { display: flex; flex-direction: column; cursor: pointer; }
+        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; border-radius: 8px; overflow: hidden; }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .card-t { font-size: 14px; font-weight: 500; margin-top: 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f1f1f1; }
+        
+        /* LOADING */
+        #loader { text-align: center; padding: 80px 20px; color: #888; }
+        
+        /* FOOTER */
+        .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 20px; font-size: 12px; color: #666; }
+        .footer a { color: #888; text-decoration: none; }
+    </style>
+
+    <script src="https://harbourbreederdump.com/6d/d4/c7/6dd4c77770d65b1bcda88bbac1019b8a.js"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="?" class="logo"><span>▶</span> Drachin</a>
+        <div>
+            <a href="https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="btn-vip">Get App</a>
+        </div>
+    </nav>
+
+    <div id="loader">
+        <h3>Loading Videos...</h3>
+    </div>
+
+    <div class="wrapper">
+
+        <div id="homeView" style="display:none;">
+            <h3 style="margin-bottom:15px; color:#ddd;">Trending Now</h3>
+            <div class="grid" id="gridTarget"></div>
+        </div>
+
+        <div id="playerView">
+            <div onclick="window.location.href='?'" style="padding:15px; color:#aaa; font-size:14px; border-bottom:1px solid #222; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                <span>&larr;</span> Back to Gallery
+            </div>
+
+            <div id="playerBox" class="player-box mode-vertical">
+                <iframe id="dmFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+                <div id="overlayLayer" onclick="klikIklan()">
+                    <div id="overlayBackdrop"></div>
+                    <div class="play-btn-fake"></div>
+                    <div style="position:absolute; bottom:25px; color:white; font-size:15px; font-weight:500; z-index:21;">Tap to Play</div>
+                </div>
+            </div>
+
+            <div class="info-area">
+                <h1 id="vidTitle" class="main-title">...</h1>
+
+                <button class="dl-btn" onclick="bukaIklan()">
+                    ⬇ DOWNLOAD HD VIDEO
+                </button>
+
+                <div class="native-ad">
+                    <div style="width:100%; text-align:center;">
+                        <span style="color:#444; font-size:10px; margin-bottom:5px; display:block;">SPONSORED AD</span>
+                        <script async="async" data-cfasync="false" src="https://harbourbreederdump.com/b94cafeb9a426597e421e6c2d836a415/invoke.js"></script>
+                        <div id="container-b94cafeb9a426597e421e6c2d836a415"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; align-items:center; margin-top:20px;">
+                    <div style="width:42px; height:42px; background:#cc0000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">DR</div>
+                    <div>
+                        <div style="font-weight:bold;">Drachin Official</div>
+                        <div style="font-size:12px; color:#aaa;">New Videos Daily</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top:35px; margin-bottom:15px; font-size:16px;">Recommended for you</h4>
+                <div id="sideList" style="display:flex; flex-direction:column; gap:15px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Drachin Inc. All rights reserved.<br>
+        <div style="margin-top:10px;">
+            <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+        </div>
+        
+        <span id="histats_counter" style="display:none;"></span>
+        <script type="text/javascript">var _Hasync= _Hasync|| [];
+        _Hasync.push(['Histats.start', '1,4654540,4,0,0,0,00010000']);
+        _Hasync.push(['Histats.fasi', '1']);
+        _Hasync.push(['Histats.track_hits', '']);
+        (function() {
+        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+        hs.src = ('//s10.histats.com/js15_as.js');
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+        })();</script>
+    </div>
+
+    <script>
+        const DB_FILE = "videos.txt";
+        // CORRECT SMARTLINK (From AdultXin.txt)
+        const AD_LINK = "https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a";
+
+        const loader = document.getElementById('loader');
+        const homeView = document.getElementById('homeView');
+        const playerView = document.getElementById('playerView');
+        const playerBox = document.getElementById('playerBox');
+        const dmFrame = document.getElementById('dmFrame');
+        const overlayLayer = document.getElementById('overlayLayer');
+        const vidTitle = document.getElementById('vidTitle');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentId = urlParams.get('id');
+
+        // CLICK EVENT: OVERLAY
+        function klikIklan() {
+            window.open(AD_LINK, '_blank'); // Open Smartlink
+            overlayLayer.style.display = 'none';
+            const src = dmFrame.src;
+            if(!src.includes('autoplay=1')) {
+                dmFrame.src = src.replace('autoplay=0', 'autoplay=1');
+            }
+        }
+
+        // CLICK EVENT: DOWNLOAD
+        function bukaIklan() {
+            window.open(AD_LINK, '_blank'); // Open Smartlink
+        }
+
+        async function init() {
+            try {
+                const res = await fetch(DB_FILE + '?t=' + Date.now());
+                if (!res.ok) throw new Error("Failed to load videos.txt");
+                const text = await res.text();
+
+                // Format: ID | TITLE | (Optional: h)
+                const videos = text.split('\n').filter(l => l.includes('|')).map(l => {
+                    const p = l.split('|');
+                    return {
+                        id: p[0].trim(),
+                        title: p[1].trim(),
+                        isHorizontal: (p[2] && p[2].trim().toLowerCase() === 'h') 
+                    };
+                });
+
+                loader.style.display = 'none';
+
+                if (currentId) {
+                    renderPlayer(currentId, videos);
+                } else {
+                    renderHome(videos);
+                }
+
+            } catch (err) {
+                loader.innerHTML = "Error: " + err.message + "<br>Please upload videos.txt";
+            }
+        }
+
+        function renderHome(videos) {
+            homeView.style.display = 'block';
+            playerView.style.display = 'none';
+            
+            let html = '';
+            videos.forEach(v => {
+                let thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
+                if(v.id.startsWith('http')) thumb = 'https://via.placeholder.com/640x360/333/fff?text=VIDEO';
+
+                html += `
+                <a href="?id=${v.id}" class="card">
+                    <div class="thumb">
+                        <img src="${thumb}" onerror="this.src='https://via.placeholder.com/640x360/111/fff?text=Drachin'" loading="lazy">
+                        <div style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.8); color:white; font-size:10px; padding:2px 4px; border-radius:3px;">HD</div>
+                    </div>
+                    <div class="card-t">${v.title}</div>
+                </a>`;
+            });
+            document.getElementById('gridTarget').innerHTML = html;
+        }
+
+        function renderPlayer(id, videos) {
+            homeView.style.display = 'none';
+            playerView.style.display = 'block';
+
+            const data = videos.find(v => v.id === id);
+            const title = data ? data.title : "Watch Video";
+            const isHorizontal = data ? data.isHorizontal : false;
+
+            vidTitle.textContent = title;
+            document.title = title;
+
+            // ATUR UKURAN PLAYER
+            if (isHorizontal) {
+                playerBox.className = "player-box mode-landscape";
+            } else {
+                playerBox.className = "player-box mode-vertical";
+            }
+
+            // RESET
+            dmFrame.src = "";
+            overlayLayer.style.display = 'flex'; 
+
+            if (id.startsWith('http')) {
+                alert("Please use Dailymotion ID.");
+            } else {
+                dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
+            }
+
+            const others = videos.filter(v => v.id !== id).slice(0, 5);
+            let sideHtml = '';
+            others.forEach(v => {
+                let thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
+                if(v.id.startsWith('http')) thumb = 'https://via.placeholder.com/640x360/333/fff?text=VIDEO';
+                
+                sideHtml += `
+                <a href="?id=${v.id}" style="display:flex; gap:10px; color:inherit;">
+                    <div style="width:120px; aspect-ratio:16/9; background:#222; border-radius:6px; overflow:hidden; flex-shrink:0;">
+                        <img src="${thumb}" onerror="this.src='https://via.placeholder.com/640x360/111/fff?text=Play'" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <div style="font-size:13px; font-weight:500; line-height:1.3;">${v.title}</div>
+                </a>`;
+            });
+            document.getElementById('sideList').innerHTML = sideHtml;
+        }
+
+        init();
+    </script>
+</body>
+</html>

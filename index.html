@@ -90,7 +90,8 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; row-gap: 20px; }
         @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; } }
 
-        .card { display: flex; flex-direction: column; cursor: pointer; }
+        .card { display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; }
+        .card:hover { transform: scale(1.02); }
         .thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; border-radius: 8px; overflow: hidden; }
         .thumb img { width: 100%; height: 100%; object-fit: cover; }
         .card-t { font-size: 14px; font-weight: 500; margin-top: 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f1f1f1; }
@@ -103,14 +104,14 @@
         .footer a { color: #888; text-decoration: none; }
     </style>
 
-    <script src="https://harbourbreederdump.com/6d/d4/c7/6dd4c77770d65b1bcda88bbac1019b8a.js"></script>
+    <script type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
 </head>
 <body>
 
     <nav class="navbar">
         <a href="?" class="logo"><span>▶</span> Drachin</a>
         <div>
-            <a href="https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="btn-vip">Get App</a>
+            <a href="https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f" target="_blank" class="btn-vip">Get App</a>
         </div>
     </nav>
 
@@ -150,8 +151,8 @@
                 <div class="native-ad">
                     <div style="width:100%; text-align:center;">
                         <span style="color:#444; font-size:10px; margin-bottom:5px; display:block;">SPONSORED AD</span>
-                        <script async="async" data-cfasync="false" src="https://harbourbreederdump.com/b94cafeb9a426597e421e6c2d836a415/invoke.js"></script>
-                        <div id="container-b94cafeb9a426597e421e6c2d836a415"></div>
+                        <script async="async" data-cfasync="false" src="https://ridernoodleacerbity.com/8754c34f20e587c8ef08a064d9f71e59/invoke.js"></script>
+                        <div id="container-8754c34f20e587c8ef08a064d9f71e59"></div>
                     </div>
                 </div>
 
@@ -176,21 +177,24 @@
             <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
         </div>
         
-        <span id="histats_counter" style="display:none;"></span>
-        <script type="text/javascript">var _Hasync= _Hasync|| [];
-        _Hasync.push(['Histats.start', '1,4654540,4,0,0,0,00010000']);
-        _Hasync.push(['Histats.fasi', '1']);
-        _Hasync.push(['Histats.track_hits', '']);
-        (function() {
-        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-        hs.src = ('//s10.histats.com/js15_as.js');
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-        })();</script>
+        <div style="margin-top:20px; opacity:0.8;">
+            <script type="text/javascript">var _Hasync= _Hasync|| [];
+            _Hasync.push(['Histats.start', '1,4879497,4,0,0,0,00010000']);
+            _Hasync.push(['Histats.fasi', '1']);
+            _Hasync.push(['Histats.track_hits', '']);
+            (function() {
+            var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+            hs.src = ('//s10.histats.com/js15_as.js');
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+            })();</script>
+            <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4879497&101" alt="free hit counter" border="0"></a></noscript>
+        </div>
     </div>
 
     <script>
         const DB_FILE = "videos.txt";
-        const AD_LINK = "https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a";
+        // LINK SMARTLINK BARU (RiderNoodle)
+        const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f";
 
         const loader = document.getElementById('loader');
         const homeView = document.getElementById('homeView');
@@ -252,9 +256,8 @@
             videos.forEach(v => {
                 let thumb;
                 
-                // LOGIC THUMBNAIL
+                // LOGIC THUMBNAIL (Support TMDB)
                 if (v.id.startsWith('tmdb:')) {
-                    // TMDB Placeholder
                     thumb = `https://via.placeholder.com/640x360/111/fff?text=Movie`;
                 } else if(v.id.startsWith('http')) {
                     thumb = 'https://via.placeholder.com/640x360/333/fff?text=VIDEO';
@@ -289,24 +292,18 @@
             dmFrame.src = "";
             overlayLayer.style.display = 'flex'; 
 
-            // LOGIC PLAYER
+            // LOGIC PLAYER (Support TMDB)
             if (id.startsWith('tmdb:')) {
-                // TMDB MODE
                 const tmdbId = id.split(':')[1];
                 playerBox.className = "player-box mode-landscape";
-                // Gunakan server embed gratis (vidsrc.xyz / 2embed / dll)
-                // Di sini saya pakai vidsrc.xyz yang umum
                 dmFrame.src = `https://vidsrc.xyz/embed/movie/${tmdbId}`; 
             } else if (id.startsWith('http')) {
-                // Direct Link Mode
                 if(isHorizontal) playerBox.className = "player-box mode-landscape";
                 else playerBox.className = "player-box mode-vertical";
                 dmFrame.src = id;
             } else {
-                // Dailymotion Mode
                 if (isHorizontal) playerBox.className = "player-box mode-landscape";
                 else playerBox.className = "player-box mode-vertical";
-                
                 dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
             }
 

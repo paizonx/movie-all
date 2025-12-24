@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Drachin - Stream & Download</title>
+    <title>MovTube - Stream & Download</title>
     <meta name="theme-color" content="#0f0f0f">
     <meta name="description" content="Watch high quality videos and download for free.">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -104,14 +104,14 @@
         .footer a { color: #888; text-decoration: none; }
     </style>
 
-    <script type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
+    <script src="https://harbourbreederdump.com/6d/d4/c7/6dd4c77770d65b1bcda88bbac1019b8a.js"></script>
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="?" class="logo"><span>▶</span> Drachin</a>
+        <a href="?" class="logo"><span>▶</span> MovTube</a>
         <div>
-            <a href="https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f" target="_blank" class="btn-vip">Get App</a>
+            <a href="https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="btn-vip">Get App</a>
         </div>
     </nav>
 
@@ -151,15 +151,15 @@
                 <div class="native-ad">
                     <div style="width:100%; text-align:center;">
                         <span style="color:#444; font-size:10px; margin-bottom:5px; display:block;">SPONSORED AD</span>
-                        <script async="async" data-cfasync="false" src="https://ridernoodleacerbity.com/8754c34f20e587c8ef08a064d9f71e59/invoke.js"></script>
-                        <div id="container-8754c34f20e587c8ef08a064d9f71e59"></div>
+                        <script async="async" data-cfasync="false" src="https://harbourbreederdump.com/b94cafeb9a426597e421e6c2d836a415/invoke.js"></script>
+                        <div id="container-b94cafeb9a426597e421e6c2d836a415"></div>
                     </div>
                 </div>
 
                 <div style="display:flex; gap:12px; align-items:center; margin-top:20px;">
-                    <div style="width:42px; height:42px; background:#cc0000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">DR</div>
+                    <div style="width:42px; height:42px; background:#cc0000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">MT</div>
                     <div>
-                        <div style="font-weight:bold;">Drachin Official</div>
+                        <div style="font-weight:bold;">MovTube Official</div>
                         <div style="font-size:12px; color:#aaa;">New Videos Daily</div>
                     </div>
                 </div>
@@ -172,29 +172,26 @@
     </div>
 
     <div class="footer">
-        &copy; 2025 Drachin Inc. All rights reserved.<br>
+        &copy; 2025 MovTube Inc. All rights reserved.<br>
         <div style="margin-top:10px;">
             <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
         </div>
         
-        <div style="margin-top:20px; opacity:0.8;">
-            <script type="text/javascript">var _Hasync= _Hasync|| [];
-            _Hasync.push(['Histats.start', '1,4879497,4,0,0,0,00010000']);
-            _Hasync.push(['Histats.fasi', '1']);
-            _Hasync.push(['Histats.track_hits', '']);
-            (function() {
-            var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-            hs.src = ('//s10.histats.com/js15_as.js');
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-            })();</script>
-            <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4879497&101" alt="free hit counter" border="0"></a></noscript>
-        </div>
+        <span id="histats_counter" style="display:none;"></span>
+        <script type="text/javascript">var _Hasync= _Hasync|| [];
+        _Hasync.push(['Histats.start', '1,4879497,4,0,0,0,00010000']);
+        _Hasync.push(['Histats.fasi', '1']);
+        _Hasync.push(['Histats.track_hits', '']);
+        (function() {
+        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+        hs.src = ('//s10.histats.com/js15_as.js');
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+        })();</script>
     </div>
 
     <script>
         const DB_FILE = "videos.txt";
-        // LINK SMARTLINK BARU (RiderNoodle)
-        const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f";
+        const AD_LINK = "https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a";
 
         const loader = document.getElementById('loader');
         const homeView = document.getElementById('homeView');
@@ -256,8 +253,9 @@
             videos.forEach(v => {
                 let thumb;
                 
-                // LOGIC THUMBNAIL (Support TMDB)
-                if (v.id.startsWith('tmdb:')) {
+                // === LOGIKA THUMBNAIL PINTAR ===
+                // Cek apakah angka saja (TMDB) atau ada huruf
+                if (v.id.startsWith('tmdb:') || /^\d+$/.test(v.id)) {
                     thumb = `https://via.placeholder.com/640x360/111/fff?text=Movie`;
                 } else if(v.id.startsWith('http')) {
                     thumb = 'https://via.placeholder.com/640x360/333/fff?text=VIDEO';
@@ -281,8 +279,11 @@
             homeView.style.display = 'none';
             playerView.style.display = 'block';
 
+            // Cari data di database
             const data = videos.find(v => v.id === id);
-            const title = data ? data.title : "Watch Video";
+            
+            // JUDUL FALLBACK: Jika tidak ada di database, gunakan nama generik atau fetch nama
+            const title = data ? data.title : "Watch Full Movie";
             const isHorizontal = data ? data.isHorizontal : false;
 
             vidTitle.textContent = title;
@@ -292,26 +293,38 @@
             dmFrame.src = "";
             overlayLayer.style.display = 'flex'; 
 
-            // LOGIC PLAYER (Support TMDB)
-            if (id.startsWith('tmdb:')) {
-                const tmdbId = id.split(':')[1];
+            // === LOGIKA PLAYER PINTAR (AUTO DETECT) ===
+            
+            // 1. Cek Apakah Angka Saja (Contoh: 17979) ATAU Format TMDB:123
+            if (/^\d+$/.test(id) || id.startsWith('tmdb:')) {
+                // Bersihkan ID (buang 'tmdb:' kalau ada)
+                const tmdbId = id.replace('tmdb:', '');
+                
+                // Mode Film = Landscape Wajib
                 playerBox.className = "player-box mode-landscape";
+                
+                // Gunakan Embed Film Gratis
                 dmFrame.src = `https://vidsrc.xyz/embed/movie/${tmdbId}`; 
+            
+            // 2. Cek Apakah Link Langsung (HTTP)
             } else if (id.startsWith('http')) {
                 if(isHorizontal) playerBox.className = "player-box mode-landscape";
                 else playerBox.className = "player-box mode-vertical";
                 dmFrame.src = id;
+            
+            // 3. Sisanya Dailymotion
             } else {
                 if (isHorizontal) playerBox.className = "player-box mode-landscape";
                 else playerBox.className = "player-box mode-vertical";
                 dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
             }
 
+            // REKOMENDASI SIDEBAR
             const others = videos.filter(v => v.id !== id).slice(0, 5);
             let sideHtml = '';
             others.forEach(v => {
                 let thumb;
-                if (v.id.startsWith('tmdb:')) thumb = `https://via.placeholder.com/640x360/111/fff?text=Movie`;
+                if (v.id.startsWith('tmdb:') || /^\d+$/.test(v.id)) thumb = `https://via.placeholder.com/640x360/111/fff?text=Movie`;
                 else thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
                 
                 sideHtml += `

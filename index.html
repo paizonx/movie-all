@@ -69,15 +69,10 @@
         
         /* Native Ad Container */
         .native-ad { 
-            background: #111; 
-            border: 1px dashed #333; 
-            border-radius: 8px; 
-            padding: 10px; 
-            margin: 20px 0; 
-            min-height: 250px; 
+            background: #111; border: 1px dashed #333; border-radius: 8px; 
+            padding: 10px; margin: 20px 0; min-height: 250px; 
             display: flex; align-items: center; justify-content: center; 
-            width: 100%; 
-            overflow: hidden;
+            width: 100%; overflow: hidden;
         }
 
         /* DOWNLOAD BUTTON (Direct Link) */
@@ -120,7 +115,7 @@
     </nav>
 
     <div id="loader">
-        <h3>Loading Videos...</h3>
+        <h3>Loading Content...</h3>
     </div>
 
     <div class="wrapper">
@@ -195,7 +190,6 @@
 
     <script>
         const DB_FILE = "videos.txt";
-        // CORRECT SMARTLINK (From AdultXin.txt)
         const AD_LINK = "https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a";
 
         const loader = document.getElementById('loader');
@@ -209,9 +203,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentId = urlParams.get('id');
 
-        // CLICK EVENT: OVERLAY
         function klikIklan() {
-            window.open(AD_LINK, '_blank'); // Open Smartlink
+            window.open(AD_LINK, '_blank'); 
             overlayLayer.style.display = 'none';
             const src = dmFrame.src;
             if(!src.includes('autoplay=1')) {
@@ -219,9 +212,8 @@
             }
         }
 
-        // CLICK EVENT: DOWNLOAD
         function bukaIklan() {
-            window.open(AD_LINK, '_blank'); // Open Smartlink
+            window.open(AD_LINK, '_blank');
         }
 
         async function init() {
@@ -230,7 +222,6 @@
                 if (!res.ok) throw new Error("Failed to load videos.txt");
                 const text = await res.text();
 
-                // Format: ID | TITLE | (Optional: h)
                 const videos = text.split('\n').filter(l => l.includes('|')).map(l => {
                     const p = l.split('|');
                     return {
@@ -259,13 +250,22 @@
             
             let html = '';
             videos.forEach(v => {
-                let thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
-                if(v.id.startsWith('http')) thumb = 'https://via.placeholder.com/640x360/333/fff?text=VIDEO';
+                let thumb;
+                
+                // LOGIC THUMBNAIL
+                if (v.id.startsWith('tmdb:')) {
+                    // TMDB Placeholder
+                    thumb = `https://via.placeholder.com/640x360/111/fff?text=Movie`;
+                } else if(v.id.startsWith('http')) {
+                    thumb = 'https://via.placeholder.com/640x360/333/fff?text=VIDEO';
+                } else {
+                    thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
+                }
 
                 html += `
                 <a href="?id=${v.id}" class="card">
                     <div class="thumb">
-                        <img src="${thumb}" onerror="this.src='https://via.placeholder.com/640x360/111/fff?text=Drachin'" loading="lazy">
+                        <img src="${thumb}" onerror="this.src='https://via.placeholder.com/640x360/111/fff?text=Play'" loading="lazy">
                         <div style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.8); color:white; font-size:10px; padding:2px 4px; border-radius:3px;">HD</div>
                     </div>
                     <div class="card-t">${v.title}</div>
@@ -285,28 +285,37 @@
             vidTitle.textContent = title;
             document.title = title;
 
-            // ATUR UKURAN PLAYER
-            if (isHorizontal) {
-                playerBox.className = "player-box mode-landscape";
-            } else {
-                playerBox.className = "player-box mode-vertical";
-            }
-
             // RESET
             dmFrame.src = "";
             overlayLayer.style.display = 'flex'; 
 
-            if (id.startsWith('http')) {
-                alert("Please use Dailymotion ID.");
+            // LOGIC PLAYER
+            if (id.startsWith('tmdb:')) {
+                // TMDB MODE
+                const tmdbId = id.split(':')[1];
+                playerBox.className = "player-box mode-landscape";
+                // Gunakan server embed gratis (vidsrc.xyz / 2embed / dll)
+                // Di sini saya pakai vidsrc.xyz yang umum
+                dmFrame.src = `https://vidsrc.xyz/embed/movie/${tmdbId}`; 
+            } else if (id.startsWith('http')) {
+                // Direct Link Mode
+                if(isHorizontal) playerBox.className = "player-box mode-landscape";
+                else playerBox.className = "player-box mode-vertical";
+                dmFrame.src = id;
             } else {
+                // Dailymotion Mode
+                if (isHorizontal) playerBox.className = "player-box mode-landscape";
+                else playerBox.className = "player-box mode-vertical";
+                
                 dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
             }
 
             const others = videos.filter(v => v.id !== id).slice(0, 5);
             let sideHtml = '';
             others.forEach(v => {
-                let thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
-                if(v.id.startsWith('http')) thumb = 'https://via.placeholder.com/640x360/333/fff?text=VIDEO';
+                let thumb;
+                if (v.id.startsWith('tmdb:')) thumb = `https://via.placeholder.com/640x360/111/fff?text=Movie`;
+                else thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
                 
                 sideHtml += `
                 <a href="?id=${v.id}" style="display:flex; gap:10px; color:inherit;">

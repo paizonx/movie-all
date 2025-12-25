@@ -3,18 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Drachin - Stream & Download</title>
-    
-    <link rel="manifest" href="manifest.json">
+    <title>Drachin - Universal Stream</title>
     <meta name="theme-color" content="#0f0f0f">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/777/777242.png">
-
-    <meta name="description" content="Watch high quality videos and download for free.">
+    <meta name="description" content="Watch Movies, Drama, and Viral Videos in one place.">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* === DARK MODE THEME === */
+        /* === TEMA DARK MODE === */
         :root { --bg: #0f0f0f; --surface: #1e1e1e; --text: #fff; --gray: #aaa; --red: #ff0000; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Roboto', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
@@ -31,101 +25,50 @@
 
         /* SEARCH BAR */
         .search-container { padding: 15px 0; display: flex; gap: 10px; }
-        .search-input { 
-            width: 100%; background: #222; border: 1px solid #333; 
-            padding: 12px 15px; border-radius: 25px; color: #fff; outline: none;
-            font-size: 14px;
-        }
+        .search-input { width: 100%; background: #222; border: 1px solid #333; padding: 12px 15px; border-radius: 25px; color: #fff; outline: none; font-size: 14px; }
         .search-input:focus { border-color: var(--red); }
-        .search-btn {
-            background: #222; border: 1px solid #333; color: #fff;
-            padding: 0 20px; border-radius: 25px; cursor: pointer; font-weight: bold;
-        }
+        .search-btn { background: #222; border: 1px solid #333; color: #fff; padding: 0 20px; border-radius: 25px; cursor: pointer; font-weight: bold; }
 
         /* === PLAYER VIDEO === */
         #playerView { display: none; }
         
-        .player-box { 
-            position: relative; 
-            width: 100%; 
-            background: #000; 
-            margin: 0 auto;
-            transition: aspect-ratio 0.3s ease;
-        }
-
-        .mode-vertical { aspect-ratio: 9/16; max-height: 85vh; width: 100%; } 
+        .player-box { position: relative; width: 100%; background: #000; margin: 0 auto; transition: aspect-ratio 0.3s ease; }
+        .mode-vertical { aspect-ratio: 9/16; max-height: 80vh; width: 100%; } 
         .mode-landscape { aspect-ratio: 16/9; max-width: 100%; }
 
-        .player-box iframe, .player-box video { width: 100%; height: 100%; border: 0; display: block; position: absolute; top:0; left:0; }
+        /* Support Iframe (TMDB/DM/Dood) & Video Tag (Videy/Twimg) */
+        .player-box iframe, .player-box video { width: 100%; height: 100%; border: 0; display: block; position: absolute; top:0; left:0; object-fit: contain; }
 
-        /* OVERLAY FAKE PLAYER */
-        #overlayLayer {
-            position: absolute; inset: 0; z-index: 20;
-            background: url('https://cdn.videy.co/DEFAULT_THUMB.jpg') no-repeat center center;
-            background-size: cover;
-            display: flex; align-items: center; justify-content: center;
-        }
-        #overlayBackdrop {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-        }
-        .play-btn-fake {
-            position: relative; z-index: 21;
-            width: 75px; height: 75px;
-            background: rgba(255,0,0,0.9);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 25px rgba(255,0,0,0.6);
-            animation: pulse 2s infinite;
-        }
+        /* OVERLAY FAKE PLAYER (Money Maker) */
+        #overlayLayer { position: absolute; inset: 0; z-index: 20; background: #000; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        #overlayBackdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        .play-btn-fake { position: relative; z-index: 21; width: 75px; height: 75px; background: rgba(255,0,0,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 25px rgba(255,0,0,0.6); animation: pulse 2s infinite; }
         .play-btn-fake::after { content: '▶'; font-size: 32px; color: white; margin-left: 5px; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* INFO AREA */
+        /* INFO & ADS */
         .info-area { padding: 15px; }
         .main-title { font-size: 18px; font-weight: 700; line-height: 1.4; margin-bottom: 15px; }
+        .native-ad { background: #111; border: 1px dashed #333; border-radius: 8px; padding: 10px; margin: 20px 0; min-height: 250px; display: flex; align-items: center; justify-content: center; width: 100%; overflow: hidden; }
+        .dl-btn { display: block; width: 100%; background: #fff; color: #000; text-align: center; padding: 14px; border-radius: 8px; font-weight: 800; font-size: 16px; cursor: pointer; border: none; margin-bottom: 10px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
         
-        /* Native Ad Container */
-        .native-ad { 
-            background: #111; border: 1px dashed #333; border-radius: 8px; 
-            padding: 10px; margin: 20px 0; min-height: 250px; 
-            display: flex; align-items: center; justify-content: center; 
-            width: 100%; overflow: hidden;
-        }
-
-        /* DOWNLOAD BUTTON (Direct Link) */
-        .dl-btn {
-            display: block; width: 100%; background: #fff; color: #000;
-            text-align: center; padding: 14px; border-radius: 8px;
-            font-weight: 800; font-size: 16px; cursor: pointer; border: none;
-            margin-bottom: 10px; text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
-        }
-        .dl-btn:hover { background: #eee; }
-
-        /* === GRID === */
+        /* GRID */
         #homeView { display: block; padding: 15px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; row-gap: 20px; }
-        @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; } }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; row-gap: 20px; }
+        @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; } }
 
         .card { display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; }
-        .card:hover { transform: scale(1.02); }
-        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; border-radius: 8px; overflow: hidden; }
-        .thumb.poster-mode { aspect-ratio: 2/3; } /* Poster TMDB */
+        .thumb { position: relative; width: 100%; aspect-ratio: 2/3; background: #222; border-radius: 8px; overflow: hidden; }
+        .thumb.video-mode { aspect-ratio: 16/9; }
+        .thumb.vert-mode { aspect-ratio: 9/16; }
         .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .card-t { font-size: 13px; font-weight: 500; margin-top: 8px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f1f1f1; }
         
-        .card-t { font-size: 14px; font-weight: 500; margin-top: 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f1f1f1; }
+        /* TAG SOURCE LABEL */
+        .tag-source { position:absolute; top:5px; left:5px; padding:2px 6px; font-size:9px; font-weight:bold; border-radius:4px; color:white; }
         
-        .tag-source { position:absolute; top:5px; left:5px; padding:2px 6px; font-size:10px; font-weight:bold; border-radius:4px; color:white; }
-        .tag-tmdb { background: #e62117; } /* Merah utk Film */
-        .tag-dm { background: #2563eb; } /* Biru utk Video */
-
-        /* LOADING */
         #loader { text-align: center; padding: 80px 20px; color: #888; }
-        
-        /* FOOTER */
         .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 20px; font-size: 12px; color: #666; }
-        .footer a { color: #888; text-decoration: none; }
     </style>
 
     <script src="https://harbourbreederdump.com/6d/d4/c7/6dd4c77770d65b1bcda88bbac1019b8a.js"></script>
@@ -144,13 +87,11 @@
     <div class="wrapper">
 
         <div id="homeView">
-            
             <div class="search-container">
-                <input type="text" id="searchBox" class="search-input" placeholder="Search Movies or Videos...">
+                <input type="text" id="searchBox" class="search-input" placeholder="Search Movies, Drama, Videos...">
                 <button class="search-btn" onclick="doDualSearch()">GO</button>
             </div>
-
-            <h3 id="sectionTitle" style="margin-bottom:15px; color:#ddd;">Popular Movies</h3>
+            <h3 id="sectionTitle" style="margin-bottom:15px; color:#ddd;">Trending Now</h3>
             <div class="grid" id="gridTarget"></div>
         </div>
 
@@ -160,7 +101,8 @@
             </div>
 
             <div id="playerBox" class="player-box mode-vertical">
-                <iframe id="dmFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                <iframe id="dmFrame" allow="autoplay; fullscreen" allowfullscreen style="display:none;"></iframe>
+                <video id="webVideo" playsinline style="display:none;"></video>
 
                 <div id="overlayLayer" onclick="klikIklan()">
                     <div id="overlayBackdrop"></div>
@@ -172,9 +114,7 @@
             <div class="info-area">
                 <h1 id="vidTitle" class="main-title">...</h1>
 
-                <button class="dl-btn" onclick="bukaIklan()">
-                    ⬇ DOWNLOAD HD VIDEO
-                </button>
+                <button class="dl-btn" onclick="bukaIklan()">⬇ DOWNLOAD VIDEO HD</button>
 
                 <div class="native-ad">
                     <div style="width:100%; text-align:center;">
@@ -188,11 +128,11 @@
                     <div style="width:42px; height:42px; background:#cc0000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">DR</div>
                     <div>
                         <div style="font-weight:bold;">Drachin Official</div>
-                        <div style="font-size:12px; color:#aaa;">New Videos Daily</div>
+                        <div style="font-size:12px; color:#aaa;">New Content Daily</div>
                     </div>
                 </div>
 
-                <h4 style="margin-top:35px; margin-bottom:15px; font-size:16px;">Recommended for you</h4>
+                <h4 style="margin-top:35px; margin-bottom:15px; font-size:16px;">Recommended</h4>
                 <div id="sideList" style="display:flex; flex-direction:column; gap:15px;"></div>
             </div>
         </div>
@@ -200,25 +140,12 @@
     </div>
 
     <div class="footer">
-        &copy; 2025 Drachin Inc. All rights reserved.<br>
-        <div style="margin-top:10px;">
-            <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
-        </div>
-        
+        &copy; 2025 Drachin Inc.<br>
         <span id="histats_counter" style="display:none;"></span>
-        <script type="text/javascript">var _Hasync= _Hasync|| [];
-        _Hasync.push(['Histats.start', '1,4879497,4,0,0,0,00010000']);
-        _Hasync.push(['Histats.fasi', '1']);
-        _Hasync.push(['Histats.track_hits', '']);
-        (function() {
-        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-        hs.src = ('//s10.histats.com/js15_as.js');
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-        })();</script>
+        <script type="text/javascript">var _Hasync= _Hasync|| []; _Hasync.push(['Histats.start', '1,4879497,4,0,0,0,00010000']); _Hasync.push(['Histats.fasi', '1']); _Hasync.push(['Histats.track_hits', '']); (function() { var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true; hs.src = ('//s10.histats.com/js15_as.js'); (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs); })();</script>
     </div>
 
     <script>
-        // === KONFIGURASI API ===
         const TMDB_KEY = "b9f961d942ecf6cb23575ffb5231ff13"; 
         const DB_FILE = "videos.txt";
         const AD_LINK = "https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a";
@@ -227,6 +154,7 @@
         const playerView = document.getElementById('playerView');
         const playerBox = document.getElementById('playerBox');
         const dmFrame = document.getElementById('dmFrame');
+        const webVideo = document.getElementById('webVideo');
         const overlayLayer = document.getElementById('overlayLayer');
         const vidTitle = document.getElementById('vidTitle');
         const gridTarget = document.getElementById('gridTarget');
@@ -235,171 +163,170 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentId = urlParams.get('id');
 
-        // PWA INSTALL LOGIC
+        // PWA
         let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installAppBtn').style.display = 'block';
-        });
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+        function installPWA() { if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { window.open(AD_LINK, '_blank'); } }
 
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the A2HS prompt');
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                // Jika sudah install atau tidak support, buka Smartlink saja (Cuan!)
-                window.open(AD_LINK, '_blank');
-            }
-        }
-
+        // ADS LOGIC
         function klikIklan() {
             window.open(AD_LINK, '_blank'); 
             overlayLayer.style.display = 'none';
-            const src = dmFrame.src;
-            if(!src.includes('autoplay=1')) dmFrame.src = src.replace('autoplay=0', 'autoplay=1');
+            if(webVideo.style.display !== 'none') {
+                webVideo.play(); webVideo.controls = true;
+            } else {
+                const src = dmFrame.src;
+                if(!src.includes('autoplay=1')) dmFrame.src = src.replace('autoplay=0', 'autoplay=1');
+            }
         }
-
         function bukaIklan() { window.open(AD_LINK, '_blank'); }
 
+        // SEARCH
         async function doDualSearch() {
             const query = searchBox.value;
             if(!query) return;
-
-            document.getElementById('sectionTitle').innerText = "Results for: " + query;
+            document.getElementById('sectionTitle').innerText = "Results: " + query;
             gridTarget.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Searching...</div>';
-
-            let combinedResults = "";
-
-            try {
-                const resTMDB = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
-                const dataTMDB = await resTMDB.json();
-                if(dataTMDB.results) {
-                    dataTMDB.results.forEach(m => {
-                        if(m.poster_path) {
-                            const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
-                            combinedResults += createCard(`tmdb:${m.id}`, m.title, thumb, 'poster-mode', 'MOVIE', 'tag-tmdb');
-                        }
-                    });
-                }
-            } catch(e) {}
-
-            try {
-                const resDM = await fetch(`https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_480_url&limit=12`);
-                const dataDM = await resDM.json();
-                if(dataDM.list) {
-                    dataDM.list.forEach(v => {
-                        combinedResults += createCard(v.id, v.title, v.thumbnail_480_url, '', 'VIDEO', 'tag-dm');
-                    });
-                }
-            } catch(e) {}
-
-            if(combinedResults === "") {
-                gridTarget.innerHTML = '<div style="text-align:center; padding:20px;">No results found.</div>';
-            } else {
-                gridTarget.innerHTML = combinedResults;
-            }
+            
+            let combined = "";
+            try { 
+                const r1 = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
+                const d1 = await r1.json();
+                if(d1.results) d1.results.forEach(m => { if(m.poster_path) combined += createCard(`tmdb:${m.id}`, m.title, `https://image.tmdb.org/t/p/w500${m.poster_path}`, 'poster-mode', 'FILM', '#e62117'); });
+            } catch(e){}
+            try { 
+                const r2 = await fetch(`https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_480_url&limit=10`);
+                const d2 = await r2.json();
+                if(d2.list) d2.list.forEach(v => { combined += createCard(v.id, v.title, v.thumbnail_480_url, 'video-mode', 'CLIP', '#2563eb'); });
+            } catch(e){}
+            gridTarget.innerHTML = combined || '<div style="text-align:center;">No results.</div>';
         }
 
-        function createCard(id, title, thumb, mode, tagText, tagClass) {
-            return `
-            <a href="?id=${id}" class="card">
-                <div class="thumb ${mode}">
-                    <img src="${thumb}" loading="lazy">
-                    <div class="source-tag ${tagClass}">${tagText}</div>
-                </div>
-                <div class="card-t">${title}</div>
-            </a>`;
+        function createCard(id, title, thumb, mode, tag, color) {
+            return `<a href="?id=${id}" class="card"><div class="thumb ${mode}"><img src="${thumb}" loading="lazy"><div class="tag-source" style="background:${color}">${tag}</div></div><div class="card-t">${title}</div></a>`;
         }
+        searchBox.addEventListener("keypress", (e) => { if(e.key==="Enter") doDualSearch(); });
 
-        searchBox.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") doDualSearch();
-        });
-
+        // INIT
         async function init() {
-            if (currentId) {
-                renderPlayer(currentId);
-            } else {
-                loadHomeContent();
-            }
+            if(currentId) renderPlayer(currentId);
+            else loadHome();
         }
 
-        async function loadHomeContent() {
+        async function loadHome() {
+            let local = [];
             try {
-                const tmdbRes = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}`);
-                const tmdbData = await tmdbRes.json();
-                
-                let html = '';
-                if(tmdbData.results) {
-                    tmdbData.results.forEach(m => {
-                        if(m.poster_path) {
-                            const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
-                            html += createCard(`tmdb:${m.id}`, m.title, thumb, 'poster-mode', 'MOVIE', 'tag-tmdb');
-                        }
+                const r = await fetch(DB_FILE + '?t=' + Date.now());
+                if(r.ok) {
+                    const t = await r.text();
+                    local = t.split('\n').filter(l => l.includes('|')).map(l => {
+                        const p = l.split('|');
+                        return { id: p[0].trim(), title: p[1].trim() };
                     });
                 }
+            } catch(e){}
+
+            try {
+                const rT = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}`);
+                const dT = await rT.json();
+                let html = '';
+                
+                local.forEach(v => {
+                    let thumb, mode='video-mode', tag='NEW', col='#00b894';
+                    
+                    // DETEKSI LOGIKA THUMBNAIL
+                    if(v.id.includes('twimg') || v.id.endsWith('.mp4') || v.id.startsWith('videy:')) {
+                        thumb = 'https://via.placeholder.com/200x350/222/fff?text=VIDEO'; // Sulit ambil thumb twimg otomatis, pake placeholder
+                        mode='vert-mode'; tag='MP4'; col='#e17055';
+                        if(v.id.startsWith('videy:')) thumb = `https://cdn.videy.co/${v.id.replace('videy:','')}.jpg`;
+                    } else if(v.id.includes('dood') || v.id.includes('stream')) {
+                        thumb = 'https://via.placeholder.com/350x200/222/fff?text=STREAM'; 
+                        mode='video-mode'; tag='EMBED'; col='#6c5ce7';
+                    } else if(v.id.startsWith('tmdb:') || /^\d{3,7}$/.test(v.id)) {
+                        thumb = `https://via.placeholder.com/200x300?text=Movie`; mode='poster-mode'; tag='FILM'; col='#d63031';
+                    } else {
+                        thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
+                        tag = 'DM';
+                    }
+                    html += createCard(v.id, v.title, thumb, mode, tag, col);
+                });
+
+                if(dT.results) dT.results.forEach(m => {
+                    if(m.poster_path) html += createCard(`tmdb:${m.id}`, m.title, `https://image.tmdb.org/t/p/w500${m.poster_path}`, 'poster-mode', 'FILM', '#e62117');
+                });
                 gridTarget.innerHTML = html;
-            } catch(e) {
-                gridTarget.innerHTML = "Error loading movies.";
-            }
+            } catch(e){}
         }
 
         async function renderPlayer(id) {
-            document.getElementById('homeView').style.display = 'none';
-            document.getElementById('playerView').style.display = 'block';
-
-            let title = "Watch Video";
+            homeView.style.display = 'none';
+            playerView.style.display = 'block';
             
-            if (/^\d+$/.test(id) || id.startsWith('tmdb:')) {
-                const tmdbId = id.replace('tmdb:', '');
+            let title = "Watch Video";
+            dmFrame.style.display = 'none';
+            webVideo.style.display = 'none';
+            webVideo.src = ""; dmFrame.src = "";
+
+            // --- DETEKSI PEMUTAR PINTAR ---
+
+            // 1. FILM (TMDB) -> LANDSCAPE
+            if(id.startsWith('tmdb:') || /^\d{3,7}$/.test(id)) { 
+                const tid = id.replace('tmdb:', '');
                 playerBox.className = "player-box mode-landscape";
-                try {
-                    const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_KEY}`);
-                    const data = await res.json();
-                    if(data.title) title = data.title;
-                } catch(e){}
-                dmFrame.src = `https://vidsrc.xyz/embed/movie/${tmdbId}`;
+                dmFrame.src = `https://vidsrc.xyz/embed/movie/${tid}`;
+                dmFrame.style.display = 'block';
+                // Fetch Info
+                fetch(`https://api.themoviedb.org/3/movie/${tid}?api_key=${TMDB_KEY}`).then(r=>r.json()).then(d=>{ 
+                    if(d.title) vidTitle.innerText=d.title; 
+                    if(d.backdrop_path) overlayLayer.style.backgroundImage = `url('https://image.tmdb.org/t/p/w780${d.backdrop_path}')`;
+                });
+
+            // 2. VIDEO LANGSUNG (MP4 / TWIMG / VIDEY) -> NATIVE PLAYER
+            } else if(id.includes('.mp4') || id.includes('twimg.com') || id.startsWith('videy:')) {
+                let vSrc = id;
+                let vPoster = "";
                 
-            } else if (id.startsWith('http')) {
-                playerBox.className = "player-box mode-vertical"; 
+                if(id.startsWith('videy:')) {
+                    const vid = id.replace('videy:', '');
+                    vSrc = `https://cdn.videy.co/${vid}.mp4`;
+                    vPoster = `https://cdn.videy.co/${vid}.jpg`;
+                }
+
+                playerBox.className = "player-box mode-vertical"; // Asumsi video Twimg/Videy itu vertikal
+                webVideo.src = vSrc;
+                if(vPoster) webVideo.poster = vPoster;
+                webVideo.style.display = 'block';
+                overlayLayer.style.backgroundImage = vPoster ? `url('${vPoster}')` : 'none';
+                title = "Viral Video";
+                vidTitle.innerText = title;
+
+            // 3. GENERIC IFRAME (Doodstream / Streamwish / DLL)
+            } else if (id.includes('http')) {
+                // Asumsi Embed Link (Doodstream biasanya landscape)
+                playerBox.className = "player-box mode-landscape";
                 dmFrame.src = id;
+                dmFrame.style.display = 'block';
+                title = "Stream Video";
+                vidTitle.innerText = title;
+
+            // 4. DAILYMOTION (Default)
             } else {
-                playerBox.className = "player-box mode-vertical"; 
-                try {
-                    const resDM = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
-                    const dataDM = await resDM.json();
-                    if(dataDM.title) title = dataDM.title;
-                } catch(e){}
+                playerBox.className = "player-box mode-vertical";
                 dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
+                dmFrame.style.display = 'block';
+                overlayLayer.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
             }
 
-            vidTitle.textContent = title;
-            document.title = title + " - Drachin";
-            
             overlayLayer.style.display = 'flex';
 
+            // Sidebar Recom
             const sideList = document.getElementById('sideList');
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&page=2`);
-                const data = await res.json();
-                let sideHtml = '';
-                data.results.slice(0, 6).forEach(m => {
-                    const thumb = `https://image.tmdb.org/t/p/w200${m.poster_path}`;
-                    sideHtml += `
-                    <a href="?id=tmdb:${m.id}" style="display:flex; gap:10px; color:inherit;">
-                        <div style="width:70px; aspect-ratio:2/3; background:#222; border-radius:4px; overflow:hidden; flex-shrink:0;">
-                            <img src="${thumb}" style="width:100%; height:100%; object-fit:cover;">
-                        </div>
-                        <div style="font-size:13px; font-weight:500; line-height:1.3;">${m.title}</div>
-                    </a>`;
+            fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&page=2`).then(r=>r.json()).then(d=>{
+                let html=''; d.results.slice(0,5).forEach(m=>{
+                    html+=`<a href="?id=tmdb:${m.id}" style="display:flex; gap:10px; color:#ccc;"><div style="width:60px; aspect-ratio:2/3; background:#222; border-radius:4px; overflow:hidden;"><img src="https://image.tmdb.org/t/p/w200${m.poster_path}" style="width:100%;height:100%;object-fit:cover;"></div><div style="font-size:13px;">${m.title}</div></a>`;
                 });
-                sideList.innerHTML = sideHtml;
-            } catch(e){}
+                sideList.innerHTML=html;
+            });
         }
 
         init();

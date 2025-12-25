@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Drachin - Search & Watch</title>
+    <title>Drachin - Stream & Download</title>
+    
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f0f0f">
-    <meta name="description" content="Search and watch movies for free in HD quality.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/777/777242.png">
+
+    <meta name="description" content="Watch high quality videos and download for free.">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* === DARK MODE THEME === */
@@ -18,12 +24,12 @@
         .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 60px; background: rgba(15,15,15,0.98); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
         .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         .logo span { color: var(--red); font-size: 24px; }
-        .btn-vip { background: var(--red); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; text-transform: uppercase; }
+        .btn-vip { background: var(--red); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; text-transform: uppercase; cursor: pointer; border: none; color: white; }
 
         /* CONTAINER */
         .wrapper { max-width: 1000px; margin: 0 auto; min-height: 90vh; }
 
-        /* === SEARCH BAR (NEW) === */
+        /* SEARCH BAR */
         .search-container { padding: 15px 0; display: flex; gap: 10px; }
         .search-input { 
             width: 100%; background: #222; border: 1px solid #333; 
@@ -47,13 +53,12 @@
             transition: aspect-ratio 0.3s ease;
         }
 
-        /* Screen Modes */
         .mode-vertical { aspect-ratio: 9/16; max-height: 85vh; width: 100%; } 
         .mode-landscape { aspect-ratio: 16/9; max-width: 100%; }
 
         .player-box iframe, .player-box video { width: 100%; height: 100%; border: 0; display: block; position: absolute; top:0; left:0; }
 
-        /* OVERLAY FAKE PLAYER (Money Maker) */
+        /* OVERLAY FAKE PLAYER */
         #overlayLayer {
             position: absolute; inset: 0; z-index: 20;
             background: url('https://cdn.videy.co/DEFAULT_THUMB.jpg') no-repeat center center;
@@ -98,19 +103,23 @@
         }
         .dl-btn:hover { background: #eee; }
 
-        /* === GALLERY (HOME) === */
+        /* === GRID === */
         #homeView { display: block; padding: 15px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; row-gap: 20px; }
         @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; } }
 
         .card { display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; }
         .card:hover { transform: scale(1.02); }
-        .thumb { position: relative; width: 100%; aspect-ratio: 2/3; background: #222; border-radius: 8px; overflow: hidden; } /* Rasio Poster Film */
+        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; border-radius: 8px; overflow: hidden; }
+        .thumb.poster-mode { aspect-ratio: 2/3; } /* Poster TMDB */
         .thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .thumb-video { aspect-ratio: 16/9; } /* Rasio Video Dailymotion */
         
         .card-t { font-size: 14px; font-weight: 500; margin-top: 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f1f1f1; }
         
+        .tag-source { position:absolute; top:5px; left:5px; padding:2px 6px; font-size:10px; font-weight:bold; border-radius:4px; color:white; }
+        .tag-tmdb { background: #e62117; } /* Merah utk Film */
+        .tag-dm { background: #2563eb; } /* Biru utk Video */
+
         /* LOADING */
         #loader { text-align: center; padding: 80px 20px; color: #888; }
         
@@ -124,26 +133,24 @@
 <body>
 
     <nav class="navbar">
-        <a href="?" class="logo"><span>▶</span> MovTube</a>
+        <a href="?" class="logo"><span>▶</span> Drachin</a>
         <div>
-            <a href="https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="btn-vip">Get App</a>
+            <button id="installAppBtn" class="btn-vip" onclick="installPWA()">Get App</button>
         </div>
     </nav>
 
-    <div id="loader" style="display:none;">
-        <h3>Searching...</h3>
-    </div>
+    <div id="loader" style="display:none;"><h3>Searching...</h3></div>
 
     <div class="wrapper">
 
         <div id="homeView">
             
             <div class="search-container">
-                <input type="text" id="searchBox" class="search-input" placeholder="Search movies (e.g. Marvel, Avatar)...">
-                <button class="search-btn" onclick="doSearch()">GO</button>
+                <input type="text" id="searchBox" class="search-input" placeholder="Search Movies or Videos...">
+                <button class="search-btn" onclick="doDualSearch()">GO</button>
             </div>
 
-            <h3 id="sectionTitle" style="margin-bottom:15px; color:#ddd;">Trending Now</h3>
+            <h3 id="sectionTitle" style="margin-bottom:15px; color:#ddd;">Popular Movies</h3>
             <div class="grid" id="gridTarget"></div>
         </div>
 
@@ -178,9 +185,9 @@
                 </div>
 
                 <div style="display:flex; gap:12px; align-items:center; margin-top:20px;">
-                    <div style="width:42px; height:42px; background:#cc0000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">MT</div>
+                    <div style="width:42px; height:42px; background:#cc0000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">DR</div>
                     <div>
-                        <div style="font-weight:bold;">MovTube Official</div>
+                        <div style="font-weight:bold;">Drachin Official</div>
                         <div style="font-size:12px; color:#aaa;">New Videos Daily</div>
                     </div>
                 </div>
@@ -193,7 +200,7 @@
     </div>
 
     <div class="footer">
-        &copy; 2025 MovTube Inc. All rights reserved.<br>
+        &copy; 2025 Drachin Inc. All rights reserved.<br>
         <div style="margin-top:10px;">
             <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
         </div>
@@ -211,11 +218,11 @@
     </div>
 
     <script>
-        const TMDB_API_KEY = "b9f961d942ecf6cb23575ffb5231ff13"; // API Key Anda
+        // === KONFIGURASI API ===
+        const TMDB_KEY = "b9f961d942ecf6cb23575ffb5231ff13"; 
         const DB_FILE = "videos.txt";
         const AD_LINK = "https://harbourbreederdump.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a";
 
-        const loader = document.getElementById('loader');
         const homeView = document.getElementById('homeView');
         const playerView = document.getElementById('playerView');
         const playerBox = document.getElementById('playerBox');
@@ -228,174 +235,157 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentId = urlParams.get('id');
 
+        // PWA INSTALL LOGIC
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installAppBtn').style.display = 'block';
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // Jika sudah install atau tidak support, buka Smartlink saja (Cuan!)
+                window.open(AD_LINK, '_blank');
+            }
+        }
+
         function klikIklan() {
             window.open(AD_LINK, '_blank'); 
             overlayLayer.style.display = 'none';
             const src = dmFrame.src;
-            if(!src.includes('autoplay=1')) {
-                dmFrame.src = src.replace('autoplay=0', 'autoplay=1');
-            }
+            if(!src.includes('autoplay=1')) dmFrame.src = src.replace('autoplay=0', 'autoplay=1');
         }
 
-        function bukaIklan() {
-            window.open(AD_LINK, '_blank');
-        }
+        function bukaIklan() { window.open(AD_LINK, '_blank'); }
 
-        // === SEARCH FUNCTION ===
-        async function doSearch() {
+        async function doDualSearch() {
             const query = searchBox.value;
             if(!query) return;
 
-            document.getElementById('sectionTitle').innerText = "Search Results: " + query;
+            document.getElementById('sectionTitle').innerText = "Results for: " + query;
             gridTarget.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Searching...</div>';
 
+            let combinedResults = "";
+
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`);
-                const data = await res.json();
-                
-                if(data.results && data.results.length > 0) {
-                    renderTMDBGrid(data.results);
-                } else {
-                    gridTarget.innerHTML = '<div style="text-align:center; padding:20px;">No movies found.</div>';
-                }
-            } catch(e) {
-                gridTarget.innerHTML = '<div style="color:red;">Error searching.</div>';
-            }
-        }
-
-        // Enter key to search
-        searchBox.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") doSearch();
-        });
-
-        // === INIT ===
-        async function init() {
-            if (currentId) {
-                // Kalo ada ID di URL, masuk ke Player
-                renderPlayer(currentId);
-            } else {
-                // Kalo halaman depan, load videos.txt + Default TMDB Popular
-                loadHomeContent();
-            }
-        }
-
-        async function loadHomeContent() {
-            // 1. Load videos.txt (Manual uploads)
-            let localVideos = [];
-            try {
-                const res = await fetch(DB_FILE + '?t=' + Date.now());
-                if(res.ok) {
-                    const text = await res.text();
-                    localVideos = text.split('\n').filter(l => l.includes('|')).map(l => {
-                        const p = l.split('|');
-                        return { id: p[0].trim(), title: p[1].trim() };
+                const resTMDB = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
+                const dataTMDB = await resTMDB.json();
+                if(dataTMDB.results) {
+                    dataTMDB.results.forEach(m => {
+                        if(m.poster_path) {
+                            const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
+                            combinedResults += createCard(`tmdb:${m.id}`, m.title, thumb, 'poster-mode', 'MOVIE', 'tag-tmdb');
+                        }
                     });
                 }
             } catch(e) {}
 
-            // 2. Fetch Popular Movies from TMDB to fill the grid
             try {
-                const tmdbRes = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}`);
-                const tmdbData = await tmdbRes.json();
-                
-                // Combine: videos.txt first, then TMDB popular
-                let html = '';
-                
-                // Render videos.txt items
-                localVideos.forEach(v => {
-                    let thumb = v.id.startsWith('http') ? 'https://via.placeholder.com/640x360/333/fff?text=VIDEO' : `https://www.dailymotion.com/thumbnail/video/${v.id}`;
-                    if(v.id.startsWith('tmdb:')) thumb = `https://via.placeholder.com/200x300/111/fff?text=Movie`; // fallback for manual tmdb
-
-                    html += createCard(v.id, v.title, thumb, true);
-                });
-
-                // Render TMDB items
-                if(tmdbData.results) {
-                    tmdbData.results.forEach(m => {
-                        if(m.poster_path) {
-                            const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
-                            // Add 'tmdb:' prefix implicitly for player logic
-                            html += createCard(`tmdb:${m.id}`, m.title, thumb, false); 
-                        }
+                const resDM = await fetch(`https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_480_url&limit=12`);
+                const dataDM = await resDM.json();
+                if(dataDM.list) {
+                    dataDM.list.forEach(v => {
+                        combinedResults += createCard(v.id, v.title, v.thumbnail_480_url, '', 'VIDEO', 'tag-dm');
                     });
                 }
-                
-                gridTarget.innerHTML = html;
+            } catch(e) {}
 
-            } catch(e) {
-                gridTarget.innerHTML = "Error loading content.";
+            if(combinedResults === "") {
+                gridTarget.innerHTML = '<div style="text-align:center; padding:20px;">No results found.</div>';
+            } else {
+                gridTarget.innerHTML = combinedResults;
             }
         }
 
-        function renderTMDBGrid(movies) {
-            let html = '';
-            movies.forEach(m => {
-                if(m.poster_path) { // Only show if poster exists
-                    const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
-                    html += createCard(`tmdb:${m.id}`, m.title, thumb, false);
-                }
-            });
-            gridTarget.innerHTML = html;
-        }
-
-        function createCard(id, title, thumb, isVideo) {
-            // isVideo true = 16:9 thumb, false = Poster (2:3)
-            const thumbClass = isVideo ? "thumb thumb-video" : "thumb";
+        function createCard(id, title, thumb, mode, tagText, tagClass) {
             return `
             <a href="?id=${id}" class="card">
-                <div class="${thumbClass}">
+                <div class="thumb ${mode}">
                     <img src="${thumb}" loading="lazy">
-                    <div style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.8); color:white; font-size:10px; padding:2px 4px; border-radius:3px;">HD</div>
+                    <div class="source-tag ${tagClass}">${tagText}</div>
                 </div>
                 <div class="card-t">${title}</div>
             </a>`;
         }
 
+        searchBox.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") doDualSearch();
+        });
+
+        async function init() {
+            if (currentId) {
+                renderPlayer(currentId);
+            } else {
+                loadHomeContent();
+            }
+        }
+
+        async function loadHomeContent() {
+            try {
+                const tmdbRes = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}`);
+                const tmdbData = await tmdbRes.json();
+                
+                let html = '';
+                if(tmdbData.results) {
+                    tmdbData.results.forEach(m => {
+                        if(m.poster_path) {
+                            const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
+                            html += createCard(`tmdb:${m.id}`, m.title, thumb, 'poster-mode', 'MOVIE', 'tag-tmdb');
+                        }
+                    });
+                }
+                gridTarget.innerHTML = html;
+            } catch(e) {
+                gridTarget.innerHTML = "Error loading movies.";
+            }
+        }
+
         async function renderPlayer(id) {
-            homeView.style.display = 'none';
-            playerView.style.display = 'block';
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('playerView').style.display = 'block';
 
-            let title = "Watching Movie";
-            let isHorizontal = true; // Default landscape for movies
-
-            // DETEKSI JENIS ID
+            let title = "Watch Video";
+            
             if (/^\d+$/.test(id) || id.startsWith('tmdb:')) {
-                // === TMDB MOVIE ===
                 const tmdbId = id.replace('tmdb:', '');
                 playerBox.className = "player-box mode-landscape";
-                
-                // Fetch details for Title
                 try {
-                    const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`);
+                    const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_KEY}`);
                     const data = await res.json();
                     if(data.title) title = data.title;
                 } catch(e){}
-
-                // Embed Source
                 dmFrame.src = `https://vidsrc.xyz/embed/movie/${tmdbId}`;
                 
             } else if (id.startsWith('http')) {
-                // === DIRECT LINK ===
+                playerBox.className = "player-box mode-vertical"; 
                 dmFrame.src = id;
             } else {
-                // === DAILYMOTION ===
-                // Check if manually horizontal in videos.txt? (Hard to check here without fetching txt again)
-                // Let's assume default vertical for DM unless specified, or just default landscape.
-                // For safety in this hybrid mode, let's default landscape unless it's a known vertical format.
-                playerBox.className = "player-box mode-vertical"; // Assume DM is shorts/vertical based on your preference
+                playerBox.className = "player-box mode-vertical"; 
+                try {
+                    const resDM = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
+                    const dataDM = await resDM.json();
+                    if(dataDM.title) title = dataDM.title;
+                } catch(e){}
                 dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
             }
 
             vidTitle.textContent = title;
-            document.title = title + " - MovTube";
-
-            // Reset Overlay
+            document.title = title + " - Drachin";
+            
             overlayLayer.style.display = 'flex';
 
-            // Load Recommendations (TMDB Popular)
             const sideList = document.getElementById('sideList');
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&page=2`);
+                const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&page=2`);
                 const data = await res.json();
                 let sideHtml = '';
                 data.results.slice(0, 6).forEach(m => {

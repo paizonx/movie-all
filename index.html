@@ -36,7 +36,7 @@
         .mode-vertical { aspect-ratio: 9/16; max-height: 80vh; width: 100%; } 
         .mode-landscape { aspect-ratio: 16/9; max-width: 100%; }
 
-        /* Support Iframe (TMDB/DM/Dood) & Video Tag (Videy/Twimg) */
+        /* Support Iframe & Video Tag */
         .player-box iframe, .player-box video { width: 100%; height: 100%; border: 0; display: block; position: absolute; top:0; left:0; object-fit: contain; }
 
         /* OVERLAY FAKE PLAYER (Money Maker) */
@@ -88,7 +88,7 @@
 
         <div id="homeView">
             <div class="search-container">
-                <input type="text" id="searchBox" class="search-input" placeholder="Search Movies, Drama, Videos...">
+                <input type="text" id="searchBox" class="search-input" placeholder="Search Movies, YT, Drama...">
                 <button class="search-btn" onclick="doDualSearch()">GO</button>
             </div>
             <h3 id="sectionTitle" style="margin-bottom:15px; color:#ddd;">Trending Now</h3>
@@ -234,16 +234,23 @@
                 local.forEach(v => {
                     let thumb, mode='video-mode', tag='NEW', col='#00b894';
                     
-                    // DETEKSI LOGIKA THUMBNAIL
                     if(v.id.includes('twimg') || v.id.endsWith('.mp4') || v.id.startsWith('videy:')) {
-                        thumb = 'https://via.placeholder.com/200x350/222/fff?text=VIDEO'; // Sulit ambil thumb twimg otomatis, pake placeholder
+                        thumb = 'https://via.placeholder.com/200x350/222/fff?text=VIDEO'; 
                         mode='vert-mode'; tag='MP4'; col='#e17055';
                         if(v.id.startsWith('videy:')) thumb = `https://cdn.videy.co/${v.id.replace('videy:','')}.jpg`;
+                    
+                    } else if(v.id.startsWith('yt:') || v.id.includes('youtube')) {
+                        let yid = v.id.startsWith('yt:') ? v.id.replace('yt:','') : v.id;
+                        thumb = `https://img.youtube.com/vi/${yid}/mqdefault.jpg`;
+                        mode='video-mode'; tag='YT'; col='#ff0000';
+
                     } else if(v.id.includes('dood') || v.id.includes('stream')) {
                         thumb = 'https://via.placeholder.com/350x200/222/fff?text=STREAM'; 
                         mode='video-mode'; tag='EMBED'; col='#6c5ce7';
+
                     } else if(v.id.startsWith('tmdb:') || /^\d{3,7}$/.test(v.id)) {
                         thumb = `https://via.placeholder.com/200x300?text=Movie`; mode='poster-mode'; tag='FILM'; col='#d63031';
+
                     } else {
                         thumb = `https://www.dailymotion.com/thumbnail/video/${v.id}`;
                         tag = 'DM';
@@ -269,30 +276,36 @@
 
             // --- DETEKSI PEMUTAR PINTAR ---
 
-            // 1. FILM (TMDB) -> LANDSCAPE
+            // 1. FILM (TMDB)
             if(id.startsWith('tmdb:') || /^\d{3,7}$/.test(id)) { 
                 const tid = id.replace('tmdb:', '');
                 playerBox.className = "player-box mode-landscape";
                 dmFrame.src = `https://vidsrc.xyz/embed/movie/${tid}`;
                 dmFrame.style.display = 'block';
-                // Fetch Info
                 fetch(`https://api.themoviedb.org/3/movie/${tid}?api_key=${TMDB_KEY}`).then(r=>r.json()).then(d=>{ 
                     if(d.title) vidTitle.innerText=d.title; 
                     if(d.backdrop_path) overlayLayer.style.backgroundImage = `url('https://image.tmdb.org/t/p/w780${d.backdrop_path}')`;
                 });
 
-            // 2. VIDEO LANGSUNG (MP4 / TWIMG / VIDEY) -> NATIVE PLAYER
+            // 2. YOUTUBE (Format: yt:ID)
+            } else if(id.startsWith('yt:') || (id.length === 11 && !id.includes(' '))) {
+                const yid = id.startsWith('yt:') ? id.replace('yt:','') : id;
+                playerBox.className = "player-box mode-landscape";
+                dmFrame.src = `https://www.youtube.com/embed/${yid}?autoplay=0&rel=0&showinfo=0`;
+                dmFrame.style.display = 'block';
+                overlayLayer.style.backgroundImage = `url('https://img.youtube.com/vi/${yid}/maxresdefault.jpg')`;
+                title = "YouTube Video";
+
+            // 3. VIDEO LANGSUNG (MP4 / TWIMG / VIDEY)
             } else if(id.includes('.mp4') || id.includes('twimg.com') || id.startsWith('videy:')) {
                 let vSrc = id;
                 let vPoster = "";
-                
                 if(id.startsWith('videy:')) {
                     const vid = id.replace('videy:', '');
                     vSrc = `https://cdn.videy.co/${vid}.mp4`;
                     vPoster = `https://cdn.videy.co/${vid}.jpg`;
                 }
-
-                playerBox.className = "player-box mode-vertical"; // Asumsi video Twimg/Videy itu vertikal
+                playerBox.className = "player-box mode-vertical"; 
                 webVideo.src = vSrc;
                 if(vPoster) webVideo.poster = vPoster;
                 webVideo.style.display = 'block';
@@ -300,16 +313,15 @@
                 title = "Viral Video";
                 vidTitle.innerText = title;
 
-            // 3. GENERIC IFRAME (Doodstream / Streamwish / DLL)
+            // 4. GENERIC IFRAME
             } else if (id.includes('http')) {
-                // Asumsi Embed Link (Doodstream biasanya landscape)
                 playerBox.className = "player-box mode-landscape";
                 dmFrame.src = id;
                 dmFrame.style.display = 'block';
                 title = "Stream Video";
                 vidTitle.innerText = title;
 
-            // 4. DAILYMOTION (Default)
+            // 5. DAILYMOTION
             } else {
                 playerBox.className = "player-box mode-vertical";
                 dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
@@ -317,6 +329,7 @@
                 overlayLayer.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
             }
 
+            vidTitle.innerText = title;
             overlayLayer.style.display = 'flex';
 
             // Sidebar Recom

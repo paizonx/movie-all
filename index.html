@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Drachin - US Stream</title>
+    <title>Drachin - Universal Stream</title>
     <meta name="theme-color" content="#0f0f0f">
     <meta name="description" content="Watch Movies, Drama, and Viral Videos in one place. Free Streaming.">
     
@@ -57,7 +57,10 @@
 
         .info-area { padding: 20px 15px; }
         .main-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; color: #fff; }
+        
+        /* NATIVE ADSTERRA */
         .native-ad { background: #151515; border: 1px solid #252525; border-radius: 12px; padding: 15px; margin: 25px 0; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; overflow: hidden; }
+        
         .dl-btn { display: block; width: 100%; background: #fff; color: #000; text-align: center; padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; border: none; margin-bottom: 15px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
         
         #homeView { display: block; padding: 0 15px; }
@@ -145,6 +148,7 @@
     <script>
         const TMDB_KEY = "b9f961d942ecf6cb23575ffb5231ff13"; 
         const DB_FILE = "videos.txt";
+        // SMARTLINK ADSTERRA
         const AD_LINK = "https://thinnerwithdrewforbear.com/hwb3cmd6y?key=1c3f46a40e0e5deafd89c38ccc6afb86";
 
         const homeView = document.getElementById('homeView');
@@ -160,8 +164,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentId = urlParams.get('id');
 
-        // Logic Status: 0=Awal, 1=Nonton 10detik, 2=Pause/IklanReady
+        // Logic Status: 0=Awal, 1=Nonton 10 Detik, 2=Pause/IklanReady
         let adStep = 0; 
+        
+        // Timer Setting (10000 ms = 10 Detik)
+        const WATCH_TIME = 10000; 
 
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
@@ -170,30 +177,32 @@
             else { window.open(AD_LINK, '_blank'); } 
         }
 
-        // === LOGIKA BARU: NONTON 10 DETIK -> PAUSE -> IKLAN ===
+        // === LOGIKA: 10 DETIK NONTON GRATIS -> STOP -> IKLAN ===
         function klikLayer() {
             if (adStep === 0) {
-                // KLIK 1: Mulai Play
+                // KLIK 1: Play Video
                 overlayLayer.style.display = 'none';
                 playVideoInternal();
                 adStep = 1;
 
-                // Tunggu 10 Detik
+                // Hitung Mundur 10 Detik
                 setTimeout(() => {
                     pauseVideoInternal(); // Pause Video
                     overlayLayer.style.display = 'flex'; // Munculkan Layer Lagi
-                    overlayText.innerText = "Tap to Continue Watching"; // Ubah Teks
+                    overlayText.innerText = "Continue Watching"; // Ubah Teks
                     document.querySelector('.play-btn-fake').style.transform = 'scale(0.8)';
                     adStep = 2; // Status: Siap Iklan
-                }, 10000); // 10000 ms = 10 Detik
+                }, WATCH_TIME); 
 
             } else if (adStep === 2) {
-                // KLIK 2 (Setelah Pause): Buka Iklan & Resume
-                window.open(AD_LINK, '_blank'); // Buka Iklan
+                // KLIK 2 (Setelah 10 Detik): Buka Iklan & Resume
+                window.open(AD_LINK, '_blank'); // Buka Iklan Smartlink
+                // Note: Popunder Adsterra juga akan otomatis trigger di sini
                 overlayLayer.style.display = 'none'; // Hilangkan Layer
                 playVideoInternal(); // Lanjut Play
-                adStep = 3; // Bebas
+                adStep = 3; // Bebas Nonton
             } else {
+                // Resume Biasa
                 overlayLayer.style.display = 'none';
                 playVideoInternal();
             }
@@ -212,8 +221,9 @@
             if(webVideo.style.display !== 'none') {
                 webVideo.pause();
             } else {
-                // Iframe tidak bisa dipause paksa karena CORS, tapi tertutup layer
-                // Pengguna akan berhenti nonton karena tertutup gambar
+                // Iframe di-reload tanpa autoplay untuk mensimulasikan stop
+                const src = dmFrame.src;
+                if(src.includes('autoplay=1')) dmFrame.src = src.replace('autoplay=1', 'autoplay=0');
             }
         }
 
@@ -268,6 +278,7 @@
                 
                 local.forEach(v => {
                     let thumb, mode='video-mode', tag='NEW', col='#00b894';
+                    
                     if(v.id.includes('twimg') || v.id.endsWith('.mp4') || v.id.startsWith('videy:')) {
                         thumb = 'https://via.placeholder.com/200x350/222/fff?text=VIDEO'; mode='vert-mode'; tag='MP4'; col='#e17055';
                         if(v.id.startsWith('videy:')) thumb = `https://cdn.videy.co/${v.id.replace('videy:','')}.jpg`;

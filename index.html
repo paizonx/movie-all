@@ -315,7 +315,7 @@
             if(id.startsWith('tmdb:') || /^\d{3,7}$/.test(id)) { 
                 const tid = id.replace('tmdb:', '');
                 playerBox.className = "player-box mode-landscape";
-                dmFrame.src = `https://vidsrc.xyz/embed/movie/${tid}`;
+                dmFrame.src = `https://multiembed.mov/?video_id=${tid}&tmdb=1`;
                 dmFrame.style.display = 'block';
                 fetch(`https://api.themoviedb.org/3/movie/${tid}?api_key=${TMDB_KEY}`).then(r=>r.json()).then(d=>{ 
                     if(d.title) vidTitle.innerText=d.title; 

@@ -124,7 +124,8 @@
                         <a id="downloadBtn" href="#" target="_blank" class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
                             <i data-lucide="external-link" class="w-4 h-4"></i> <span data-i18n="watchOnDm">Watch on App</span>
                         </a>
-                        <button class="flex-1 bg-red-600 hover:bg-red-700 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
+                        <!-- Tombol Share yang sudah diperbaiki -->
+                        <button onclick="shareVideo()" class="flex-1 bg-red-600 hover:bg-red-700 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 active:scale-95">
                             <i data-lucide="share-2" class="w-4 h-4"></i> <span data-i18n="share">Share</span>
                         </button>
                     </div>
@@ -158,6 +159,7 @@
                 backBtn: "Back",
                 watchOnDm: "Watch on App",
                 share: "Share",
+                copied: "Link copied to clipboard!",
                 recommendationTitle: "Recommended Dramas",
                 noResult: "No videos found.",
                 loading: "Loading..."
@@ -170,6 +172,7 @@
                 backBtn: "Volver",
                 watchOnDm: "Ver en App",
                 share: "Compartir",
+                copied: "¡Enlace copiado al portapapeles!",
                 recommendationTitle: "Dramas Recomendados",
                 noResult: "No se encontraron videos.",
                 loading: "Cargando..."
@@ -196,9 +199,10 @@
             }, 100);
         }
 
-        // === FUNGSI BAHASA ===
-        function changeLanguage(lang) {
-            currentLang = lang;
+        // === FUNGSI INIT & BAHASA ===
+        
+        // Fungsi untuk menerapkan teks bahasa tanpa reload konten
+        function applyLanguageText(lang) {
             const textData = CONFIG[lang];
             
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -216,22 +220,77 @@
                 currentQuery = textData.query;
             }
             loadMoreBtn.innerText = textData.loadMore;
+        }
 
-            // Jika di halaman Home, reload konten dengan bahasa baru
+        // Ganti Bahasa dari Dropdown
+        function changeLanguage(lang) {
+            currentLang = lang;
+            applyLanguageText(lang);
+            
+            // Update URL biar 'lang' tersimpan di address bar
+            updateUrlState();
+
+            // Reload konten agar sesuai bahasa baru
             if (playerView.classList.contains('hidden')) {
                 currentPage = 1;
                 videoGrid.innerHTML = '';
                 loadHomeView();
             } else {
-                // Jika sedang di player, update rekomendasi saja
                 loadRecommendations(getIdFromUrl() || 'x');
             }
+        }
+
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoId = urlParams.get('id');
+            const langParam = urlParams.get('lang');
+
+            // 1. Cek Parameter Bahasa di URL
+            if (langParam && ['en', 'es'].includes(langParam)) {
+                currentLang = langParam;
+                document.getElementById('langSelect').value = currentLang;
+            }
+            
+            // Terapkan teks bahasa (tanpa reload dulu)
+            applyLanguageText(currentLang);
+
+            // 2. Load Halaman
+            if (videoId) {
+                await loadPlayerView(videoId);
+            } else {
+                loadHomeView();
+            }
+        }
+
+        // Helper untuk update URL state
+        function updateUrlState(id = null) {
+            try {
+                const newUrl = new URL(window.location);
+                
+                // Atur ID
+                if (id) newUrl.searchParams.set('id', id);
+                else {
+                    // Jika id null tapi di URL ada, biarkan (kasus changeLanguage saat nonton)
+                    // Jika di home, hapus id
+                    if (playerView.classList.contains('hidden')) newUrl.searchParams.delete('id');
+                }
+
+                // Atur Lang
+                newUrl.searchParams.set('lang', currentLang);
+
+                // Gunakan replaceState agar tidak menumpuk history back button saat ganti bahasa
+                // atau pushState saat ganti video
+                if (id && id !== getIdFromUrl()) {
+                    window.history.pushState({ path: newUrl.toString() }, '', newUrl.toString());
+                } else {
+                    window.history.replaceState({ path: newUrl.toString() }, '', newUrl.toString());
+                }
+            } catch (e) { /* ignore in preview */ }
         }
 
         // === FUNGSI UTAMA ===
 
         async function fetchDailymotion(query, page = 1) {
-            // Mengambil field yang diperlukan saja untuk ringan
             const url = `https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_720_url,owner.username,views_total,duration&limit=20&page=${page}`;
             try {
                 const response = await fetch(url);
@@ -288,17 +347,6 @@
             `;
         }
 
-        async function init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const videoId = urlParams.get('id');
-
-            if (videoId) {
-                await loadPlayerView(videoId);
-            } else {
-                loadHomeView();
-            }
-        }
-
         async function loadHomeView() {
             homeView.classList.remove('hidden');
             playerView.classList.add('hidden');
@@ -337,11 +385,8 @@
             homeView.classList.add('hidden');
             playerView.classList.remove('hidden');
 
-            // 1. Set Iframe LANGSUNG (Tanpa menunggu fetch API) agar terasa cepat
-            // Menambahkan parameter ui-start-screen-info=false agar lebih bersih & cepat
             dmPlayer.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-logo=0&ui-start-screen-info=false&sharing-enable=false`;
 
-            // 2. Load Metadata secara background
             try {
                 const response = await fetch(`https://api.dailymotion.com/video/${id}?fields=id,title,owner.username,url,views_total`);
                 const data = await response.json();
@@ -363,11 +408,11 @@
             const recList = document.getElementById('recommendationList');
             recList.innerHTML = `<div class="text-center py-4 text-gray-600 text-sm animate-pulse">${CONFIG[currentLang].loading}</div>`;
             
+            // Rekomendasi berdasarkan bahasa yang aktif
             const randomPage = Math.floor(Math.random() * 5) + 1;
             const recVideos = await fetchDailymotion(CONFIG[currentLang].query, randomPage);
             
             let recHtml = '';
-            // Tampilkan max 10 item, hindari video yang sedang diputar
             recVideos.filter(v => v.id !== currentId).slice(0, 10).forEach(v => { 
                 recHtml += renderSideItem(v);
             });
@@ -376,26 +421,20 @@
         }
 
         function openPlayer(id) {
-            // Update URL bar agar terlihat profesional: /?id=x12345
-            try {
-                const newUrl = new URL(window.location);
-                newUrl.searchParams.set('id', id);
-                window.history.pushState({ path: newUrl.toString() }, '', newUrl.toString());
-            } catch (e) { /* ignore in preview */ }
-            
+            updateUrlState(id);
             loadPlayerView(id);
         }
 
         function goHome() {
+            // Hapus ID dari URL, tapi PERTAHANKAN bahasa
             try {
                 const newUrl = new URL(window.location);
                 newUrl.searchParams.delete('id');
+                newUrl.searchParams.set('lang', currentLang); 
                 window.history.pushState({ path: newUrl.toString() }, '', newUrl.toString());
-            } catch (e) { /* ignore in preview */ }
+            } catch (e) { /* ignore */ }
             
-            // Stop Video
             dmPlayer.src = "";
-            
             homeView.classList.remove('hidden');
             playerView.classList.add('hidden');
         }
@@ -403,6 +442,16 @@
         function getIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('id');
+        }
+
+        // Fitur Share: Copy URL lengkap (ID + Lang)
+        function shareVideo() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert(CONFIG[currentLang].copied);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
         }
 
         // === LOGIKA PENCARIAN & DETEKSI ID ===
@@ -414,25 +463,18 @@
             q = q.trim();
             if(!q) return;
 
-            // 1. Cek apakah Input adalah ID Dailymotion?
-            // Pola umum ID Dailymotion: Alfanumerik, biasanya diawali 'x' atau 'k', panjang 6-7 karakter.
-            // Contoh valid: x9n1o8e, x83cn1w
             const isDailymotionID = /^[xXkK][a-zA-Z0-9]{5,8}$/.test(q);
 
             if (isDailymotionID) {
-                // JIKA ID: Langsung buka player!
                 openPlayer(q);
-                // Kosongkan input agar bersih
                 document.getElementById('searchInput').value = '';
                 document.getElementById('searchInputMobile').value = '';
             } else {
-                // JIKA KEYWORD: Lakukan pencarian biasa
                 currentQuery = q;
                 currentPage = 1;
                 isSearchMode = true;
                 pageTitle.innerText = `🔍 ${q}`;
                 
-                // Pastikan kembali ke home view jika sedang di player
                 goHome(); 
                 videoGrid.innerHTML = ''; 
                 loadHomeView();

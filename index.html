@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drachin - Drama Chino Stream</title>
     <meta name="description" content="Watch latest Chinese Drama for free.">
-    <meta name="theme-color" content="#0f0f0f">
+    <meta name="theme-color" content="#000000">
     
     <!-- Preconnect -->
     <link rel="preconnect" href="https://www.dailymotion.com">
@@ -20,11 +20,11 @@
     <style>
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f0f0f; }
+        ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #e50914; }
 
-        body { background-color: #0f0f0f; color: #e5e5e5; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: #000; color: #e5e5e5; font-family: 'Segoe UI', Roboto, sans-serif; }
         
         .line-clamp-2 {
             display: -webkit-box;
@@ -38,10 +38,10 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col font-sans">
 
     <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-white/10">
+    <nav class="sticky top-0 z-[60] bg-black/90 backdrop-blur-xl border-b border-white/5">
         <div class="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between gap-4">
             <a href="?" class="flex items-center gap-2 text-2xl font-bold tracking-tighter hover:scale-105 transition shrink-0">
                 <span class="text-red-600">▶</span> Drachin
@@ -49,14 +49,14 @@
             
             <div class="flex items-center gap-3 flex-1 justify-end md:justify-between">
                 <!-- Search Bar Desktop -->
-                <form id="searchForm" class="hidden md:flex flex-1 max-w-md mx-auto items-center bg-gray-800 rounded-full px-4 py-1.5 border border-gray-700 focus-within:border-red-600 transition">
-                    <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search drama or Paste ID..." class="bg-transparent border-none outline-none text-sm w-full text-white placeholder-gray-400">
+                <form id="searchForm" class="hidden md:flex flex-1 max-w-md mx-auto items-center bg-[#111] rounded-full px-4 py-1.5 border border-[#333] focus-within:border-red-600 transition">
+                    <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search drama or Paste ID..." class="bg-transparent border-none outline-none text-sm w-full text-white placeholder-gray-500">
                     <button type="submit" class="text-gray-400 hover:text-white"><i data-lucide="search" class="w-4 h-4"></i></button>
                 </form>
 
                 <!-- Language Selector -->
                 <div class="relative group">
-                    <select id="langSelect" onchange="changeLanguage(this.value)" class="appearance-none bg-gray-900 border border-gray-700 text-white text-xs py-1.5 pl-3 pr-8 rounded-full focus:outline-none focus:border-red-600 cursor-pointer font-medium hover:bg-gray-800 transition">
+                    <select id="langSelect" onchange="changeLanguage(this.value)" class="appearance-none bg-[#111] border border-[#333] text-white text-xs py-1.5 pl-3 pr-8 rounded-full focus:outline-none focus:border-red-600 cursor-pointer font-medium hover:bg-[#222] transition">
                         <option value="en">🇺🇸 EN</option>
                         <option value="es">🇪🇸 ES</option>
                     </select>
@@ -69,13 +69,12 @@
     </nav>
 
     <!-- CONTENT WRAPPER -->
-    <!-- Hapus py-6 di sini agar player bisa nempel ke navbar -->
     <main class="flex-grow w-full max-w-[1400px] mx-auto">
         
-        <!-- SEARCH MOBILE (Muncul hanya di Home Mobile) -->
+        <!-- SEARCH MOBILE (Home Only) -->
         <div id="mobileSearchContainer" class="px-4 pt-4 pb-2 md:hidden">
-            <form id="searchFormMobile" class="flex items-center bg-gray-800 rounded-full px-4 py-2 border border-gray-700">
-                 <input type="text" id="searchInputMobile" data-i18n-placeholder="searchPlaceholder" placeholder="Search drama or Paste ID..." class="bg-transparent border-none outline-none text-sm w-full text-white placeholder-gray-400">
+            <form id="searchFormMobile" class="flex items-center bg-[#111] rounded-full px-4 py-2 border border-[#333]">
+                 <input type="text" id="searchInputMobile" data-i18n-placeholder="searchPlaceholder" placeholder="Search drama..." class="bg-transparent border-none outline-none text-sm w-full text-white placeholder-gray-500">
                  <button type="submit" class="text-gray-400 hover:text-white"><i data-lucide="search" class="w-4 h-4"></i></button>
             </form>
         </div>
@@ -86,83 +85,87 @@
         </div>
 
         <!-- VIEW: HOME (GRID) -->
-        <!-- Tambahkan padding px-4 py-6 disini -->
         <div id="homeView" class="px-4 py-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 id="pageTitle" class="text-xl md:text-2xl font-bold border-l-4 border-red-600 pl-3">Latest Chinese Dramas</h2>
             </div>
             
-            <div id="videoGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <div id="videoGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
                 <!-- Items will be injected here -->
             </div>
             
             <div class="mt-10 text-center">
-                <button id="loadMoreBtn" onclick="loadMore()" class="px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-full text-sm font-semibold transition border border-gray-600">
+                <button id="loadMoreBtn" onclick="loadMore()" class="px-8 py-3 bg-[#222] hover:bg-[#333] text-white rounded-full text-sm font-bold tracking-wide transition border border-[#333]">
                     Load More
                 </button>
             </div>
         </div>
 
-        <!-- VIEW: PLAYER -->
-        <!-- Gap 0 di mobile agar rapat -->
+        <!-- VIEW: PLAYER (FULL WIDTH & STICKY) -->
         <div id="playerView" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-8 lg:p-6">
-            <div class="lg:col-span-2 space-y-0 lg:space-y-4">
+            <div class="lg:col-span-2 relative">
                 
-                <!-- Tombol Back Desktop (Hanya muncul di layar besar) -->
-                <div class="hidden lg:block">
-                    <button onclick="goHome()" class="flex items-center text-gray-400 hover:text-white text-sm transition">
-                        <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> <span data-i18n="backBtn">Back</span>
-                    </button>
-                </div>
-                
-                <!-- Player Wrapper -->
-                <!-- Mobile: Full Width (w-full), Aspect Ratio -->
-                <!-- Desktop: Rounded -->
-                <div class="relative w-full aspect-video bg-black lg:rounded-xl overflow-hidden shadow-2xl border-b border-gray-800 lg:border">
-                    <iframe id="dmPlayer" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <!-- STICKY PLAYER CONTAINER -->
+                <!-- Di Mobile: Sticky di bawah navbar (top-14) agar tetap terlihat saat scroll info/rekomendasi -->
+                <div class="sticky top-14 z-50 lg:static w-full bg-black shadow-2xl">
+                    <div class="relative w-full aspect-video bg-black overflow-hidden lg:rounded-xl border-b border-white/10 lg:border-none">
+                        <iframe id="dmPlayer" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                    </div>
                 </div>
 
-                <!-- Video Info -->
-                <div class="bg-[#1a1a1a] p-4 lg:p-5 lg:rounded-xl border-b border-gray-800 lg:border">
-                    <!-- Tombol Back Mobile (Muncul di sini agar player tetap di atas) -->
-                    <button onclick="goHome()" class="lg:hidden flex items-center text-gray-400 hover:text-white text-xs mb-3 transition">
-                        <i data-lucide="arrow-left" class="w-3 h-3 mr-1"></i> <span data-i18n="backBtn">Back</span>
+                <!-- INFO SECTION (Menyatu dengan background, bukan kotak terpisah) -->
+                <div class="px-4 py-5 lg:px-0 bg-black lg:bg-transparent">
+                    <!-- Navigasi Back Mobile -->
+                    <button onclick="goHome()" class="lg:hidden flex items-center text-gray-400 hover:text-white text-xs mb-3 transition uppercase tracking-wider font-semibold">
+                        <i data-lucide="arrow-left" class="w-3 h-3 mr-1"></i> <span data-i18n="backBtn">Back to Home</span>
                     </button>
 
                     <h1 id="playerTitle" class="text-lg md:text-2xl font-bold leading-snug mb-2 text-white">Loading info...</h1>
-                    <div class="flex items-center gap-3 text-sm text-gray-400 mb-4">
-                        <span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs font-bold">DM</span>
-                        <span id="playerOwner">...</span>
-                        <span>•</span>
+                    
+                    <div class="flex items-center gap-3 text-sm text-gray-400 mb-5 border-b border-white/10 pb-4">
+                        <span class="bg-red-600 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold tracking-wider">DM</span>
+                        <span id="playerOwner" class="font-medium text-gray-300">...</span>
+                        <span class="text-gray-600">•</span>
                         <span id="playerViews">...</span>
                     </div>
                     
-                    <div class="flex gap-2 mb-6">
-                        <a id="downloadBtn" href="https://thinnerwithdrewforbear.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-2.5 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
-                            <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="watchOnDm">Download Video</span>
+                    <!-- Tombol Action -->
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <a id="downloadBtn" href="https://thinnerwithdrewforbear.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="flex items-center justify-center gap-2 bg-[#222] hover:bg-[#333] text-white py-3 rounded-lg text-sm font-semibold transition border border-white/10">
+                            <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="watchOnDm">Download</span>
                         </a>
-                        <button onclick="shareVideo()" class="flex-1 bg-red-600 hover:bg-red-700 text-center py-2.5 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 active:scale-95">
+                        <button onclick="shareVideo()" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-semibold transition active:scale-95 shadow-lg shadow-red-900/20">
                             <i data-lucide="share-2" class="w-4 h-4"></i> <span data-i18n="share">Share</span>
                         </button>
                     </div>
 
                     <!-- NATIVE BANNER ADSTERRA -->
-                    <div class="mt-4 border-t border-gray-700 pt-4">
-                         <div class="text-[10px] text-gray-500 mb-2 text-center tracking-widest uppercase">Sponsored</div>
-                         <!-- Wrapper W-FULL agar iklan tidak terpotong -->
-                         <div id="ad-wrapper" class="w-full flex justify-center min-h-[100px] bg-black/30 rounded-lg overflow-hidden relative">
-                             <!-- Script di-inject via JS -->
+                    <div class="mb-8">
+                         <div class="text-[10px] text-gray-600 mb-2 text-center tracking-widest uppercase">Advertisement</div>
+                         <div id="ad-wrapper" class="w-full flex justify-center min-h-[100px] bg-[#111] rounded-lg overflow-hidden relative border border-white/5">
                              <div id="container-b94cafeb9a426597e421e6c2d836a415"></div>
                          </div>
+                    </div>
+
+                    <!-- REKOMENDASI MOBILE (GRID 2 KOLOM) -->
+                    <!-- Ditampilkan di sini untuk layout mobile agar flow-nya: Player -> Info -> Recs -->
+                    <div class="lg:hidden">
+                        <h3 class="text-lg font-bold mb-4 text-white border-l-4 border-red-600 pl-3" data-i18n="recommendationTitle">More Like This</h3>
+                        <div id="recommendationListMobile" class="grid grid-cols-2 gap-3">
+                            <!-- Mobile Grid Items -->
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Recommendations -->
-            <div class="lg:col-span-1 px-4 lg:px-0 py-6 lg:py-0">
-                <h3 class="text-lg font-bold mb-4 text-gray-200" data-i18n="recommendationTitle">Recommended Dramas</h3>
-                <div id="recommendationList" class="flex flex-col gap-3">
-                    <!-- List Items -->
+            <!-- REKOMENDASI DESKTOP (SIDEBAR) -->
+            <div class="hidden lg:block lg:col-span-1">
+                <button onclick="goHome()" class="flex items-center text-gray-400 hover:text-white text-sm mb-4 transition">
+                    <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> <span data-i18n="backBtn">Back</span>
+                </button>
+                <h3 class="text-lg font-bold mb-4 text-gray-200" data-i18n="recommendationTitle">Recommended</h3>
+                <div id="recommendationListDesktop" class="flex flex-col gap-3">
+                    <!-- Desktop List Items -->
                 </div>
             </div>
         </div>
@@ -170,10 +173,10 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="mt-12 py-8 bg-black border-t border-gray-800 text-center">
-        <p class="text-gray-500 text-sm">&copy; 2025 Drachin Stream. All rights reserved.</p>
+    <footer class="mt-12 py-8 bg-[#050505] border-t border-white/5 text-center">
+        <p class="text-gray-500 text-sm">&copy; 2025 Drachin Stream.</p>
         
-        <!-- Histats.com  START  (aync)-->
+        <!-- Histats -->
         <div id="histats_counter" style="display:none;"></div>
         <script type="text/javascript">var _Hasync= _Hasync|| [];
         _Hasync.push(['Histats.start', '1,4654540,4,0,0,0,00010000']);
@@ -185,36 +188,35 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
         })();</script>
         <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4654540&101" alt="" border="0"></a></noscript>
-        <!-- Histats.com  END  -->
     </footer>
 
     <script>
-        // === KONFIGURASI BAHASA ===
+        // === CONFIG ===
         const CONFIG = {
             en: {
                 query: "Chinese Drama Eng Sub",
-                titleHome: "Latest Chinese Dramas",
-                searchPlaceholder: "Search drama or Paste ID (e.g. x9n1o8e)",
+                titleHome: "Latest Dramas",
+                searchPlaceholder: "Search drama or ID...",
                 loadMore: "Load More",
                 backBtn: "Back",
-                watchOnDm: "Download Video", 
+                watchOnDm: "Download", 
                 share: "Share",
-                copied: "Link copied to clipboard!",
-                recommendationTitle: "Recommended Dramas",
+                copied: "Link copied!",
+                recommendationTitle: "More Like This",
                 noResult: "No videos found.",
                 loading: "Loading..."
             },
             es: {
                 query: "Drama Chino Sub Español",
-                titleHome: "Dramas Chinos Recientes",
-                searchPlaceholder: "Buscar drama o pegar ID (ej. x9n1o8e)",
+                titleHome: "Dramas Recientes",
+                searchPlaceholder: "Buscar drama o ID...",
                 loadMore: "Cargar Más",
                 backBtn: "Volver",
-                watchOnDm: "Descargar Video", 
+                watchOnDm: "Descargar", 
                 share: "Compartir",
-                copied: "¡Enlace copiado al portapapeles!",
-                recommendationTitle: "Dramas Recomendados",
-                noResult: "No se encontraron videos.",
+                copied: "¡Copiado!",
+                recommendationTitle: "Más como esto",
+                noResult: "No videos.",
                 loading: "Cargando..."
             }
         };
@@ -252,31 +254,26 @@
 
         function loadNativeAd() {
             if(isAdLoaded) return; 
-            
             const adWrapper = document.getElementById('ad-wrapper');
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.async = true;
             script.setAttribute('data-cfasync', 'false');
             script.src = 'https://thinnerwithdrewforbear.com/b94cafeb9a426597e421e6c2d836a415/invoke.js';
-            
             adWrapper.appendChild(script);
             isAdLoaded = true;
         }
 
         function applyLanguageText(lang) {
             const textData = CONFIG[lang];
-            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(textData[key]) el.innerText = textData[key];
             });
-
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(textData[key]) el.placeholder = textData[key];
             });
-
             if (!isSearchMode) {
                 pageTitle.innerText = textData.titleHome;
                 currentQuery = textData.query;
@@ -288,7 +285,6 @@
             currentLang = lang;
             applyLanguageText(lang);
             updateUrlState();
-
             if (playerView.classList.contains('hidden')) {
                 currentPage = 1;
                 videoGrid.innerHTML = '';
@@ -300,18 +296,14 @@
 
         async function init() {
             initPopunder(); 
-
             const urlParams = new URLSearchParams(window.location.search);
             const videoId = urlParams.get('id');
             const langParam = urlParams.get('lang');
-
             if (langParam && ['en', 'es'].includes(langParam)) {
                 currentLang = langParam;
                 document.getElementById('langSelect').value = currentLang;
             }
-            
             applyLanguageText(currentLang);
-
             if (videoId) {
                 await loadPlayerView(videoId);
             } else {
@@ -323,20 +315,12 @@
             try {
                 const newUrl = new URL(window.location);
                 if (id) newUrl.searchParams.set('id', id);
-                else {
-                    if (playerView.classList.contains('hidden')) newUrl.searchParams.delete('id');
-                }
+                else if (playerView.classList.contains('hidden')) newUrl.searchParams.delete('id');
                 newUrl.searchParams.set('lang', currentLang);
-
-                if (id && id !== getIdFromUrl()) {
-                    window.history.pushState({ path: newUrl.toString() }, '', newUrl.toString());
-                } else {
-                    window.history.replaceState({ path: newUrl.toString() }, '', newUrl.toString());
-                }
-            } catch (e) { /* ignore in preview */ }
+                if (id && id !== getIdFromUrl()) window.history.pushState({ path: newUrl.toString() }, '', newUrl.toString());
+                else window.history.replaceState({ path: newUrl.toString() }, '', newUrl.toString());
+            } catch (e) { }
         }
-
-        // === FUNGSI UTAMA ===
 
         async function fetchDailymotion(query, page = 1) {
             const url = `https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_720_url,owner.username,views_total,duration&limit=20&page=${page}`;
@@ -344,44 +328,37 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 return data.list || [];
-            } catch (error) {
-                return [];
-            }
+            } catch (error) { return []; }
         }
 
-        function renderCard(video) {
+        // KARTU VIDEO GRID (Home & Mobile Recs)
+        function renderCard(video, isSmall = false) {
             const minutes = Math.floor(video.duration / 60);
             const seconds = video.duration % 60;
             const durationStr = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
+            // Jika isSmall (Mobile Recommendation), text lebih kecil
+            const titleClass = isSmall ? "text-xs font-medium line-clamp-2 mt-2 text-gray-200" : "text-sm font-semibold text-gray-100 line-clamp-2 leading-snug group-hover:text-red-500 transition-colors mt-2";
+
             return `
-                <div onclick="openPlayer('${video.id}')" class="group cursor-pointer bg-[#1e1e1e] rounded-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-900/20 border border-transparent hover:border-gray-700">
-                    <div class="relative aspect-video-card bg-gray-800 overflow-hidden">
-                        <img src="${video.thumbnail_720_url}" alt="${video.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500 opacity-90 group-hover:opacity-100">
-                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-1.5 py-0.5 rounded font-mono">
+                <div onclick="openPlayer('${video.id}')" class="group cursor-pointer bg-transparent rounded-lg overflow-hidden transition-all duration-300">
+                    <div class="relative aspect-video-card bg-[#1a1a1a] rounded-lg overflow-hidden border border-white/5">
+                        <img src="${video.thumbnail_720_url}" alt="${video.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
+                        <div class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 py-0.5 rounded font-mono">
                             ${durationStr}
                         </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <div class="bg-red-600 rounded-full p-3 shadow-lg scale-0 group-hover:scale-100 transition-transform">
-                                <i data-lucide="play" class="w-5 h-5 fill-white text-white ml-0.5"></i>
-                            </div>
-                        </div>
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
                     </div>
-                    <div class="p-3">
-                        <h3 class="text-sm font-semibold text-gray-100 line-clamp-2 leading-snug group-hover:text-red-500 transition-colors">${video.title}</h3>
-                        <div class="flex items-center justify-between mt-2 text-xs text-gray-500">
-                            <span>${video['owner.username']}</span>
-                            <span>${(video.views_total || 0).toLocaleString()} views</span>
-                        </div>
-                    </div>
+                    <h3 class="${titleClass}">${video.title}</h3>
                 </div>
             `;
         }
 
+        // LIST ITEM (Desktop Sidebar)
         function renderSideItem(video) {
             return `
-                <div onclick="openPlayer('${video.id}')" class="flex gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer transition group">
-                    <div class="relative w-32 aspect-video flex-shrink-0 rounded overflow-hidden bg-gray-800">
+                <div onclick="openPlayer('${video.id}')" class="flex gap-3 p-2 rounded-lg hover:bg-[#111] cursor-pointer transition group border border-transparent hover:border-white/5">
+                    <div class="relative w-28 aspect-video flex-shrink-0 rounded bg-[#1a1a1a] overflow-hidden">
                         <img src="${video.thumbnail_720_url}" class="w-full h-full object-cover group-hover:opacity-80 transition">
                     </div>
                     <div class="flex flex-col justify-center w-full overflow-hidden">
@@ -400,7 +377,7 @@
             playerView.classList.add('hidden');
             loader.classList.remove('hidden');
             loadMoreBtn.classList.add('hidden');
-            mobileSearchContainer.style.display = 'block'; // Show mobile search
+            mobileSearchContainer.style.display = 'block';
             
             const videos = await fetchDailymotion(currentQuery, currentPage);
             
@@ -430,7 +407,7 @@
         async function loadPlayerView(id) {
             window.scrollTo(0,0);
             homeView.classList.add('hidden');
-            mobileSearchContainer.style.display = 'none'; // Hide mobile search in player
+            mobileSearchContainer.style.display = 'none'; 
             playerView.classList.remove('hidden');
 
             loadNativeAd();
@@ -454,17 +431,29 @@
         }
 
         async function loadRecommendations(currentId) {
-            const recList = document.getElementById('recommendationList');
-            recList.innerHTML = `<div class="text-center py-4 text-gray-600 text-sm animate-pulse">${CONFIG[currentLang].loading}</div>`;
+            const listDesktop = document.getElementById('recommendationListDesktop');
+            const listMobile = document.getElementById('recommendationListMobile');
+            
+            const loadingHtml = `<div class="col-span-full text-center py-4 text-gray-600 text-sm animate-pulse">${CONFIG[currentLang].loading}</div>`;
+            listDesktop.innerHTML = loadingHtml;
+            listMobile.innerHTML = loadingHtml;
             
             const randomPage = Math.floor(Math.random() * 5) + 1;
             const recVideos = await fetchDailymotion(CONFIG[currentLang].query, randomPage);
             
-            let recHtml = '';
+            let htmlDesktop = '';
+            let htmlMobile = '';
+            
             recVideos.filter(v => v.id !== currentId).slice(0, 10).forEach(v => { 
-                recHtml += renderSideItem(v);
+                // Desktop: List
+                htmlDesktop += renderSideItem(v);
+                // Mobile: Grid Card (Small)
+                htmlMobile += renderCard(v, true);
             });
-            recList.innerHTML = recHtml || '<div class="text-center text-xs text-gray-600">No recommendations</div>';
+            
+            listDesktop.innerHTML = htmlDesktop || '<div class="text-center text-xs text-gray-600">No recommendations</div>';
+            listMobile.innerHTML = htmlMobile || '<div class="col-span-full text-center text-xs text-gray-600">No recommendations</div>';
+            
             refreshIcons();
         }
 
@@ -479,7 +468,7 @@
                 newUrl.searchParams.delete('id');
                 newUrl.searchParams.set('lang', currentLang); 
                 window.history.pushState({ path: newUrl.toString() }, '', newUrl.toString());
-            } catch (e) { /* ignore */ }
+            } catch (e) { }
             
             dmPlayer.src = "";
             homeView.classList.remove('hidden');
@@ -496,16 +485,13 @@
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {
                 alert(CONFIG[currentLang].copied);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-            });
+            }).catch(err => { console.error('Failed to copy: ', err); });
         }
 
         function handleSearch(e) {
             e.preventDefault();
             let q = document.getElementById('searchInput').value;
             if(!q) q = document.getElementById('searchInputMobile').value;
-            
             q = q.trim();
             if(!q) return;
 
@@ -520,7 +506,6 @@
                 currentPage = 1;
                 isSearchMode = true;
                 pageTitle.innerText = `🔍 ${q}`;
-                
                 goHome(); 
                 videoGrid.innerHTML = ''; 
                 loadHomeView();

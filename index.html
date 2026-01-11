@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
     
-    <title>Drachin - Viral Drama Stream</title>
+    <title>Drachin - Viral Stream</title>
     <meta name="theme-color" content="#000000">
     <meta name="description" content="Watch Viral Chinese Drama Free.">
     
@@ -15,7 +15,7 @@
     <script defer type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
 
     <script>
-        // Anti Klik Kanan & Copy
+        // Security: Anti Klik Kanan & Inspect
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => {
             if(e.keyCode == 123) return false;
@@ -25,7 +25,7 @@
 
     <style>
         /* === STYLE PREMIUM (DARK MODE) === */
-        :root { --bg: #000; --card: #161616; --text: #fff; --red: #E50914; --gold: #FFD700; }
+        :root { --bg: #000; --surface: #121212; --text: #fff; --red: #E50914; --gold: #FFD700; }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
@@ -37,7 +37,7 @@
         /* NAVBAR */
         .navbar { 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 20px; height: 65px; background: rgba(0,0,0,0.95); 
+            padding: 0 20px; height: 60px; background: rgba(0,0,0,0.95); 
             position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #222; backdrop-filter: blur(10px);
         }
         .logo { font-size: 24px; font-weight: 900; color: var(--red); letter-spacing: -1px; cursor: pointer; }
@@ -149,7 +149,7 @@
             <h3 id="label-trend" style="padding: 0 15px; margin-bottom: 20px; color: #eee; font-size: 18px; border-left: 4px solid var(--red); padding-left: 10px;">Trending Now</h3>
             
             <div id="gridTarget" class="grid"></div>
-            <div id="loader" class="loader" style="display:none;">Loading Viral Content...</div>
+            <div id="loader" class="loader" style="display:none;">Searching Viral Content...</div>
         </div>
 
         <div id="playerView">
@@ -192,9 +192,6 @@
         // === KONFIGURASI LINK IKLAN ===
         const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f";
 
-        // === KONFIGURASI BAHASA & QUERY (NO BACKUP DATABASE) ===
-        // 'queryHome' = Pencarian default saat halaman dibuka
-        // 'queryRec'  = Pencarian untuk rekomendasi (biar selalu ramai/viral)
         const CONFIG = {
             en: {
                 ph: "Search Chinese Drama...",
@@ -203,7 +200,7 @@
                 dl: "⬇ DOWNLOAD VIDEO HD",
                 rec: "Popular Now",
                 queryHome: "Chinese Drama Eng Sub", 
-                queryRec: "Chinese Drama Hot",
+                queryRec: "Chinese Drama",
                 suffix: " Eng Sub"
             },
             es: {
@@ -213,31 +210,24 @@
                 dl: "⬇ DESCARGAR CAPITULO",
                 rec: "Mas Vistos",
                 queryHome: "Drama Chino Sub Español",
-                queryRec: "Drama Chino Viral",
+                queryRec: "Drama Chino",
                 suffix: " Sub Español"
             }
         };
 
-        // Variables
         let lang = 'en'; 
         const urlParams = new URLSearchParams(window.location.search);
         
-        // DOM Elements
         const views = { home: document.getElementById('homeView'), player: document.getElementById('playerView') };
         const grid = document.getElementById('gridTarget');
         const frame = document.getElementById('dmFrame');
         const adCover = document.getElementById('adCover');
 
         function init() {
-            // Deteksi Bahasa (Default EN)
             lang = urlParams.get('lang') === 'es' ? 'es' : 'en';
             updateUI();
-
-            if (urlParams.get('id')) {
-                loadPlayer(urlParams.get('id'));
-            } else {
-                loadHome();
-            }
+            if (urlParams.get('id')) loadPlayer(urlParams.get('id'));
+            else loadHome();
         }
 
         function setLang(code) { window.location.href = `?lang=${code}`; }
@@ -250,26 +240,21 @@
             document.getElementById('label-back').innerText = t.back;
             document.getElementById('btn-dl').innerText = t.dl;
             document.getElementById('label-rec').innerText = t.rec;
-            
             document.getElementById('btn-en').className = lang === 'en' ? 'lang-btn active' : 'lang-btn';
             document.getElementById('btn-es').className = lang === 'es' ? 'lang-btn active' : 'lang-btn';
         }
 
-        // === API CORE (LANGSUNG KE DAILYMOTION) ===
-        async function fetchAPI(keyword, limit=20) {
+        // === API CORE (AUTO RETRY) ===
+        // sortMode: 'visited' (viral) atau 'relevance' (biasa)
+        async function fetchAPI(keyword, sortMode='visited', limit=24) {
             const q = encodeURIComponent(keyword);
-            // sort=visited -> Mengambil video paling banyak ditonton (Trending/Viral)
-            // flags=no_live -> Menghindari siaran langsung berita dsb
-            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_600_url,thumbnail_480_url,views_total&flags=no_live&sort=visited&limit=${limit}&search=${q}`;
+            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_600_url,thumbnail_480_url,views_total&flags=no_live&sort=${sortMode}&limit=${limit}&search=${q}`;
             
             try {
                 const req = await fetch(url);
                 const res = await req.json();
                 return res.list && res.list.length > 0 ? res.list : null;
-            } catch(e) { 
-                console.error("API Error", e);
-                return null; 
-            }
+            } catch(e) { return null; }
         }
 
         async function loadHome() {
@@ -278,16 +263,24 @@
             grid.innerHTML = '';
             document.getElementById('loader').style.display = 'block';
 
-            // Tarik data langsung sesuai bahasa
             const keyword = CONFIG[lang].queryHome;
-            const videos = await fetchAPI(keyword, 24);
+            
+            // PERCOBAAN 1: Cari yang VIRAL (sort=visited)
+            let videos = await fetchAPI(keyword, 'visited');
+
+            // PERCOBAAN 2: Jika Gagal/Busy, Cari yang RELEVAN (sort=relevance)
+            // Ini mencegah "Server Busy"
+            if (!videos) {
+                console.log("Viral sort busy, retrying relevance...");
+                videos = await fetchAPI(keyword, 'relevance');
+            }
 
             document.getElementById('loader').style.display = 'none';
 
             if (videos) {
                 renderGrid(videos);
             } else {
-                grid.innerHTML = '<div style="color:#666; text-align:center; grid-column:1/-1; padding:30px;">Server Busy. Try Refreshing.</div>';
+                grid.innerHTML = '<div style="color:#666; text-align:center; grid-column:1/-1; padding:30px;">Content unavailable right now. Please reload.</div>';
             }
         }
 
@@ -299,20 +292,17 @@
             document.getElementById('loader').style.display = 'block';
             document.getElementById('label-trend').innerText = `Results: ${val}`;
 
-            // Tambahkan akhiran bahasa (Sub Esp / Eng Sub) agar hasil relevan
             const finalQuery = val + CONFIG[lang].suffix;
-            let videos = await fetchAPI(finalQuery, 24);
             
-            // Jika pencarian spesifik kosong, coba pencarian polos
-            if(!videos) videos = await fetchAPI(val, 24);
+            // Search selalu pakai 'relevance' agar hasil akurat
+            let videos = await fetchAPI(finalQuery, 'relevance');
+            
+            if(!videos) videos = await fetchAPI(val, 'relevance');
 
             document.getElementById('loader').style.display = 'none';
             
-            if (videos) {
-                renderGrid(videos);
-            } else {
-                grid.innerHTML = '<div style="color:#666; text-align:center; grid-column:1/-1; padding:30px;">No results found.</div>';
-            }
+            if (videos) renderGrid(videos);
+            else grid.innerHTML = '<div style="color:#666; text-align:center; grid-column:1/-1; padding:30px;">No results found.</div>';
         }
 
         function renderGrid(list) {
@@ -322,7 +312,7 @@
                 html += `
                 <div class="card" onclick="openVideo('${v.id}')">
                     <div class="poster">
-                        <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=Error'">
+                        <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=Err'">
                         <div class="badge">HD</div>
                         <div class="badge-hot">HOT</div>
                     </div>
@@ -337,20 +327,15 @@
             window.location.href = `?lang=${lang}&id=${id}`;
         }
 
-        // === PLAYER LOGIC ===
         async function loadPlayer(id) {
             views.home.style.display = 'none';
             views.player.style.display = 'block';
             window.scrollTo(0,0);
 
-            // Setup Cover
             adCover.style.display = 'flex';
             adCover.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
-            
-            // Setup Iframe
             frame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-theme=dark&sharing-enable=false&ui-logo=0`;
 
-            // Get Title
             try {
                 const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
                 const res = await req.json();
@@ -359,8 +344,6 @@
                 document.getElementById('vidTitle').innerText = "Premium Stream";
             }
 
-            // Load Recommendations (Berdasarkan Query Viral, bukan Judul Video)
-            // Ini trik agar yang muncul selalu video populer/banyak views
             loadRecs(id);
         }
 
@@ -368,16 +351,20 @@
             const listDiv = document.getElementById('recList');
             listDiv.innerHTML = '<div style="color:#666; font-size:12px;">Loading...</div>';
 
-            const keyword = CONFIG[lang].queryRec; // "Chinese Drama Hot" atau "Drama Chino Viral"
-            const recs = await fetchAPI(keyword, 10);
+            const keyword = CONFIG[lang].queryRec;
+            
+            // Rekomendasi coba 'visited' (viral) dulu
+            let recs = await fetchAPI(keyword, 'visited', 12);
+            
+            // Kalau gagal, ambil 'relevance'
+            if (!recs) recs = await fetchAPI(keyword, 'relevance', 12);
             
             if (!recs) {
-                listDiv.innerHTML = '<div style="color:#444; font-size:11px;">No recommendations available.</div>';
+                listDiv.innerHTML = '<div style="color:#444; font-size:11px;">No recommendations.</div>';
                 return;
             }
 
-            // Filter video yang sedang diputar
-            const filtered = recs.filter(v => v.id !== currentId);
+            const filtered = recs.filter(v => v.id !== currentId).slice(0, 8);
 
             let html = '';
             filtered.forEach(v => {
@@ -395,14 +382,12 @@
             listDiv.innerHTML = html;
         }
 
-        // === ADS & PLAY ACTION ===
         function handlePlay() {
-            window.open(AD_LINK, '_blank'); // Buka Iklan
-            adCover.style.display = 'none'; // Putar Video
+            window.open(AD_LINK, '_blank'); 
+            adCover.style.display = 'none'; 
         }
         function triggerAd() { window.open(AD_LINK, '_blank'); }
 
-        // Enter Key Search
         document.getElementById('searchBox').addEventListener("keypress", function(e) {
             if (e.key === "Enter") doSearch();
         });

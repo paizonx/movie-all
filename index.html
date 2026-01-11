@@ -43,13 +43,14 @@
             aspect-ratio: 16/9;
         }
         
-        /* FIX VIDEO RESPONSIVE - PASTI MUNCUL */
+        /* FIX VIDEO RESPONSIVE & RATIO */
         .video-container {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
             height: 0;
             overflow: hidden;
             background-color: #000;
+            width: 100%;
         }
         .video-container iframe {
             position: absolute;
@@ -57,6 +58,17 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+
+        /* Container Iklan Native agar tidak layout shift (lompat) */
+        .ad-native-container {
+            min-height: 250px;
+            background-color: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -118,7 +130,7 @@
         <div id="playerView" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-8 lg:p-6">
             <div class="lg:col-span-2 relative">
                 
-                <div class="sticky top-14 z-50 lg:static w-full bg-black shadow-2xl">
+                <div class="sticky top-14 z-40 lg:static w-full bg-black shadow-2xl">
                     <div class="video-container lg:rounded-xl border-b border-white/10 lg:border-none">
                         <iframe id="dmPlayer" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" playsinline webkit-playsinline allowfullscreen></iframe>
                     </div>
@@ -140,7 +152,7 @@
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3 mb-6">
-                        <a id="downloadBtn" href="https://thinnerwithdrewforbear.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="flex items-center justify-center gap-2 bg-[#222] hover:bg-[#333] text-white py-3 rounded-lg text-sm font-semibold transition border border-white/10">
+                        <a id="downloadBtn" href="https://thinnerwithdrewforbear.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" rel="nofollow" class="flex items-center justify-center gap-2 bg-[#222] hover:bg-[#333] text-white py-3 rounded-lg text-sm font-semibold transition border border-white/10">
                             <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="watchOnDm">Download</span>
                         </a>
                         <button onclick="shareVideo()" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-semibold transition active:scale-95 shadow-lg shadow-red-900/20">
@@ -150,7 +162,7 @@
 
                     <div class="mb-8 p-1 bg-[#111] border border-white/5 rounded-lg">
                          <div class="text-[10px] text-gray-600 mb-2 text-center tracking-widest uppercase mt-2">Sponsored</div>
-                         <div id="ad-wrapper" class="w-full flex justify-center min-h-[250px] relative overflow-hidden">
+                         <div class="ad-native-container relative">
                              <script async="async" data-cfasync="false" src="https://thinnerwithdrewforbear.com/b94cafeb9a426597e421e6c2d836a415/invoke.js"></script>
                              <div id="container-b94cafeb9a426597e421e6c2d836a415"></div>
                          </div>
@@ -256,17 +268,27 @@
             }, 100);
         }
 
-        // === POPUNDER TIMER (5 MENIT) ===
-        // 5 Menit = 5 * 60 * 1000 = 300000 ms
+        // === POPUNDER TIMER (5 MENIT - SAFE MODE) ===
+        // Script baru akan dibuat setelah 300.000ms.
+        // Pengunjung AMAN selama 5 menit pertama.
+        let popunderLoaded = false;
+
         function initPopunder() {
-            console.log("Popunder timer started: 5 minutes");
+            console.log("Ad Timer Started: 5 Minutes safety.");
             setTimeout(() => {
+                if(popunderLoaded) return; // Mencegah double injection
+                
                 var script = document.createElement('script');
                 script.type = 'text/javascript';
                 script.src = 'https://thinnerwithdrewforbear.com/6d/d4/c7/6dd4c77770d65b1bcda88bbac1019b8a.js';
+                
+                // Error handling agar tidak merusak halaman jika adblock aktif
+                script.onerror = function() { console.log("Ad Blocked or Error."); };
+                
                 document.body.appendChild(script);
-                console.log("Popunder script injected.");
-            }, 300000); 
+                popunderLoaded = true;
+                console.log("Popunder Script Armed (Ready on next click).");
+            }, 300000); // 300 detik = 5 menit
         }
 
         function applyLanguageText(lang) {
@@ -412,7 +434,7 @@
             mobileSearchContainer.style.display = 'none'; 
             playerView.classList.remove('hidden');
 
-            // FIX: Tambahkan &playsinline=1 DAN &muted=1 agar autoplay jalan di mobile tanpa full screen
+            // Iframe Setting: playsinline=1 & muted=1 (Autoplay di mobile butuh muted)
             dmPlayer.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&muted=1&queue-enable=false&playsinline=1&ui-logo=0&ui-start-screen-info=false&sharing-enable=false`;
 
             try {

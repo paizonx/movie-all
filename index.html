@@ -7,7 +7,7 @@
     <meta name="description" content="Watch latest Chinese Drama for free.">
     <meta name="theme-color" content="#0f0f0f">
     
-    <!-- Preconnect untuk mempercepat loading player -->
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://www.dailymotion.com">
     <link rel="preconnect" href="https://api.dailymotion.com">
     
@@ -41,20 +41,20 @@
 <body class="min-h-screen flex flex-col">
 
     <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
-        <div class="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
+    <nav class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between gap-4">
             <a href="?" class="flex items-center gap-2 text-2xl font-bold tracking-tighter hover:scale-105 transition shrink-0">
                 <span class="text-red-600">▶</span> Drachin
             </a>
             
             <div class="flex items-center gap-3 flex-1 justify-end md:justify-between">
-                <!-- Search Bar -->
+                <!-- Search Bar Desktop -->
                 <form id="searchForm" class="hidden md:flex flex-1 max-w-md mx-auto items-center bg-gray-800 rounded-full px-4 py-1.5 border border-gray-700 focus-within:border-red-600 transition">
                     <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search drama or Paste ID..." class="bg-transparent border-none outline-none text-sm w-full text-white placeholder-gray-400">
                     <button type="submit" class="text-gray-400 hover:text-white"><i data-lucide="search" class="w-4 h-4"></i></button>
                 </form>
 
-                <!-- Language Selector (Only EN & ES) -->
+                <!-- Language Selector -->
                 <div class="relative group">
                     <select id="langSelect" onchange="changeLanguage(this.value)" class="appearance-none bg-gray-900 border border-gray-700 text-white text-xs py-1.5 pl-3 pr-8 rounded-full focus:outline-none focus:border-red-600 cursor-pointer font-medium hover:bg-gray-800 transition">
                         <option value="en">🇺🇸 EN</option>
@@ -69,11 +69,11 @@
     </nav>
 
     <!-- CONTENT WRAPPER -->
-    <!-- Hapus px-4 global agar player bisa full width di mobile -->
+    <!-- Hapus py-6 di sini agar player bisa nempel ke navbar -->
     <main class="flex-grow w-full max-w-[1400px] mx-auto">
         
-        <!-- SEARCH MOBILE (Tambahkan padding manual) -->
-        <div class="px-4 py-4 md:hidden">
+        <!-- SEARCH MOBILE (Muncul hanya di Home Mobile) -->
+        <div id="mobileSearchContainer" class="px-4 pt-4 pb-2 md:hidden">
             <form id="searchFormMobile" class="flex items-center bg-gray-800 rounded-full px-4 py-2 border border-gray-700">
                  <input type="text" id="searchInputMobile" data-i18n-placeholder="searchPlaceholder" placeholder="Search drama or Paste ID..." class="bg-transparent border-none outline-none text-sm w-full text-white placeholder-gray-400">
                  <button type="submit" class="text-gray-400 hover:text-white"><i data-lucide="search" class="w-4 h-4"></i></button>
@@ -86,8 +86,8 @@
         </div>
 
         <!-- VIEW: HOME (GRID) -->
-        <!-- Tambahkan padding px-4 disini untuk Grid -->
-        <div id="homeView" class="px-4 pb-6">
+        <!-- Tambahkan padding px-4 py-6 disini -->
+        <div id="homeView" class="px-4 py-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 id="pageTitle" class="text-xl md:text-2xl font-bold border-l-4 border-red-600 pl-3">Latest Chinese Dramas</h2>
             </div>
@@ -104,24 +104,31 @@
         </div>
 
         <!-- VIEW: PLAYER -->
-        <div id="playerView" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-8">
+        <!-- Gap 0 di mobile agar rapat -->
+        <div id="playerView" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-8 lg:p-6">
             <div class="lg:col-span-2 space-y-0 lg:space-y-4">
-                <!-- Tombol Back dengan padding -->
-                <div class="px-4 py-2 lg:py-0">
-                    <button onclick="goHome()" class="flex items-center text-gray-400 hover:text-white text-sm mb-2 transition">
+                
+                <!-- Tombol Back Desktop (Hanya muncul di layar besar) -->
+                <div class="hidden lg:block">
+                    <button onclick="goHome()" class="flex items-center text-gray-400 hover:text-white text-sm transition">
                         <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> <span data-i18n="backBtn">Back</span>
                     </button>
                 </div>
                 
                 <!-- Player Wrapper -->
-                <!-- Di Mobile: w-full, tanpa rounded, tanpa border samping (Full Immersive) -->
-                <!-- Di Desktop: rounded-xl, shadow -->
-                <div class="relative w-full aspect-video bg-black lg:rounded-xl overflow-hidden shadow-2xl border-y border-gray-800 lg:border">
+                <!-- Mobile: Full Width (w-full), Aspect Ratio -->
+                <!-- Desktop: Rounded -->
+                <div class="relative w-full aspect-video bg-black lg:rounded-xl overflow-hidden shadow-2xl border-b border-gray-800 lg:border">
                     <iframe id="dmPlayer" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
                 </div>
 
-                <!-- Video Info (Dengan Padding) -->
+                <!-- Video Info -->
                 <div class="bg-[#1a1a1a] p-4 lg:p-5 lg:rounded-xl border-b border-gray-800 lg:border">
+                    <!-- Tombol Back Mobile (Muncul di sini agar player tetap di atas) -->
+                    <button onclick="goHome()" class="lg:hidden flex items-center text-gray-400 hover:text-white text-xs mb-3 transition">
+                        <i data-lucide="arrow-left" class="w-3 h-3 mr-1"></i> <span data-i18n="backBtn">Back</span>
+                    </button>
+
                     <h1 id="playerTitle" class="text-lg md:text-2xl font-bold leading-snug mb-2 text-white">Loading info...</h1>
                     <div class="flex items-center gap-3 text-sm text-gray-400 mb-4">
                         <span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs font-bold">DM</span>
@@ -129,31 +136,29 @@
                         <span>•</span>
                         <span id="playerViews">...</span>
                     </div>
+                    
                     <div class="flex gap-2 mb-6">
-                        <!-- Tombol DOWNLOAD -->
-                        <a id="downloadBtn" href="https://thinnerwithdrewforbear.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
+                        <a id="downloadBtn" href="https://thinnerwithdrewforbear.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-2.5 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
                             <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="watchOnDm">Download Video</span>
                         </a>
-                        
-                        <!-- Tombol Share -->
-                        <button onclick="shareVideo()" class="flex-1 bg-red-600 hover:bg-red-700 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 active:scale-95">
+                        <button onclick="shareVideo()" class="flex-1 bg-red-600 hover:bg-red-700 text-center py-2.5 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 active:scale-95">
                             <i data-lucide="share-2" class="w-4 h-4"></i> <span data-i18n="share">Share</span>
                         </button>
                     </div>
 
-                    <!-- NATIVE BANNER ADSTERRA (Container Only) -->
-                    <!-- Script akan di-inject via JS saat player muncul agar terbaca -->
+                    <!-- NATIVE BANNER ADSTERRA -->
                     <div class="mt-4 border-t border-gray-700 pt-4">
                          <div class="text-[10px] text-gray-500 mb-2 text-center tracking-widest uppercase">Sponsored</div>
-                         <div id="ad-wrapper" class="flex justify-center min-h-[100px] bg-black/30 rounded-lg overflow-hidden relative">
-                             <!-- Script iklan akan masuk disini -->
+                         <!-- Wrapper W-FULL agar iklan tidak terpotong -->
+                         <div id="ad-wrapper" class="w-full flex justify-center min-h-[100px] bg-black/30 rounded-lg overflow-hidden relative">
+                             <!-- Script di-inject via JS -->
                              <div id="container-b94cafeb9a426597e421e6c2d836a415"></div>
                          </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Recommendations (Dengan Padding) -->
+            <!-- Recommendations -->
             <div class="lg:col-span-1 px-4 lg:px-0 py-6 lg:py-0">
                 <h3 class="text-lg font-bold mb-4 text-gray-200" data-i18n="recommendationTitle">Recommended Dramas</h3>
                 <div id="recommendationList" class="flex flex-col gap-3">
@@ -184,7 +189,7 @@
     </footer>
 
     <script>
-        // === KONFIGURASI BAHASA (EN & ES) ===
+        // === KONFIGURASI BAHASA ===
         const CONFIG = {
             en: {
                 query: "Chinese Drama Eng Sub",
@@ -227,6 +232,7 @@
         const pageTitle = document.getElementById('pageTitle');
         const dmPlayer = document.getElementById('dmPlayer');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const mobileSearchContainer = document.getElementById('mobileSearchContainer');
         
         function refreshIcons() {
             setTimeout(() => {
@@ -234,7 +240,6 @@
             }, 100);
         }
 
-        // === POPUNDER DELAYED (10 MENIT) ===
         function initPopunder() {
             console.log("Popunder timer started: 10 minutes");
             setTimeout(() => {
@@ -242,14 +247,11 @@
                 script.type = 'text/javascript';
                 script.src = 'https://thinnerwithdrewforbear.com/6d/d4/c7/6dd4c77770d65b1bcda88bbac1019b8a.js';
                 document.body.appendChild(script);
-                console.log("Popunder script loaded after 10 minutes.");
             }, 600000); 
         }
 
-        // === FUNGSI LOAD IKLAN NATIVE ===
-        // Dipanggil saat Player View muncul
         function loadNativeAd() {
-            if(isAdLoaded) return; // Load sekali saja per sesi agar tidak spam
+            if(isAdLoaded) return; 
             
             const adWrapper = document.getElementById('ad-wrapper');
             const script = document.createElement('script');
@@ -260,10 +262,8 @@
             
             adWrapper.appendChild(script);
             isAdLoaded = true;
-            console.log("Native ad script injected.");
         }
 
-        // === FUNGSI INIT & BAHASA ===
         function applyLanguageText(lang) {
             const textData = CONFIG[lang];
             
@@ -400,6 +400,7 @@
             playerView.classList.add('hidden');
             loader.classList.remove('hidden');
             loadMoreBtn.classList.add('hidden');
+            mobileSearchContainer.style.display = 'block'; // Show mobile search
             
             const videos = await fetchDailymotion(currentQuery, currentPage);
             
@@ -426,14 +427,12 @@
             loadMoreBtn.disabled = false;
         }
 
-        // === LOGIKA PLAYER & URL ID ===
-
         async function loadPlayerView(id) {
             window.scrollTo(0,0);
             homeView.classList.add('hidden');
+            mobileSearchContainer.style.display = 'none'; // Hide mobile search in player
             playerView.classList.remove('hidden');
 
-            // Inject Script Iklan Native saat Player Muncul
             loadNativeAd();
 
             dmPlayer.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-logo=0&ui-start-screen-info=false&sharing-enable=false`;
@@ -485,6 +484,7 @@
             dmPlayer.src = "";
             homeView.classList.remove('hidden');
             playerView.classList.add('hidden');
+            mobileSearchContainer.style.display = 'block';
         }
         
         function getIdFromUrl() {
@@ -537,6 +537,7 @@
                 dmPlayer.src = "";
                 homeView.classList.remove('hidden');
                 playerView.classList.add('hidden');
+                mobileSearchContainer.style.display = 'block';
             }
         };
 

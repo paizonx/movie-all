@@ -1,10 +1,11 @@
 {
-  "name": "Drachin Stream",
+  "name": "Dracinz Stream",
   "short_name": "Drachin",
-  "start_url": "/index.html",
+  "start_url": "/index.html?lang=es",
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#0f0f0f",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/777/777242.png",

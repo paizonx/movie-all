@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
     
-    <title>Drachin - Premium Stream</title>
+    <title>Drachin - Viral Stream</title>
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="Watch Chinese Drama Free.">
     
     <link rel="manifest" href="/manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
@@ -15,6 +14,7 @@
     <script defer type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
 
     <script>
+        // Mencegah Klik Kanan
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => {
             if(e.keyCode == 123) return false;
@@ -23,7 +23,7 @@
     </script>
 
     <style>
-        /* === TEMA PREMIUM DARK === */
+        /* === STYLE UTAMA (DARK MODE) === */
         :root { --bg: #000; --card: #161616; --text: #fff; --red: #E50914; --gold: #FFD700; }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
@@ -37,7 +37,7 @@
             padding: 0 16px; height: 60px; background: rgba(0,0,0,0.95); 
             position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #222; 
         }
-        .logo { font-size: 22px; font-weight: 900; color: var(--red); letter-spacing: -0.5px; cursor: pointer; }
+        .logo { font-size: 22px; font-weight: 900; color: var(--red); letter-spacing: -1px; cursor: pointer; }
         .logo span { color: #fff; }
         
         .lang-switch { display: flex; gap: 8px; }
@@ -47,11 +47,11 @@
         }
         .lang-btn.active { background: var(--red); color: #fff; border-color: var(--red); }
 
-        /* CONTENT */
+        /* LAYOUT */
         .wrapper { max-width: 1200px; margin: 0 auto; min-height: 90vh; padding-bottom: 60px; }
         
         /* SEARCH */
-        .search-area { padding: 15px; background: linear-gradient(180deg, #000 0%, transparent 100%); }
+        .search-area { padding: 15px; background: linear-gradient(180deg, #000 0%, transparent 100%); position: sticky; top: 60px; z-index: 40; }
         .search-input { 
             width: 100%; background: #1a1a1a; border: 1px solid #333; 
             padding: 12px 20px; border-radius: 50px; color: #fff; font-size: 14px; 
@@ -86,12 +86,16 @@
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
 
-        /* PLAYER */
+        /* PLAYER AREA */
         #playerView { display: none; }
-        .video-box { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .video-box iframe { width: 100%; height: 100%; border: 0; }
+        .video-box { 
+            position: relative; width: 100%; aspect-ratio: 16/9; background: #000; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden;
+        }
+        /* Iframe wajib full width/height & border 0 */
+        .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
-        /* COVER IKLAN */
+        /* COVER IKLAN (Strategy Cuan) */
         .ad-cover {
             position: absolute; inset: 0; z-index: 20; background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
@@ -113,6 +117,13 @@
             display: block; width: 100%; background: #fff; color: #000; padding: 14px; 
             text-align: center; border-radius: 8px; font-weight: 900; text-transform: uppercase; 
             margin-bottom: 25px; border:none; cursor: pointer;
+        }
+
+        /* BANNER IKLAN CLEAN (Tanpa Teks Advertisement) */
+        .native-ad {
+            background: #0f0f0f; border: 1px dashed #333; border-radius: 8px; 
+            padding: 10px; margin-bottom: 30px; min-height: 250px; 
+            display: flex; justify-content: center; align-items: center; 
         }
 
         /* REKOMENDASI */
@@ -154,7 +165,13 @@
             </div>
 
             <div class="video-box">
-                <iframe id="dmFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                <iframe id="dmFrame" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer" 
+                    allowfullscreen>
+                </iframe>
                 
                 <div id="adCover" class="ad-cover" onclick="handlePlay()">
                     <div class="ad-backdrop"></div>
@@ -168,8 +185,7 @@
 
                 <button id="btn-dl" class="btn-dl" onclick="triggerAd()">Download Video HD</button>
 
-                <div style="background: #0f0f0f; border: 1px dashed #333; border-radius: 8px; padding: 10px; margin-bottom: 30px; min-height: 250px; display:flex; justify-content:center; align-items:center; text-align:center;">
-                    <span style="display:block; font-size:9px; color:#444; margin-bottom:5px;">ADVERTISEMENT</span>
+                <div class="native-ad">
                     <script async="async" data-cfasync="false" src="https://ridernoodleacerbity.com/8754c34f20e587c8ef08a064d9f71e59/invoke.js"></script>
                     <div id="container-8754c34f20e587c8ef08a064d9f71e59"></div>
                 </div>
@@ -185,31 +201,27 @@
     </div>
 
     <script>
-        // LINK IKLAN ADSTERRA (Ganti jika perlu)
+        // LINK IKLAN ADSTERRA (Direct Link)
         const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f";
 
-        // === KONFIGURASI PENCARIAN TEPAT SASARAN ===
+        // === KONFIGURASI ===
         const CONFIG = {
             en: {
-                ph: "Search Title...",
+                ph: "Search Drama Title...",
                 trend: "Trending (Eng Sub)",
                 back: "Back to Home",
                 dl: "⬇ DOWNLOAD VIDEO HD",
                 rec: "You Might Like",
-                // KATA KUNCI UTAMA (Default saat buka web)
                 queryHome: "Chinese Drama Eng Sub", 
-                // Badge
                 badge: "ENG SUB"
             },
             es: {
-                ph: "Buscar Titulo...",
+                ph: "Buscar Drama...",
                 trend: "Tendencias (Sub Español)",
                 back: "Volver",
                 dl: "⬇ DESCARGAR VIDEO",
                 rec: "Recomendados",
-                // KATA KUNCI UTAMA (Default saat buka web)
                 queryHome: "Drama Chino Sub Español",
-                // Badge
                 badge: "ESPAÑOL"
             }
         };
@@ -223,7 +235,6 @@
         const adCover = document.getElementById('adCover');
 
         function init() {
-            // Deteksi Bahasa
             lang = urlParams.get('lang') === 'es' ? 'es' : 'en';
             updateUI();
             
@@ -248,10 +259,10 @@
             document.getElementById('btn-es').className = lang === 'es' ? 'lang-btn active' : 'lang-btn';
         }
 
-        // === API CORE SEDERHANA & KUAT ===
+        // === API CORE ===
         async function fetchAPI(keyword, limit=24) {
             const q = encodeURIComponent(keyword);
-            // KITA PAKAI 'sort=relevance' KARENA PALING STABIL DAN TIDAK KOSONG
+            // sort=relevance adalah yang paling aman dan selalu menampilkan hasil
             const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_480_url,views_total&limit=${limit}&sort=relevance&search=${q}`;
             
             try {
@@ -267,20 +278,20 @@
             grid.innerHTML = '';
             document.getElementById('loader').style.display = 'block';
 
-            // PANGGIL DATA DEFAULT SESUAI BAHASA
+            // Load data sesuai bahasa
             const keyword = CONFIG[lang].queryHome;
-            const videos = await fetchAPI(keyword, 30); // Ambil 30 video
+            const videos = await fetchAPI(keyword, 30);
 
             document.getElementById('loader').style.display = 'none';
 
             if (videos) {
                 renderGrid(videos);
             } else {
-                // FALLBACK JIKA KOSONG: Cari yang lebih umum
+                // Fallback jika API down/kosong
                 grid.innerHTML = '<div style="color:#888; text-align:center; grid-column:1/-1; padding:30px;">Loading Backup Content...</div>';
                 const backup = await fetchAPI(lang === 'en' ? "Chinese Drama" : "Drama Chino", 20);
                 if(backup) renderGrid(backup);
-                else grid.innerHTML = '<div style="color:#888; text-align:center; grid-column:1/-1;">No connection. Refresh page.</div>';
+                else grid.innerHTML = '<div style="color:#888; text-align:center; grid-column:1/-1;">No content available. Check connection.</div>';
             }
         }
 
@@ -292,15 +303,12 @@
             document.getElementById('loader').style.display = 'block';
             document.getElementById('label-trend').innerText = `Search: ${val}`;
 
-            // GABUNGKAN PENCARIAN DENGAN BAHASA
-            // Misal user cari "Love", kita ubah jadi "Love Eng Sub" atau "Love Sub Español"
+            // Trik Pencarian Relevan
             const suffix = lang === 'en' ? " Eng Sub" : " Sub Español";
             const finalQuery = val + suffix;
             
             let videos = await fetchAPI(finalQuery, 24);
-            
-            // Jika pencarian spesifik kosong, cari judul aslinya saja
-            if(!videos) videos = await fetchAPI(val, 24);
+            if(!videos) videos = await fetchAPI(val, 24); // Backup pencarian polos
 
             document.getElementById('loader').style.display = 'none';
             
@@ -313,7 +321,6 @@
             const badgeText = CONFIG[lang].badge;
             
             list.forEach(v => {
-                // Gambar: Prioritas thumbnail 480p, kalau tidak ada pakai generate URL
                 const img = v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
                 
                 html += `
@@ -334,16 +341,23 @@
             window.location.href = `?lang=${lang}&id=${id}`;
         }
 
-        // === PLAYER ===
+        // === PLAYER LOGIC (FIXED) ===
         async function loadPlayer(id) {
             views.home.style.display = 'none';
             views.player.style.display = 'block';
             window.scrollTo(0,0);
 
+            // 1. Set Cover
             adCover.style.display = 'flex';
             adCover.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
+            
+            // 2. Set Iframe dengan Autoplay (PENTING)
+            // queue-enable=false: Mencegah autoplay ke video random lain
+            // sharing-enable=false: Membersihkan UI
+            // ui-logo=0: Hapus logo DM (jika diizinkan)
             frame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-theme=dark&sharing-enable=false&ui-logo=0`;
 
+            // 3. Get Info
             try {
                 const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
                 const res = await req.json();
@@ -359,9 +373,8 @@
             const listDiv = document.getElementById('recList');
             listDiv.innerHTML = '<div style="color:#666; font-size:12px;">Loading...</div>';
 
-            // REKOMENDASI: Cari lagi query utama agar user dapat video serupa
-            const keyword = CONFIG[lang].queryHome;
-            const recs = await fetchAPI(keyword, 12); // Ambil 12 rekomendasi
+            const keyword = CONFIG[lang].queryHome; // Ambil rekomendasi relevan bahasa
+            const recs = await fetchAPI(keyword, 12);
             
             if (!recs) {
                 listDiv.innerHTML = '<div style="color:#444; font-size:11px;">No recommendations.</div>';
@@ -389,6 +402,7 @@
         function handlePlay() {
             window.open(AD_LINK, '_blank'); 
             adCover.style.display = 'none'; 
+            // Video di iframe sudah autoplay=1, jadi saat cover hilang video sudah jalan (atau buffering)
         }
         function triggerAd() { window.open(AD_LINK, '_blank'); }
 

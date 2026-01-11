@@ -5,135 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
     
-    <title>Drachin - Premium Stream</title>
+    <title>Drachin - Premium Viral Stream</title>
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="Watch Chinese Drama Free.">
+    <meta name="description" content="Watch Viral Chinese Drama Free.">
     
     <link rel="manifest" href="/manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     
     <script defer type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
 
     <script>
-        // Anti Klik Kanan & Inspeksi Element
+        // Anti Copy/Clone
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => {
             if(e.keyCode == 123) return false;
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
             if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         }
     </script>
 
     <style>
-        /* === FAST CSS RESET === */
-        :root { --bg: #050505; --card-bg: #1a1a1a; --text: #fff; --red: #E50914; }
+        /* === STYLE PREMIUM (NETFLIX VIBE) === */
+        :root { --bg: #000; --card: #161616; --text: #fff; --red: #E50914; --gold: #FFD700; }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden;
         }
         a { text-decoration: none; color: inherit; }
-        img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        img { display: block; width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
 
-        /* HEADER */
+        /* NAVBAR */
         .navbar { 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 16px; height: 60px; 
-            background: rgba(0,0,0,0.95); 
-            position: sticky; top: 0; z-index: 50; 
-            border-bottom: 1px solid #222; 
+            padding: 0 20px; height: 65px; background: rgba(0,0,0,0.9); 
+            position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #222; backdrop-filter: blur(10px);
         }
-        .logo { font-size: 22px; font-weight: 800; color: var(--red); letter-spacing: -1px; }
+        .logo { font-size: 24px; font-weight: 900; color: var(--red); letter-spacing: -1px; }
         .logo span { color: #fff; }
         
-        .lang-switch button {
-            background: transparent; border: 1px solid #333; color: #888;
-            padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer; margin-left: 5px;
+        .lang-switch { display: flex; gap: 8px; }
+        .lang-btn {
+            background: #222; border: 1px solid #333; color: #888;
+            padding: 5px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;
         }
-        .lang-switch button.active { background: var(--red); color: #fff; border-color: var(--red); }
+        .lang-btn.active { background: var(--red); color: #fff; border-color: var(--red); }
 
-        /* LAYOUT */
-        .wrapper { max-width: 1200px; margin: 0 auto; min-height: 90vh; padding-bottom: 50px; }
+        /* MAIN LAYOUT */
+        .wrapper { max-width: 1200px; margin: 0 auto; min-height: 90vh; padding-bottom: 60px; }
         
         /* SEARCH */
-        .search-box { padding: 15px; position: relative; }
+        .search-area { padding: 20px 15px; }
         .search-input { 
-            width: 100%; background: #151515; border: 1px solid #333; 
-            padding: 12px 20px; border-radius: 8px; color: #fff; font-size: 14px; 
+            width: 100%; background: #111; border: 1px solid #333; 
+            padding: 15px 20px; border-radius: 8px; color: #fff; font-size: 15px; 
         }
-        .search-input:focus { border-color: var(--red); outline: none; }
+        .search-input:focus { border-color: var(--red); outline: none; background: #1a1a1a; }
 
-        /* GRID SYSTEM (Responsive & Rapi) */
+        /* GRID SYSTEM (Responsive) */
         .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
-            gap: 10px; padding: 0 15px; 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
+            gap: 12px; padding: 0 15px; 
         }
-        @media(min-width: 768px) { 
-            .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; } 
-        }
+        @media(min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; } }
 
-        .card { position: relative; cursor: pointer; transition: opacity 0.2s; }
-        .card:hover { opacity: 0.8; }
-        
+        /* CARD STYLE */
+        .card { position: relative; cursor: pointer; }
+        .card:hover img { transform: scale(1.05); }
         .poster { 
-            aspect-ratio: 2/3; background: #222; border-radius: 6px; overflow: hidden; position: relative; 
+            aspect-ratio: 2/3; background: #1a1a1a; border-radius: 6px; overflow: hidden; position: relative; 
         }
-        /* Skeleton Loading Animation */
-        .skeleton {
-            background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        .badge { 
+            position: absolute; top: 6px; left: 6px; background: var(--red); color: white; 
+            font-size: 9px; padding: 3px 6px; border-radius: 3px; font-weight: 800; letter-spacing: 0.5px;
         }
-        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
+        .badge-hot { 
+            position: absolute; top: 6px; right: 6px; background: var(--gold); color: black; 
+            font-size: 9px; padding: 3px 6px; border-radius: 3px; font-weight: 800;
+        }
         .title { 
-            font-size: 13px; margin-top: 8px; font-weight: 600; line-height: 1.3; color: #ddd;
+            font-size: 13px; margin-top: 10px; font-weight: 600; line-height: 1.3; color: #ddd;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
-        .badge { position: absolute; top: 6px; left: 6px; background: var(--red); color: white; font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
 
-        /* PLAYER AREA */
+        /* PLAYER & ADS */
         #playerView { display: none; }
-        .video-container { 
-            position: relative; width: 100%; aspect-ratio: 16/9; background: #000; 
-        }
-        .video-container iframe { width: 100%; height: 100%; border: 0; }
+        .video-box { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .video-box iframe { width: 100%; height: 100%; border: 0; }
 
-        /* AD OVERLAY (Smart Revenue) */
+        /* MONEY MAKER (Cover Iklan) */
         .ad-cover {
-            position: absolute; inset: 0; z-index: 20;
-            background-size: cover; background-position: center;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
+            position: absolute; inset: 0; z-index: 20; background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
-        .ad-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+        .ad-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
         .play-btn {
-            position: relative; z-index: 21; width: 70px; height: 70px; 
-            background: var(--red); border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(229,9,20,0.5);
+            position: relative; z-index: 21; width: 80px; height: 80px; 
+            background: rgba(229,9,20,0.9); border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; animation: pulse 2s infinite;
         }
-        .play-btn::after { content: '▶'; color: white; font-size: 28px; margin-left: 4px; }
+        .play-btn::after { content: '▶'; color: white; font-size: 32px; margin-left: 5px; }
+        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(229,9,20,0.7);} 70% {box-shadow: 0 0 0 20px rgba(0,0,0,0);} 100% {box-shadow: 0 0 0 0 rgba(0,0,0,0);} }
 
         .info { padding: 20px 15px; }
-        .main-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; line-height: 1.4; }
+        .main-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; line-height: 1.4; }
         
         .btn-dl { 
-            display: block; width: 100%; background: #fff; color: #000; 
-            padding: 14px; text-align: center; border-radius: 6px; 
-            font-weight: 800; text-transform: uppercase; margin-bottom: 20px; border:none; cursor: pointer;
+            display: block; width: 100%; background: #fff; color: #000; padding: 15px; 
+            text-align: center; border-radius: 8px; font-weight: 800; text-transform: uppercase; 
+            margin-bottom: 25px; border:none; cursor: pointer; transition: 0.2s;
         }
-        
-        /* RECOMMENDATIONS */
-        .rec-item { display: flex; gap: 10px; margin-bottom: 12px; cursor: pointer; background: #111; padding: 8px; border-radius: 6px; }
-        .rec-img { width: 120px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .rec-info { font-size: 12px; font-weight: 500; color: #ccc; display: flex; align-items: center; }
+        .btn-dl:hover { background: #ddd; }
 
-        /* FOOTER */
-        .footer { text-align: center; padding: 30px; font-size: 12px; color: #444; border-top: 1px solid #111; margin-top: 20px; }
+        /* REKOMENDASI */
+        .rec-item { display: flex; gap: 12px; margin-bottom: 15px; cursor: pointer; background: #111; padding: 10px; border-radius: 8px; }
+        .rec-img { width: 130px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+        .rec-info { font-size: 13px; font-weight: 500; color: #ccc; display: flex; flex-direction: column; justify-content: center; }
+        .rec-meta { font-size: 11px; color: var(--gold); margin-top: 5px; font-weight: bold; }
+
+        .footer { text-align: center; padding: 40px; font-size: 12px; color: #444; border-top: 1px solid #222; margin-top: 30px; }
+        
+        /* Loader */
+        .loader { text-align: center; padding: 50px; color: #666; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -141,51 +133,50 @@
     <nav class="navbar">
         <div class="logo" onclick="goHome()">DRA<span>CHIN</span></div>
         <div class="lang-switch">
-            <button id="btn-en" onclick="setLang('en')">EN</button>
-            <button id="btn-es" onclick="setLang('es')">ES</button>
+            <button id="btn-en" class="lang-btn" onclick="setLang('en')">EN</button>
+            <button id="btn-es" class="lang-btn" onclick="setLang('es')">ES</button>
         </div>
     </nav>
 
     <div class="wrapper">
         <div id="homeView">
-            <div class="search-box">
+            <div class="search-area">
                 <input type="text" id="searchBox" class="search-input">
             </div>
             
-            <h3 id="label-trend" style="padding: 0 15px; margin-bottom: 15px; color: #eee; font-size: 16px;">Trending Now</h3>
+            <h3 id="label-trend" style="padding: 0 15px; margin-bottom: 20px; color: #eee; font-size: 18px; border-left: 4px solid var(--red); padding-left: 10px;">Trending Now</h3>
             
-            <div id="gridTarget" class="grid">
-                <div class="poster skeleton"></div><div class="poster skeleton"></div>
-                <div class="poster skeleton"></div><div class="poster skeleton"></div>
-            </div>
+            <div id="gridTarget" class="grid"></div>
+            <div id="loader" class="loader" style="display:none;">Loading Viral Content...</div>
         </div>
 
         <div id="playerView">
-            <div onclick="goHome()" style="padding: 12px 15px; font-size: 14px; color: #aaa; border-bottom: 1px solid #222; cursor: pointer;">
+            <div onclick="goHome()" style="padding: 15px; font-size: 14px; color: #aaa; border-bottom: 1px solid #222; cursor: pointer; display: flex; align-items: center; gap: 10px;">
                 &larr; <span id="label-back">Back</span>
             </div>
 
-            <div class="video-container">
+            <div class="video-box">
                 <iframe id="dmFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
                 
                 <div id="adCover" class="ad-cover" onclick="handlePlay()">
                     <div class="ad-backdrop"></div>
                     <div class="play-btn"></div>
-                    <div style="position: absolute; bottom: 40px; color: #fff; z-index: 22; font-weight: 600; letter-spacing: 1px;">TAP TO PLAY</div>
+                    <div style="position: absolute; bottom: 40px; color: #fff; z-index: 22; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">TAP TO PLAY</div>
                 </div>
             </div>
 
             <div class="info">
                 <h1 id="vidTitle" class="main-title">...</h1>
 
-                <button id="btn-dl" class="btn-dl" onclick="triggerAd()">Download HD</button>
+                <button id="btn-dl" class="btn-dl" onclick="triggerAd()">Download HD 1080p</button>
 
                 <div style="background: #0a0a0a; border: 1px solid #222; border-radius: 8px; padding: 10px; margin-bottom: 25px; min-height: 250px; display:flex; justify-content:center; align-items:center;">
+                    <span style="position:absolute; font-size:9px; color:#333; margin-top:-230px;">SPONSORED</span>
                     <script async="async" data-cfasync="false" src="https://ridernoodleacerbity.com/8754c34f20e587c8ef08a064d9f71e59/invoke.js"></script>
                     <div id="container-8754c34f20e587c8ef08a064d9f71e59"></div>
                 </div>
 
-                <h4 id="label-rec" style="margin-bottom: 15px; color: #eee;">Recommended</h4>
+                <h4 id="label-rec" style="margin-bottom: 15px; color: #fff; font-size: 16px;">Viral Recommendation</h4>
                 <div id="recList"></div>
             </div>
         </div>
@@ -196,65 +187,71 @@
     </div>
 
     <script>
-        // === KONFIGURASI ===
+        // === KONFIGURASI LINK IKLAN ===
         const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f";
-        
-        // PISAHKAN DATA CADANGAN AGAR TIDAK TERCAMPUR
-        const BACKUP_EN = [
-            { id: "x8l5m5k", title: "Hidden Love Ep 1 Eng Sub" },
-            { id: "x8m2n1j", title: "Fireworks of My Heart Full Eng Sub" },
-            { id: "x8q1r2s", title: "My Journey to You Ep 1 English" },
-            { id: "x8n3o4p", title: "Story of Kunning Palace Eng Sub" }
-        ];
 
-        const BACKUP_ES = [
-            { id: "x8o9p2q", title: "Only For Love Cap 1 Sub Español" },
-            { id: "x8k8l9o", title: "Till The End of The Moon Cap 1 Español" },
-            { id: "x8q1r2s", title: "My Journey to You Sub Español" },
-            { id: "x8n3o4p", title: "Story of Kunning Palace Audio Latino" }
-        ];
+        // === DATABASE CADANGAN (Jika API Error) ===
+        // Dipisah agar EN tidak muncul di ES dan sebaliknya.
+        const BACKUP = {
+            en: [
+                { id: "x8l5m5k", title: "Hidden Love Episode 1 [Eng Sub]" },
+                { id: "x8m2n1j", title: "Fireworks of My Heart Full Eng Sub" },
+                { id: "x8q1r2s", title: "My Journey to You Ep 1 English" },
+                { id: "x8n3o4p", title: "Story of Kunning Palace Eng Sub" },
+                { id: "x8o9p2q", title: "Only For Love Ep 1 Eng Sub" },
+                { id: "x8k8l9o", title: "Till The End of The Moon Ep 1" }
+            ],
+            es: [
+                { id: "x8o9p2q", title: "Only For Love Cap 1 Sub Español" },
+                { id: "x8k8l9o", title: "Till The End of The Moon Cap 1 Español" },
+                { id: "x8q1r2s", title: "My Journey to You Sub Español" },
+                { id: "x8n3o4p", title: "Story of Kunning Palace Audio Latino" },
+                { id: "x8l5m5k", title: "Amor Oculto Capitulo 1 Sub Español" },
+                { id: "x8m2n1j", title: "Fuegos Artificiales Cap 1 Español" }
+            ]
+        };
 
+        // === PENGATURAN BAHASA ===
         const CONFIG = {
             en: {
-                placeholder: "Search Chinese Drama...",
-                trend: "New Chinese Drama (Eng Sub)",
+                ph: "Search Chinese Drama...",
+                trend: "Trending Chinese Drama (Eng Sub)",
                 back: "Back to Home",
                 dl: "⬇ DOWNLOAD VIDEO HD",
-                rec: "More Like This",
-                // Kunci pencarian Inggris
-                queryDefault: "Chinese Drama 2024 Eng Sub",
-                querySuffix: " Eng Sub",
-                backup: BACKUP_EN
+                rec: "Popular Now",
+                // Query Utama (Strict)
+                queryMain: "Chinese Drama Eng Sub 2025",
+                // Query Rekomendasi (Agar Viral)
+                queryRec: "Hot Chinese Drama",
+                suffix: " Eng Sub"
             },
             es: {
-                placeholder: "Buscar Drama Chino...",
-                trend: "Nuevos Dramas (Sub Español)",
-                back: "Volver",
-                dl: "⬇ DESCARGAR VIDEO",
-                rec: "Recomendaciones",
-                // Kunci pencarian Spanyol
-                queryDefault: "Drama Chino 2024 Sub Español",
-                querySuffix: " Sub Español",
-                backup: BACKUP_ES
+                ph: "Buscar Drama Chino...",
+                trend: "Drama Chino Tendencia (Español)",
+                back: "Volver al Inicio",
+                dl: "⬇ DESCARGAR CAPITULO",
+                rec: "Mas Vistos",
+                // Query Utama (Strict)
+                queryMain: "Drama Chino Sub Español Completo",
+                // Query Rekomendasi (Agar Viral)
+                queryRec: "Drama Chino Viral",
+                suffix: " Sub Español"
             }
         };
 
-        // Variables
         let lang = 'en'; 
         const urlParams = new URLSearchParams(window.location.search);
         
-        // Elements
         const views = { home: document.getElementById('homeView'), player: document.getElementById('playerView') };
         const grid = document.getElementById('gridTarget');
         const frame = document.getElementById('dmFrame');
         const adCover = document.getElementById('adCover');
 
         function init() {
-            // Deteksi Bahasa Strict
-            if (urlParams.get('lang') === 'es') lang = 'es';
-            else lang = 'en'; // Default Inggris
-
-            updateText();
+            // Deteksi Bahasa (Default ke EN jika tidak ada)
+            lang = urlParams.get('lang') === 'es' ? 'es' : 'en';
+            
+            updateUI();
 
             if (urlParams.get('id')) {
                 loadPlayer(urlParams.get('id'));
@@ -266,104 +263,101 @@
         function setLang(code) {
             window.location.href = `?lang=${code}`;
         }
+        function goHome() { window.location.href = `?lang=${lang}`; }
 
-        function goHome() {
-            window.location.href = `?lang=${lang}`;
-        }
-
-        function updateText() {
+        function updateUI() {
             const t = CONFIG[lang];
-            document.getElementById('searchBox').placeholder = t.placeholder;
+            document.getElementById('searchBox').placeholder = t.ph;
             document.getElementById('label-trend').innerText = t.trend;
             document.getElementById('label-back').innerText = t.back;
             document.getElementById('btn-dl').innerText = t.dl;
             document.getElementById('label-rec').innerText = t.rec;
             
-            // Highlight tombol
-            document.getElementById('btn-en').className = lang === 'en' ? 'active' : '';
-            document.getElementById('btn-es').className = lang === 'es' ? 'active' : '';
+            document.getElementById('btn-en').className = lang === 'en' ? 'lang-btn active' : 'lang-btn';
+            document.getElementById('btn-es').className = lang === 'es' ? 'lang-btn active' : 'lang-btn';
         }
 
-        // === API HANDLER (STRICT MODE) ===
-        async function getVideos(query, limit=20) {
-            const finalQuery = encodeURIComponent(query.trim());
-            // Gunakan 'no_live' untuk menghindari video streaming berita
-            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_600_url,thumbnail_480_url&flags=no_live&limit=${limit}&search=${finalQuery}`;
-            
+        // === API CORE ===
+        async function fetchAPI(keyword, limit=20) {
+            const q = encodeURIComponent(keyword);
+            // Flags: no_live (Hapus berita live), sort: relevance
+            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_600_url,thumbnail_480_url,views_total&flags=no_live&limit=${limit}&search=${q}`;
             try {
-                const res = await fetch(url);
-                const data = await res.json();
-                if (data.list && data.list.length > 0) return data.list;
-                return null;
-            } catch (e) {
-                return null;
-            }
+                const req = await fetch(url);
+                const res = await req.json();
+                return res.list && res.list.length > 0 ? res.list : null;
+            } catch(e) { return null; }
         }
 
         async function loadHome() {
             views.home.style.display = 'block';
             views.player.style.display = 'none';
-            
-            // Set skeleton saat loading
-            grid.innerHTML = Array(8).fill('<div class="poster skeleton"></div>').join('');
+            grid.innerHTML = '';
+            document.getElementById('loader').style.display = 'block';
 
             const t = CONFIG[lang];
-            let videos = await getVideos(t.queryDefault, 24);
+            
+            // 1. Coba Cari Konten Utama
+            let videos = await fetchAPI(t.queryMain, 24);
 
+            // 2. Jika Kosong (API Limit/Error), Pakai Backup
             if (!videos) {
-                // Gunakan backup sesuai bahasa
-                videos = t.backup.map(v => ({
+                videos = BACKUP[lang].map(v => ({
                     id: v.id, title: v.title, thumbnail_480_url: `https://www.dailymotion.com/thumbnail/video/${v.id}`
                 }));
             }
 
-            render(videos, grid);
+            document.getElementById('loader').style.display = 'none';
+            renderGrid(videos);
         }
 
         async function doSearch() {
             const val = document.getElementById('searchBox').value;
             if (!val) return;
-
-            grid.innerHTML = '<div class="poster skeleton"></div><div class="poster skeleton"></div>';
-            document.getElementById('label-trend').innerText = `Search: ${val}`;
-
-            const t = CONFIG[lang];
-            // Memaksa akhiran bahasa agar hasil tidak campur
-            // Contoh: "Love" -> "Love Eng Sub" (jika mode EN)
-            let q = val + t.querySuffix; 
-
-            let videos = await getVideos(q, 24);
             
-            // Jika pencarian ketat gagal, coba pencarian biasa + filter manual nanti
-            if (!videos) videos = await getVideos(val, 24);
+            grid.innerHTML = '';
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('label-trend').innerText = `Results: ${val}`;
 
-            if (videos) render(videos, grid);
-            else grid.innerHTML = '<div style="color:#888; padding:20px;">No results found.</div>';
+            // Paksa Suffix agar hasil sesuai bahasa
+            const finalQuery = val + CONFIG[lang].suffix;
+            
+            let videos = await fetchAPI(finalQuery, 24);
+            
+            // Fallback search tanpa suffix jika terlalu spesifik
+            if(!videos) videos = await fetchAPI(val, 24);
+
+            document.getElementById('loader').style.display = 'none';
+            
+            if (videos) renderGrid(videos);
+            else grid.innerHTML = '<div style="color:#888; text-align:center;">No results found.</div>';
         }
 
-        function render(list, target) {
-            // Pastikan gambar di-render bersih
+        function renderGrid(list) {
             let html = '';
             list.forEach(v => {
+                // Pilih gambar resolusi terbaik
                 const img = v.thumbnail_600_url || v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
+                
                 html += `
                 <div class="card" onclick="openVideo('${v.id}')">
                     <div class="poster">
-                        <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=No+Img'">
-                        <div class="badge">${lang.toUpperCase()}</div>
+                        <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Preview'">
+                        <div class="badge">HD</div>
+                        <div class="badge-hot">HOT</div>
                     </div>
                     <div class="title">${v.title}</div>
                 </div>
                 `;
             });
-            target.innerHTML = html;
+            grid.innerHTML = html;
         }
 
         function openVideo(id) {
             window.location.href = `?lang=${lang}&id=${id}`;
         }
 
-        // === PLAYER & IKLAN ===
+        // === PLAYER LOGIC ===
         async function loadPlayer(id) {
             views.home.style.display = 'none';
             views.player.style.display = 'block';
@@ -372,61 +366,55 @@
             // Setup Cover & Player
             adCover.style.display = 'flex';
             adCover.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
-            frame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-highlight=E50914&sharing-enable=false&ui-logo=0`;
+            
+            // Embed Parameter: ui-logo=0 (Bersih), sharing-enable=false
+            frame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-theme=dark&sharing-enable=false&ui-logo=0`;
 
             // Judul
             try {
                 const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
                 const res = await req.json();
-                document.getElementById('vidTitle').innerText = res.title || "Watching Video";
-                loadRecs(res.title, id);
+                const title = res.title || "Watching Video";
+                document.getElementById('vidTitle').innerText = title;
+                loadRecs(title, id);
             } catch(e) {
                 document.getElementById('vidTitle').innerText = "Premium Stream";
                 loadRecs("", id);
             }
         }
 
+        // === STRATEGI CUAN ===
         function handlePlay() {
-            window.open(AD_LINK, '_blank'); // Cuan
-            adCover.style.display = 'none'; // Buka video
+            window.open(AD_LINK, '_blank'); // Buka Iklan
+            adCover.style.display = 'none'; // Putar Video
         }
-
-        function triggerAd() {
-            window.open(AD_LINK, '_blank');
-        }
+        function triggerAd() { window.open(AD_LINK, '_blank'); }
 
         async function loadRecs(title, currentId) {
             const listDiv = document.getElementById('recList');
-            listDiv.innerHTML = '<div style="color:#666; font-size:12px;">Loading...</div>';
+            listDiv.innerHTML = '<div style="color:#666; font-size:12px;">Loading recommendations...</div>';
 
-            // Smart Keyword Extraction
-            let keyword = "drama";
-            if (title) {
-                // Ambil kata pertama yang panjangnya > 3 huruf
-                const clean = title.replace(/[^\w\s]/gi, '').split(' ').filter(w => w.length > 3);
-                if (clean.length > 0) keyword = clean[0];
-            }
+            // Algoritma: Cari yang VIRAL sesuai bahasa, bukan judul mirip
+            // Ini membuat user melihat drama lain yang sedang hits.
+            const viralQuery = CONFIG[lang].queryRec;
             
-            // Tambahkan suffix bahasa
-            keyword += CONFIG[lang].querySuffix;
-
-            let recs = await getVideos(keyword, 10);
+            let recs = await fetchAPI(viralQuery, 12);
             
-            // Filter duplikat ID yang sedang ditonton
-            if(recs) recs = recs.filter(v => v.id !== currentId);
+            if(!recs) recs = BACKUP[lang].map(v => ({ id: v.id, title: v.title, thumbnail_480_url: `https://www.dailymotion.com/thumbnail/video/${v.id}` }));
 
-            // Fallback jika kosong
-            if (!recs || recs.length === 0) {
-                recs = CONFIG[lang].backup;
-            }
+            // Filter agar video yg sedang diputar tidak muncul
+            const filtered = recs.filter(v => v.id !== currentId).slice(0, 8);
 
             let html = '';
-            recs.slice(0, 8).forEach(v => {
+            filtered.forEach(v => {
                  const img = v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
                  html += `
                  <div class="rec-item" onclick="openVideo('${v.id}')">
                     <div class="rec-img"><img src="${img}"></div>
-                    <div class="rec-info">${v.title}</div>
+                    <div class="rec-info">
+                        <div style="line-height:1.3; margin-bottom:4px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${v.title}</div>
+                        <div class="rec-meta">🔥 Trending Now</div>
+                    </div>
                  </div>
                  `;
             });

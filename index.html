@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dracinz - Drama Stream</title>
+    <title>Drachin - Drama Stream</title>
     <meta name="theme-color" content="#0f0f0f">
     <meta name="description" content="Watch Chinese Drama with English and Spanish Subtitles.">
     
@@ -14,28 +14,17 @@
 
     <script>
         // === ANTI CLONE & SECURITY ===
-        // 1. Anti Klik Kanan & Shortcut
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) {
-            if (e.keyCode == 123) return false; // F12
+            if (e.keyCode == 123) return false; 
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; 
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; 
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; 
             if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
         }
-
-        // 2. Domain Lock (Anti Mirroring)
-        // Hapus tanda komentar (//) di bawah jika sudah upload ke domain asli.
-        /*
-        const ALLOWED_DOMAIN = "dramachino.pages.dev"; 
-        if (window.location.hostname !== ALLOWED_DOMAIN && window.location.hostname !== "localhost") {
-            window.location.href = "https://" + ALLOWED_DOMAIN;
-        }
-        */
     </script>
 
     <style>
-        /* === TEMA DARK MODE === */
+        /* === STYLE === */
         :root { --bg: #0f0f0f; --surface: #1e1e1e; --text: #fff; --red: #e50914; --blue: #2563eb; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
@@ -82,21 +71,24 @@
             padding: 0 20px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 13px;
         }
 
-        /* GRID LAYOUT (TMDB STYLE FOR DM VIDEOS) */
+        /* GRID LAYOUT */
         #homeView { display: block; padding: 0 10px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; row-gap: 20px; }
         @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; } }
 
         .card { display: flex; flex-direction: column; cursor: pointer; position: relative; }
         .thumb { 
-            width: 100%; aspect-ratio: 2/3; /* Poster Ratio */
+            width: 100%; aspect-ratio: 2/3; 
             background: #222; border-radius: 8px; overflow: hidden; 
         }
         .thumb img { 
             width: 100%; height: 100%; 
-            object-fit: cover; /* Crop landscape DM thumbs to portrait */
+            object-fit: cover; 
             transition: opacity 0.3s; 
         }
+        /* Fallback image style */
+        .thumb img.error { object-fit: contain; padding: 10px; }
+        
         .card-t { font-size: 13px; font-weight: 500; margin-top: 8px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #ddd; }
         .tag-lang { position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.7); color:#ffd700; padding:2px 6px; font-size:9px; border-radius:4px; font-weight:bold; }
 
@@ -122,7 +114,7 @@
         .side-item { display:flex; gap:10px; margin-bottom:12px; cursor:pointer; background: #1a1a1a; padding:8px; border-radius:6px; }
         .side-thumb { width:100px; height:60px; background:#000; flex-shrink:0; border-radius:4px; overflow:hidden; }
         .side-thumb img { width:100%; height:100%; object-fit:cover; }
-        .side-info { font-size:12px; color:#ccc; line-height:1.4; }
+        .side-info { font-size:12px; color:#ccc; line-height:1.4; width: 100%; }
 
         .loader { text-align: center; padding: 50px; color: #666; font-size: 12px; }
         .footer { text-align: center; padding: 30px; border-top: 1px solid #222; margin-top: 20px; font-size: 11px; color: #555; }
@@ -131,7 +123,7 @@
 <body>
 
     <nav class="navbar">
-        <a href="#" onclick="goHome()" class="logo"><span>▶</span> DRACINZ</a>
+        <a href="#" onclick="goHome()" class="logo"><span>▶</span> DRACHIN</a>
         <div class="lang-switch">
             <button id="btn-es" class="lang-btn" onclick="changeLang('es')">ES</button>
             <button id="btn-en" class="lang-btn" onclick="changeLang('en')">EN</button>
@@ -148,7 +140,7 @@
             <h3 id="lbl-trending" style="margin:10px 0 15px 5px; font-size:16px; border-left: 3px solid var(--red); padding-left: 10px; color:#eee;">Trending</h3>
             
             <div id="gridTarget" class="grid"></div>
-            <div id="loader" class="loader" style="display:none;">Loading...</div>
+            <div id="loader" class="loader" style="display:none;">Loading content...</div>
         </div>
 
         <div id="playerView">
@@ -178,73 +170,70 @@
     </div>
 
     <div class="footer">
-        &copy; 2026 Dracinz Stream. <span id="lbl-rights">All rights reserved.</span><br>
+        &copy; 2026 Drachin Stream. <span id="lbl-rights">All rights reserved.</span>
     </div>
 
     <script>
-        // === KONFIGURASI ===
         const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f"; 
-        
-        // KAMUS BAHASA
+
+        // === DATA CADANGAN (FALLBACK) ===
+        // Jika API Dailymotion error/kosong, data ini yang akan muncul.
+        // Format ID adalah ID Video Dailymotion
+        const BACKUP_DATA = [
+            { id: "x8l5m5k", title: "Hidden Love Episode 1 [Eng Sub]" },
+            { id: "x8o9p2q", title: "Only For Love Ep 1 Sub Español" },
+            { id: "x8m2n1j", title: "Fireworks of My Heart Full" },
+            { id: "x8k8l9o", title: "Till The End of The Moon Ep 1" },
+            { id: "x8q1r2s", title: "My Journey to You Eng Sub" },
+            { id: "x8n3o4p", title: "Story of Kunning Palace Ep 1" },
+            { id: "x8l5m5k", title: "Hidden Love Episode 2 [Eng Sub]" },
+            { id: "x8o9p2q", title: "Only For Love Ep 2 Sub Español" },
+            { id: "x8m2n1j", title: "Fireworks of My Heart Ep 2" },
+            { id: "x8k8l9o", title: "Till The End of The Moon Ep 2" }
+        ];
+
         const STRINGS = {
             en: {
-                search_ph: "Search Chinese Drama...",
-                trending: "Trending Chinese Dramas",
+                search_ph: "Search Drama...",
+                trending: "Trending Dramas",
                 back: "Back to Home",
                 download: "⬇ DOWNLOAD VIDEO HD",
                 rec: "Recommended For You",
-                query_default: "Chinese Drama Eng Sub",
+                // Kata kunci lebih umum agar hasil BANYAK
+                query_default: "cdrama", 
                 btn_search: "SEARCH"
             },
             es: {
-                search_ph: "Buscar Drama Chino...",
-                trending: "Dramas Chinos en Tendencia",
+                search_ph: "Buscar Drama...",
+                trending: "Dramas en Tendencia",
                 back: "Volver al Inicio",
                 download: "⬇ DESCARGAR VIDEO HD",
                 rec: "Recomendado para ti",
-                query_default: "Drama Chino Sub Español",
+                // Kata kunci lebih umum
+                query_default: "drama chino",
                 btn_search: "BUSCAR"
             }
         };
 
-        // VARIABEL GLOBAL
-        let currentLang = 'es'; // Default
+        let currentLang = 'es';
         const urlParams = new URLSearchParams(window.location.search);
         
-        // ELEMENT REF
         const homeView = document.getElementById('homeView');
         const playerView = document.getElementById('playerView');
         const gridTarget = document.getElementById('gridTarget');
         const dmFrame = document.getElementById('dmFrame');
         
-        // === INISIALISASI ===
         function init() {
-            // 1. Cek Bahasa di URL
-            if(urlParams.get('lang')) {
-                currentLang = urlParams.get('lang');
-            } else {
-                // Auto-detect browser language if not in URL
-                const browserLang = navigator.language || navigator.userLanguage; 
-                if(browserLang.startsWith('en')) currentLang = 'en';
-            }
-
-            // Validasi agar hanya 'en' atau 'es'
+            if(urlParams.get('lang')) currentLang = urlParams.get('lang');
             if(currentLang !== 'en' && currentLang !== 'es') currentLang = 'es';
-
             updateUI();
 
-            // 2. Cek apakah memutar video
             const vidId = urlParams.get('id');
-            if(vidId) {
-                playVideo(vidId);
-            } else {
-                loadHome();
-            }
+            if(vidId) playVideo(vidId);
+            else loadHome();
         }
 
-        // === FUNGSI BAHASA ===
         function changeLang(lang) {
-            // Reload halaman dengan parameter bahasa baru
             const currentId = urlParams.get('id');
             let newUrl = `?lang=${lang}`;
             if(currentId) newUrl += `&id=${currentId}`;
@@ -253,41 +242,39 @@
 
         function updateUI() {
             const t = STRINGS[currentLang];
-            
-            // Update Text
             document.getElementById('searchBox').placeholder = t.search_ph;
             document.getElementById('lbl-trending').innerText = t.trending;
             document.getElementById('lbl-back').innerText = t.back;
             document.getElementById('lbl-dl').innerText = t.download;
             document.getElementById('lbl-rec').innerText = t.rec;
             document.getElementById('lbl-btn-search').innerText = t.btn_search;
-
-            // Update Active Button
             document.getElementById('btn-en').className = currentLang === 'en' ? 'lang-btn active' : 'lang-btn';
             document.getElementById('btn-es').className = currentLang === 'es' ? 'lang-btn active' : 'lang-btn';
         }
 
-        // === NAVIGASI ===
-        function goHome() {
-            window.location.href = `?lang=${currentLang}`;
-        }
+        function goHome() { window.location.href = `?lang=${currentLang}`; }
+        function triggerAd() { window.open(AD_LINK, '_blank'); }
 
-        function triggerAd() {
-            window.open(AD_LINK, '_blank');
-        }
-
-        // === LOGIKA KONTEN (DAILYMOTION API) ===
+        // === API LOGIC WITH FAILSAFE ===
         
         async function fetchDM(keyword, limit=20) {
-            // Menggunakan API public Dailymotion
-            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_600_url,owner.screenname&flags=no_live,no_premium&limit=${limit}&search=${encodeURIComponent(keyword)}`;
+            // Hapus karakter spesial agar pencarian valid
+            const safeKeyword = encodeURIComponent(keyword.trim());
+            // Gunakan fields standard
+            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_480_url&limit=${limit}&search=${safeKeyword}`;
+            
             try {
                 const req = await fetch(url);
+                if (!req.ok) throw new Error("Network response was not ok");
                 const res = await req.json();
-                return res.list || [];
+                
+                // Jika hasil kosong, kembalikan null agar Fallback aktif
+                if (!res.list || res.list.length === 0) return null;
+                
+                return res.list;
             } catch(e) {
-                console.error("API Error", e);
-                return [];
+                console.log("API Error, using backup:", e);
+                return null; // Return null to trigger backup
             }
         }
 
@@ -298,15 +285,19 @@
             document.getElementById('loader').style.display = 'block';
 
             const defaultQuery = STRINGS[currentLang].query_default;
-            const videos = await fetchDM(defaultQuery, 24);
+            let videos = await fetchDM(defaultQuery, 20);
 
-            document.getElementById('loader').style.display = 'none';
-            
-            if(videos.length === 0) {
-                gridTarget.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">No content found / Server Busy.</div>';
-                return;
+            // === FALLBACK SYSTEM ===
+            // Jika API gagal atau kosong, gunakan BACKUP_DATA
+            if (!videos) {
+                videos = BACKUP_DATA.map(v => ({
+                    id: v.id,
+                    title: v.title,
+                    thumbnail_480_url: `https://www.dailymotion.com/thumbnail/video/${v.id}`
+                }));
             }
 
+            document.getElementById('loader').style.display = 'none';
             renderGrid(videos);
         }
 
@@ -318,24 +309,29 @@
             document.getElementById('loader').style.display = 'block';
             document.getElementById('lbl-trending').innerText = `Results: ${q}`;
 
-            // Tambahkan konteks bahasa ke pencarian
-            const langContext = currentLang === 'en' ? " Eng Sub" : " Sub Español";
-            const finalQuery = q + langContext; // Trik agar hasil relevan dengan bahasa
+            // Tambahkan sedikit konteks agar hasil relevan tapi tidak terlalu ketat
+            const suffix = currentLang === 'en' ? " eng" : " sub";
+            let videos = await fetchDM(q + suffix, 20);
 
-            const videos = await fetchDM(finalQuery, 24);
+            // Jika search spesifik gagal, coba search query aslinya saja
+            if(!videos) videos = await fetchDM(q, 20);
+
+            // Jika masih gagal, tampilkan pesan
             document.getElementById('loader').style.display = 'none';
-            renderGrid(videos);
+            if (!videos) {
+                gridTarget.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">No results found. Try simpler keywords.</div>';
+            } else {
+                renderGrid(videos);
+            }
         }
 
         function renderGrid(list) {
             let html = '';
             list.forEach(v => {
-                // Tampilan Grid mirip TMDB (Poster style)
-                // Kita gunakan object-fit:cover di CSS untuk membuat thumb DM (landscape) jadi poster (portrait)
                 html += `
                 <a href="?lang=${currentLang}&id=${v.id}" class="card">
                     <div class="thumb">
-                        <img src="${v.thumbnail_600_url}" loading="lazy" alt="${v.title}">
+                        <img src="${v.thumbnail_480_url}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
                         <div class="tag-lang">${currentLang.toUpperCase()}</div>
                     </div>
                     <div class="card-t">${v.title}</div>
@@ -345,48 +341,61 @@
             gridTarget.innerHTML = html;
         }
 
-        // === LOGIKA PLAYER ===
         async function playVideo(id) {
             homeView.style.display = 'none';
             playerView.style.display = 'block';
             
-            // Setup Player
-            // Params: queue-enable=false (biar gak autoplay next acak), ui-highlight (warna)
-            dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&sharing-enable=false&ui-theme=dark`;
+            // Render Player
+            dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-theme=dark`;
             
-            // Get Info Video (untuk Judul)
+            // Get Info untuk Judul & Rekomendasi
+            // Kita coba fetch info, kalau gagal pakai judul default
             try {
-                const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title,tags`);
+                const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
                 const res = await req.json();
-                document.getElementById('vidTitle').innerText = res.title || "Watching Video";
+                const title = res.title || "Watching Video";
+                document.getElementById('vidTitle').innerText = title;
                 
-                // Load Rekomendasi berdasarkan judul atau tag
-                loadRecommendations(res.title);
+                // LOAD REKOMENDASI
+                loadRecommendations(title);
             } catch(e) {
-                document.getElementById('vidTitle').innerText = "Dracinz Stream";
-                loadRecommendations(STRINGS[currentLang].query_default);
+                document.getElementById('vidTitle').innerText = "Drachin Stream";
+                loadRecommendations(""); // Load default recommendation
             }
         }
 
-        async function loadRecommendations(baseQuery) {
-            // Ambil kata kunci simple dari judul untuk rekomendasi
-            // Hapus karakter aneh agar pencarian valid
-            let cleanQuery = baseQuery.replace(/[^\w\s]/gi, '').split(' ').slice(0, 3).join(' '); 
-            if(cleanQuery.length < 3) cleanQuery = STRINGS[currentLang].query_default;
-
-            const recs = await fetchDM(cleanQuery, 10);
-            const sideList = document.getElementById('sideList');
+        async function loadRecommendations(currentTitle) {
+            // Ambil 1-2 kata pertama saja dari judul agar pencarian rekomendasi sukses
+            // Contoh: "[Eng Sub] Hidden Love Ep 1" -> Menjadi "Hidden Love"
+            let keywords = "drama"; // Default paling aman
             
+            if (currentTitle) {
+                // Hapus tanda kurung [] () dan ambil kata-kata alphanumeric
+                const clean = currentTitle.replace(/\[.*?\]/g, '').replace(/\(.*?\)/g, '').replace(/[^\w\s]/gi, '').trim();
+                const words = clean.split(' ').filter(w => w.length > 3); // Ambil kata yg lebih dari 3 huruf
+                if(words.length > 0) keywords = words.slice(0, 2).join(' ');
+            }
+
+            let recs = await fetchDM(keywords, 10);
+
+            // Jika rekomendasi kosong (misal judul aneh), ambil dari BACKUP
+            if(!recs) {
+                recs = BACKUP_DATA.map(v => ({
+                    id: v.id, title: v.title, thumbnail_480_url: `https://www.dailymotion.com/thumbnail/video/${v.id}`
+                }));
+            }
+
+            const sideList = document.getElementById('sideList');
             let html = '';
-            recs.forEach(v => {
+            recs.slice(0, 8).forEach(v => {
                 html += `
                 <a href="?lang=${currentLang}&id=${v.id}" class="side-item">
                     <div class="side-thumb">
-                        <img src="${v.thumbnail_600_url}" loading="lazy">
+                        <img src="${v.thumbnail_480_url}" loading="lazy">
                     </div>
                     <div class="side-info">
-                        <div style="font-weight:bold; margin-bottom:4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${v.title}</div>
-                        <span style="color:${varColor()}">▶ Watch Now</span>
+                        <div style="font-weight:bold; font-size:12px; margin-bottom:4px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${v.title}</div>
+                        <span style="color:${currentLang === 'es' ? '#e50914' : '#2563eb'}; font-size:10px;">▶ Watch Now</span>
                     </div>
                 </a>
                 `;
@@ -394,16 +403,11 @@
             sideList.innerHTML = html;
         }
 
-        function varColor() { return currentLang === 'es' ? '#e50914' : '#2563eb'; }
-
-        // Event Listener Enter di Search
         document.getElementById('searchBox').addEventListener("keypress", function(event) {
             if (event.key === "Enter") doSearch();
         });
 
-        // Jalankan
         init();
-
     </script>
 </body>
 </html>

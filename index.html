@@ -120,14 +120,25 @@
                         <span>•</span>
                         <span id="playerViews">...</span>
                     </div>
-                    <div class="flex gap-2">
-                        <a id="downloadBtn" href="#" target="_blank" class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
-                            <i data-lucide="external-link" class="w-4 h-4"></i> <span data-i18n="watchOnDm">Watch on App</span>
+                    <div class="flex gap-2 mb-6">
+                        <!-- Tombol DOWNLOAD dengan ADSTERRA Smartlink -->
+                        <a id="downloadBtn" href="https://thinnerwithdrewforbear.com/gcjm4sfz6e?key=f12b44e51f20fb37ba29ae6253bff65a" target="_blank" class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
+                            <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="watchOnDm">Download Video</span>
                         </a>
-                        <!-- Tombol Share yang sudah diperbaiki -->
+                        
+                        <!-- Tombol Share -->
                         <button onclick="shareVideo()" class="flex-1 bg-red-600 hover:bg-red-700 text-center py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 active:scale-95">
                             <i data-lucide="share-2" class="w-4 h-4"></i> <span data-i18n="share">Share</span>
                         </button>
+                    </div>
+
+                    <!-- NATIVE BANNER ADSTERRA -->
+                    <div class="mt-4 border-t border-gray-700 pt-4">
+                         <div class="text-[10px] text-gray-500 mb-2 text-center tracking-widest uppercase">Sponsored</div>
+                         <div class="flex justify-center min-h-[100px] bg-black/30 rounded-lg overflow-hidden">
+                             <script async="async" data-cfasync="false" src="https://thinnerwithdrewforbear.com/b94cafeb9a426597e421e6c2d836a415/invoke.js"></script>
+                             <div id="container-b94cafeb9a426597e421e6c2d836a415"></div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -146,6 +157,20 @@
     <!-- FOOTER -->
     <footer class="mt-12 py-8 bg-black border-t border-gray-800 text-center">
         <p class="text-gray-500 text-sm">&copy; 2025 Drachin Stream. All rights reserved.</p>
+        
+        <!-- Histats.com  START  (aync)-->
+        <div id="histats_counter" style="display:none;"></div>
+        <script type="text/javascript">var _Hasync= _Hasync|| [];
+        _Hasync.push(['Histats.start', '1,4654540,4,0,0,0,00010000']);
+        _Hasync.push(['Histats.fasi', '1']);
+        _Hasync.push(['Histats.track_hits', '']);
+        (function() {
+        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+        hs.src = ('//s10.histats.com/js15_as.js');
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+        })();</script>
+        <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4654540&101" alt="" border="0"></a></noscript>
+        <!-- Histats.com  END  -->
     </footer>
 
     <script>
@@ -157,7 +182,7 @@
                 searchPlaceholder: "Search drama or Paste ID (e.g. x9n1o8e)",
                 loadMore: "Load More",
                 backBtn: "Back",
-                watchOnDm: "Watch on App",
+                watchOnDm: "Download Video", 
                 share: "Share",
                 copied: "Link copied to clipboard!",
                 recommendationTitle: "Recommended Dramas",
@@ -170,7 +195,7 @@
                 searchPlaceholder: "Buscar drama o pegar ID (ej. x9n1o8e)",
                 loadMore: "Cargar Más",
                 backBtn: "Volver",
-                watchOnDm: "Ver en App",
+                watchOnDm: "Descargar Video", 
                 share: "Compartir",
                 copied: "¡Enlace copiado al portapapeles!",
                 recommendationTitle: "Dramas Recomendados",
@@ -199,9 +224,21 @@
             }, 100);
         }
 
+        // === POPUNDER DELAYED (10 MENIT) ===
+        // Script ini akan berjalan setelah user berada di halaman selama 10 menit
+        function initPopunder() {
+            console.log("Popunder timer started: 10 minutes");
+            setTimeout(() => {
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://thinnerwithdrewforbear.com/6d/d4/c7/6dd4c77770d65b1bcda88bbac1019b8a.js';
+                document.body.appendChild(script);
+                console.log("Popunder script loaded after 10 minutes.");
+            }, 600000); // 600000 ms = 10 menit
+        }
+
         // === FUNGSI INIT & BAHASA ===
         
-        // Fungsi untuk menerapkan teks bahasa tanpa reload konten
         function applyLanguageText(lang) {
             const textData = CONFIG[lang];
             
@@ -222,15 +259,11 @@
             loadMoreBtn.innerText = textData.loadMore;
         }
 
-        // Ganti Bahasa dari Dropdown
         function changeLanguage(lang) {
             currentLang = lang;
             applyLanguageText(lang);
-            
-            // Update URL biar 'lang' tersimpan di address bar
             updateUrlState();
 
-            // Reload konten agar sesuai bahasa baru
             if (playerView.classList.contains('hidden')) {
                 currentPage = 1;
                 videoGrid.innerHTML = '';
@@ -241,20 +274,19 @@
         }
 
         async function init() {
+            initPopunder(); // Jalankan Timer Popunder
+
             const urlParams = new URLSearchParams(window.location.search);
             const videoId = urlParams.get('id');
             const langParam = urlParams.get('lang');
 
-            // 1. Cek Parameter Bahasa di URL
             if (langParam && ['en', 'es'].includes(langParam)) {
                 currentLang = langParam;
                 document.getElementById('langSelect').value = currentLang;
             }
             
-            // Terapkan teks bahasa (tanpa reload dulu)
             applyLanguageText(currentLang);
 
-            // 2. Load Halaman
             if (videoId) {
                 await loadPlayerView(videoId);
             } else {
@@ -262,24 +294,15 @@
             }
         }
 
-        // Helper untuk update URL state
         function updateUrlState(id = null) {
             try {
                 const newUrl = new URL(window.location);
-                
-                // Atur ID
                 if (id) newUrl.searchParams.set('id', id);
                 else {
-                    // Jika id null tapi di URL ada, biarkan (kasus changeLanguage saat nonton)
-                    // Jika di home, hapus id
                     if (playerView.classList.contains('hidden')) newUrl.searchParams.delete('id');
                 }
-
-                // Atur Lang
                 newUrl.searchParams.set('lang', currentLang);
 
-                // Gunakan replaceState agar tidak menumpuk history back button saat ganti bahasa
-                // atau pushState saat ganti video
                 if (id && id !== getIdFromUrl()) {
                     window.history.pushState({ path: newUrl.toString() }, '', newUrl.toString());
                 } else {
@@ -395,7 +418,6 @@
                     document.getElementById('playerTitle').innerText = data.title;
                     document.getElementById('playerOwner').innerText = data['owner.username'];
                     document.getElementById('playerViews').innerText = (data.views_total || 0).toLocaleString() + ' views';
-                    document.getElementById('downloadBtn').href = data.url;
                 } else {
                     document.getElementById('playerTitle').innerText = "Video Played from ID";
                 }
@@ -408,7 +430,6 @@
             const recList = document.getElementById('recommendationList');
             recList.innerHTML = `<div class="text-center py-4 text-gray-600 text-sm animate-pulse">${CONFIG[currentLang].loading}</div>`;
             
-            // Rekomendasi berdasarkan bahasa yang aktif
             const randomPage = Math.floor(Math.random() * 5) + 1;
             const recVideos = await fetchDailymotion(CONFIG[currentLang].query, randomPage);
             
@@ -426,7 +447,6 @@
         }
 
         function goHome() {
-            // Hapus ID dari URL, tapi PERTAHANKAN bahasa
             try {
                 const newUrl = new URL(window.location);
                 newUrl.searchParams.delete('id');
@@ -444,7 +464,6 @@
             return urlParams.get('id');
         }
 
-        // Fitur Share: Copy URL lengkap (ID + Lang)
         function shareVideo() {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {

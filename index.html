@@ -42,6 +42,22 @@
         .aspect-video-card {
             aspect-ratio: 16/9;
         }
+        
+        /* FIX VIDEO RESPONSIVE - PASTI MUNCUL */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans" oncontextmenu="return false;">
@@ -103,8 +119,8 @@
             <div class="lg:col-span-2 relative">
                 
                 <div class="sticky top-14 z-50 lg:static w-full bg-black shadow-2xl">
-                    <div class="relative w-full aspect-video bg-black overflow-hidden lg:rounded-xl border-b border-white/10 lg:border-none">
-                        <iframe id="dmPlayer" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" playsinline webkit-playsinline allowfullscreen></iframe>
+                    <div class="video-container lg:rounded-xl border-b border-white/10 lg:border-none">
+                        <iframe id="dmPlayer" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" playsinline webkit-playsinline allowfullscreen></iframe>
                     </div>
                 </div>
 
@@ -396,8 +412,8 @@
             mobileSearchContainer.style.display = 'none'; 
             playerView.classList.remove('hidden');
 
-            // Tambahan: playsinline=1 agar tidak memaksa full screen landscape di mobile
-            dmPlayer.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&playsinline=1&ui-logo=0&ui-start-screen-info=false&sharing-enable=false`;
+            // FIX: Tambahkan &playsinline=1 DAN &muted=1 agar autoplay jalan di mobile tanpa full screen
+            dmPlayer.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&muted=1&queue-enable=false&playsinline=1&ui-logo=0&ui-start-screen-info=false&sharing-enable=false`;
 
             try {
                 const response = await fetch(`https://api.dailymotion.com/video/${id}?fields=id,title,owner.username,url,views_total`);

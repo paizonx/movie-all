@@ -1,474 +1,440 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="referrer" content="no-referrer">
+    
     <title>Drachin - Premium Stream</title>
-    <meta name="theme-color" content="#0f0f0f">
-    <meta name="description" content="Watch Chinese Drama with English and Spanish Subtitles.">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Watch Chinese Drama Free.">
     
     <link rel="manifest" href="/manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
-    <script type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
+    <script defer type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
 
     <script>
-        // === KEAMANAN (ANTI CLONE & INSPECT) ===
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123) return false; // F12
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; 
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; 
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
+        // Anti Klik Kanan & Inspeksi Element
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = e => {
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         }
     </script>
 
     <style>
-        /* === TEMA PREMIUM (NETFLIX STYLE) === */
-        :root { --bg: #0f0f0f; --surface: #1e1e1e; --text: #fff; --red: #e50914; --gold: #ffd700; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* === FAST CSS RESET === */
+        :root { --bg: #050505; --card-bg: #1a1a1a; --text: #fff; --red: #E50914; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            font-family: 'Roboto', sans-serif; 
+            font-family: 'Inter', sans-serif; 
             background-color: var(--bg); 
             color: var(--text); 
             overflow-x: hidden;
-            -webkit-user-select: none; user-select: none;
         }
-        a { text-decoration: none; color: inherit; transition: 0.2s; }
+        a { text-decoration: none; color: inherit; }
+        img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-        /* NAVBAR */
+        /* HEADER */
         .navbar { 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 20px; height: 65px; 
-            background: rgba(0,0,0,0.9); 
-            backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 100; 
-            border-bottom: 1px solid #333; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            padding: 0 16px; height: 60px; 
+            background: rgba(0,0,0,0.95); 
+            position: sticky; top: 0; z-index: 50; 
+            border-bottom: 1px solid #222; 
         }
-        .logo { font-size: 24px; font-weight: 900; color: var(--red); display:flex; align-items:center; gap:5px; letter-spacing: -1px; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--red); letter-spacing: -1px; }
         .logo span { color: #fff; }
         
-        .lang-switch { display: flex; gap: 8px; }
-        .lang-btn {
-            background: #222; color: #888; border: 1px solid #333;
-            padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        .lang-switch button {
+            background: transparent; border: 1px solid #333; color: #888;
+            padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer; margin-left: 5px;
         }
-        .lang-btn:hover { background: #333; color: #fff; }
-        .lang-btn.active { background: var(--red); color: white; border-color: var(--red); }
+        .lang-switch button.active { background: var(--red); color: #fff; border-color: var(--red); }
 
-        /* CONTAINER */
-        .wrapper { max-width: 1100px; margin: 0 auto; min-height: 90vh; padding-bottom: 60px; }
-
-        /* SEARCH BAR */
-        .search-container { padding: 20px 15px; display: flex; gap: 10px; }
-        .search-input { 
-            width: 100%; background: #1a1a1a; border: 1px solid #333; 
-            padding: 14px 24px; border-radius: 50px; color: #fff; 
-            outline: none; font-size: 15px; transition: 0.3s;
-        }
-        .search-input:focus { border-color: var(--red); background: #222; }
-        .search-btn { 
-            background: var(--red); border: none; color: #fff; 
-            padding: 0 25px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 14px;
-            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
-        }
-
-        /* GRID LAYOUT - HASIL PENCARIAN & HOME */
-        #homeView { display: block; padding: 0 15px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; row-gap: 24px; }
-        @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; } }
-
-        .card { display: flex; flex-direction: column; cursor: pointer; position: relative; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-5px); }
-        .card:hover .card-t { color: var(--red); }
-
-        .thumb { 
-            width: 100%; aspect-ratio: 2/3; 
-            background: #222; border-radius: 8px; overflow: hidden; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        .thumb img { 
-            width: 100%; height: 100%; 
-            object-fit: cover; /* Crop rapi seperti poster film */
-            transition: transform 0.3s; 
-        }
-        .card:hover .thumb img { transform: scale(1.05); }
+        /* LAYOUT */
+        .wrapper { max-width: 1200px; margin: 0 auto; min-height: 90vh; padding-bottom: 50px; }
         
-        .card-t { 
-            font-size: 13px; font-weight: 500; margin-top: 10px; 
-            line-height: 1.4; color: #e0e0e0;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
-            transition: color 0.2s;
+        /* SEARCH */
+        .search-box { padding: 15px; position: relative; }
+        .search-input { 
+            width: 100%; background: #151515; border: 1px solid #333; 
+            padding: 12px 20px; border-radius: 8px; color: #fff; font-size: 14px; 
         }
-        .tag-lang { 
-            position:absolute; top:8px; right:8px; 
-            background:rgba(0,0,0,0.8); color:var(--gold); 
-            padding:3px 8px; font-size:10px; border-radius:4px; font-weight:800; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        .search-input:focus { border-color: var(--red); outline: none; }
+
+        /* GRID SYSTEM (Responsive & Rapi) */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
+            gap: 10px; padding: 0 15px; 
+        }
+        @media(min-width: 768px) { 
+            .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; } 
         }
 
-        /* PLAYER STYLES */
+        .card { position: relative; cursor: pointer; transition: opacity 0.2s; }
+        .card:hover { opacity: 0.8; }
+        
+        .poster { 
+            aspect-ratio: 2/3; background: #222; border-radius: 6px; overflow: hidden; position: relative; 
+        }
+        /* Skeleton Loading Animation */
+        .skeleton {
+            background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .title { 
+            font-size: 13px; margin-top: 8px; font-weight: 600; line-height: 1.3; color: #ddd;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .badge { position: absolute; top: 6px; left: 6px; background: var(--red); color: white; font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+
+        /* PLAYER AREA */
         #playerView { display: none; }
-        .player-container { 
-            position: relative; width: 100%; aspect-ratio: 16/9; 
-            background: #000; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        .video-container { 
+            position: relative; width: 100%; aspect-ratio: 16/9; background: #000; 
         }
-        .player-container iframe { width: 100%; height: 100%; border: 0; position: absolute; top:0; left:0; z-index: 1; }
+        .video-container iframe { width: 100%; height: 100%; border: 0; }
 
-        /* AD OVERLAY (STRATEGI CUAN) */
-        .ad-overlay {
-            position: absolute; inset: 0; z-index: 10;
+        /* AD OVERLAY (Smart Revenue) */
+        .ad-cover {
+            position: absolute; inset: 0; z-index: 20;
             background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
         }
-        .ad-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
-        .play-btn-fake {
-            position: relative; z-index: 11;
-            width: 80px; height: 80px; background: rgba(229, 9, 20, 0.9);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 30px rgba(229, 9, 20, 0.6);
-            animation: pulse 2s infinite;
+        .ad-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+        .play-btn {
+            position: relative; z-index: 21; width: 70px; height: 70px; 
+            background: var(--red); border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(229,9,20,0.5);
         }
-        .play-btn-fake::after { content: '▶'; color: white; font-size: 30px; margin-left: 5px; }
-        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(229,9,20, 0.7);} 70% {box-shadow: 0 0 0 20px rgba(229,9,20, 0);} 100% {box-shadow: 0 0 0 0 rgba(229,9,20, 0);} }
+        .play-btn::after { content: '▶'; color: white; font-size: 28px; margin-left: 4px; }
 
-        .info-area { padding: 20px 15px; }
-        .main-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; color: #fff; line-height: 1.4; }
+        .info { padding: 20px 15px; }
+        .main-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; line-height: 1.4; }
         
-        .dl-btn { 
+        .btn-dl { 
             display: block; width: 100%; background: #fff; color: #000; 
-            text-align: center; padding: 15px; border-radius: 10px; 
-            font-weight: 900; font-size: 15px; cursor: pointer; border: none; 
-            margin-bottom: 25px; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+            padding: 14px; text-align: center; border-radius: 6px; 
+            font-weight: 800; text-transform: uppercase; margin-bottom: 20px; border:none; cursor: pointer;
         }
-        .dl-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
+        
+        /* RECOMMENDATIONS */
+        .rec-item { display: flex; gap: 10px; margin-bottom: 12px; cursor: pointer; background: #111; padding: 8px; border-radius: 6px; }
+        .rec-img { width: 120px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+        .rec-info { font-size: 12px; font-weight: 500; color: #ccc; display: flex; align-items: center; }
 
-        /* RECOMMENDATION LIST */
-        .rec-header { font-size: 16px; font-weight: 700; margin-bottom: 15px; border-left: 4px solid var(--red); padding-left: 10px; color: #eee; }
-        .side-item { display:flex; gap:12px; margin-bottom:15px; cursor:pointer; background: #1a1a1a; padding:10px; border-radius:8px; transition: 0.2s; }
-        .side-item:hover { background: #252525; }
-        .side-thumb { width:110px; aspect-ratio: 16/9; background:#000; flex-shrink:0; border-radius:6px; overflow:hidden; }
-        .side-thumb img { width:100%; height:100%; object-fit:cover; }
-        .side-info { display: flex; flex-direction: column; justify-content: center; width: 100%; }
-        .side-title { font-size:13px; color:#ddd; font-weight: 500; line-height:1.4; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        .loader { text-align: center; padding: 50px; color: #666; font-size: 13px; font-weight: bold; }
-        .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 30px; font-size: 12px; color: #555; }
+        /* FOOTER */
+        .footer { text-align: center; padding: 30px; font-size: 12px; color: #444; border-top: 1px solid #111; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="#" onclick="goHome()" class="logo"><span>D</span>RACHIN</a>
+        <div class="logo" onclick="goHome()">DRA<span>CHIN</span></div>
         <div class="lang-switch">
-            <button id="btn-es" class="lang-btn" onclick="changeLang('es')">ES</button>
-            <button id="btn-en" class="lang-btn" onclick="changeLang('en')">EN</button>
+            <button id="btn-en" onclick="setLang('en')">EN</button>
+            <button id="btn-es" onclick="setLang('es')">ES</button>
         </div>
     </nav>
 
     <div class="wrapper">
         <div id="homeView">
-            <div class="search-container">
+            <div class="search-box">
                 <input type="text" id="searchBox" class="search-input">
-                <button class="search-btn" id="lbl-btn-search" onclick="doSearch()">GO</button>
             </div>
             
-            <h3 id="lbl-trending" style="margin:10px 0 20px 5px; font-size:18px; border-left: 4px solid var(--red); padding-left: 12px; color:#fff;">Trending</h3>
+            <h3 id="label-trend" style="padding: 0 15px; margin-bottom: 15px; color: #eee; font-size: 16px;">Trending Now</h3>
             
-            <div id="gridTarget" class="grid"></div>
-            <div id="loader" class="loader" style="display:none;">Loading content...</div>
+            <div id="gridTarget" class="grid">
+                <div class="poster skeleton"></div><div class="poster skeleton"></div>
+                <div class="poster skeleton"></div><div class="poster skeleton"></div>
+            </div>
         </div>
 
         <div id="playerView">
-            <div onclick="goHome()" style="padding:15px; color:#aaa; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; border-bottom:1px solid #222; margin-bottom: 0;">
-                <span style="font-size:20px; font-weight:bold;">&larr;</span> <span id="lbl-back">Back</span>
+            <div onclick="goHome()" style="padding: 12px 15px; font-size: 14px; color: #aaa; border-bottom: 1px solid #222; cursor: pointer;">
+                &larr; <span id="label-back">Back</span>
             </div>
 
-            <div class="player-container">
+            <div class="video-container">
                 <iframe id="dmFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
                 
-                <div id="adOverlay" class="ad-overlay" onclick="handlePlayClick()">
+                <div id="adCover" class="ad-cover" onclick="handlePlay()">
                     <div class="ad-backdrop"></div>
-                    <div class="play-btn-fake"></div>
-                    <div style="position: absolute; bottom: 30px; color: #fff; font-size: 14px; z-index: 11; letter-spacing: 1px; font-weight: 500;">TAP TO PLAY</div>
+                    <div class="play-btn"></div>
+                    <div style="position: absolute; bottom: 40px; color: #fff; z-index: 22; font-weight: 600; letter-spacing: 1px;">TAP TO PLAY</div>
                 </div>
             </div>
 
-            <div class="info-area">
+            <div class="info">
                 <h1 id="vidTitle" class="main-title">...</h1>
 
-                <button id="lbl-dl" class="dl-btn" onclick="triggerAd()">⬇ DOWNLOAD VIDEO HD</button>
+                <button id="btn-dl" class="btn-dl" onclick="triggerAd()">Download HD</button>
 
-                <div style="margin: 30px 0; background:#121212; border:1px solid #222; padding:15px; border-radius:12px; text-align:center;">
-                    <span style="font-size:10px; color:#444; display:block; margin-bottom:10px; letter-spacing: 1px;">SPONSORED ADVERTISEMENT</span>
+                <div style="background: #0a0a0a; border: 1px solid #222; border-radius: 8px; padding: 10px; margin-bottom: 25px; min-height: 250px; display:flex; justify-content:center; align-items:center;">
                     <script async="async" data-cfasync="false" src="https://ridernoodleacerbity.com/8754c34f20e587c8ef08a064d9f71e59/invoke.js"></script>
                     <div id="container-8754c34f20e587c8ef08a064d9f71e59"></div>
                 </div>
 
-                <h4 id="lbl-rec" class="rec-header">Recommended</h4>
-                <div id="sideList"></div>
+                <h4 id="label-rec" style="margin-bottom: 15px; color: #eee;">Recommended</h4>
+                <div id="recList"></div>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        &copy; 2026 Drachin Stream. <span id="lbl-rights">All rights reserved.</span><br>
-        Free Chinese Drama Streaming
+        &copy; 2026 Drachin Stream.
     </div>
 
     <script>
-        // === KONFIGURASI LINK IKLAN ===
-        const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f"; 
+        // === KONFIGURASI ===
+        const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f";
+        
+        // PISAHKAN DATA CADANGAN AGAR TIDAK TERCAMPUR
+        const BACKUP_EN = [
+            { id: "x8l5m5k", title: "Hidden Love Ep 1 Eng Sub" },
+            { id: "x8m2n1j", title: "Fireworks of My Heart Full Eng Sub" },
+            { id: "x8q1r2s", title: "My Journey to You Ep 1 English" },
+            { id: "x8n3o4p", title: "Story of Kunning Palace Eng Sub" }
+        ];
 
-        // === KAMUS BAHASA & QUERY ===
-        const STRINGS = {
+        const BACKUP_ES = [
+            { id: "x8o9p2q", title: "Only For Love Cap 1 Sub Español" },
+            { id: "x8k8l9o", title: "Till The End of The Moon Cap 1 Español" },
+            { id: "x8q1r2s", title: "My Journey to You Sub Español" },
+            { id: "x8n3o4p", title: "Story of Kunning Palace Audio Latino" }
+        ];
+
+        const CONFIG = {
             en: {
-                search_ph: "Search Title...",
-                trending: "New Releases (Eng Sub)",
+                placeholder: "Search Chinese Drama...",
+                trend: "New Chinese Drama (Eng Sub)",
                 back: "Back to Home",
-                download: "⬇ DOWNLOAD VIDEO HD",
-                rec: "You Might Like",
-                // Query spesifik untuk hasil lebih baik
-                query_trend: "Chinese Drama Eng Sub 2024", 
-                btn_search: "SEARCH"
+                dl: "⬇ DOWNLOAD VIDEO HD",
+                rec: "More Like This",
+                // Kunci pencarian Inggris
+                queryDefault: "Chinese Drama 2024 Eng Sub",
+                querySuffix: " Eng Sub",
+                backup: BACKUP_EN
             },
             es: {
-                search_ph: "Buscar titulo...",
-                trending: "Estrenos (Sub Español)",
-                back: "Volver al Inicio",
-                download: "⬇ DESCARGAR VIDEO HD",
+                placeholder: "Buscar Drama Chino...",
+                trend: "Nuevos Dramas (Sub Español)",
+                back: "Volver",
+                dl: "⬇ DESCARGAR VIDEO",
                 rec: "Recomendaciones",
-                // Query spesifik
-                query_trend: "Drama Chino Sub Español Capitulo Completo",
-                btn_search: "BUSCAR"
+                // Kunci pencarian Spanyol
+                queryDefault: "Drama Chino 2024 Sub Español",
+                querySuffix: " Sub Español",
+                backup: BACKUP_ES
             }
         };
 
-        // DATA CADANGAN (Jika API limit/error)
-        const BACKUP_DATA = [
-            { id: "x8l5m5k", title: "Hidden Love Episode 1 [Eng Sub] Full" },
-            { id: "x8o9p2q", title: "Only For Love Ep 1 Sub Español Completo" },
-            { id: "x8m2n1j", title: "Fireworks of My Heart Full Episode" },
-            { id: "x8k8l9o", title: "Till The End of The Moon Ep 1 Eng Sub" },
-            { id: "x8q1r2s", title: "My Journey to You Eng Sub Full" },
-            { id: "x8n3o4p", title: "Story of Kunning Palace Ep 1 Sub Indo/Eng" }
-        ];
-
-        let currentLang = 'es';
+        // Variables
+        let lang = 'en'; 
         const urlParams = new URLSearchParams(window.location.search);
         
-        // Element references
-        const homeView = document.getElementById('homeView');
-        const playerView = document.getElementById('playerView');
-        const gridTarget = document.getElementById('gridTarget');
-        const dmFrame = document.getElementById('dmFrame');
-        const adOverlay = document.getElementById('adOverlay');
-        
-        // === LOGIKA UTAMA ===
-        function init() {
-            if(urlParams.get('lang')) currentLang = urlParams.get('lang');
-            if(currentLang !== 'en' && currentLang !== 'es') currentLang = 'es';
-            
-            updateUI();
+        // Elements
+        const views = { home: document.getElementById('homeView'), player: document.getElementById('playerView') };
+        const grid = document.getElementById('gridTarget');
+        const frame = document.getElementById('dmFrame');
+        const adCover = document.getElementById('adCover');
 
-            const vidId = urlParams.get('id');
-            if(vidId) {
-                playVideo(vidId);
+        function init() {
+            // Deteksi Bahasa Strict
+            if (urlParams.get('lang') === 'es') lang = 'es';
+            else lang = 'en'; // Default Inggris
+
+            updateText();
+
+            if (urlParams.get('id')) {
+                loadPlayer(urlParams.get('id'));
             } else {
                 loadHome();
             }
         }
 
-        function changeLang(lang) {
-            const currentId = urlParams.get('id');
-            let newUrl = `?lang=${lang}`;
-            if(currentId) newUrl += `&id=${currentId}`;
-            window.location.href = newUrl;
+        function setLang(code) {
+            window.location.href = `?lang=${code}`;
         }
 
-        function updateUI() {
-            const t = STRINGS[currentLang];
-            document.getElementById('searchBox').placeholder = t.search_ph;
-            document.getElementById('lbl-trending').innerText = t.trending;
-            document.getElementById('lbl-back').innerText = t.back;
-            document.getElementById('lbl-dl').innerText = t.download;
-            document.getElementById('lbl-rec').innerText = t.rec;
-            document.getElementById('lbl-btn-search').innerText = t.btn_search;
-            document.getElementById('btn-en').className = currentLang === 'en' ? 'lang-btn active' : 'lang-btn';
-            document.getElementById('btn-es').className = currentLang === 'es' ? 'lang-btn active' : 'lang-btn';
+        function goHome() {
+            window.location.href = `?lang=${lang}`;
         }
 
-        function goHome() { window.location.href = `?lang=${currentLang}`; }
-        function triggerAd() { window.open(AD_LINK, '_blank'); }
-
-        // === STRATEGI IKLAN PLAYER ===
-        function handlePlayClick() {
-            // 1. Buka Iklan di Tab Baru
-            window.open(AD_LINK, '_blank');
-            // 2. Sembunyikan Overlay
-            adOverlay.style.display = 'none';
-            // 3. Putar Video (src sudah diload sebelumnya tapi dicover)
+        function updateText() {
+            const t = CONFIG[lang];
+            document.getElementById('searchBox').placeholder = t.placeholder;
+            document.getElementById('label-trend').innerText = t.trend;
+            document.getElementById('label-back').innerText = t.back;
+            document.getElementById('btn-dl').innerText = t.dl;
+            document.getElementById('label-rec').innerText = t.rec;
+            
+            // Highlight tombol
+            document.getElementById('btn-en').className = lang === 'en' ? 'active' : '';
+            document.getElementById('btn-es').className = lang === 'es' ? 'active' : '';
         }
 
-        // === API LOGIC ===
-        async function fetchDM(keyword, limit=20) {
-            const safeKeyword = encodeURIComponent(keyword.trim());
-            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_480_url,thumbnail_600_url&limit=${limit}&search=${safeKeyword}`;
+        // === API HANDLER (STRICT MODE) ===
+        async function getVideos(query, limit=20) {
+            const finalQuery = encodeURIComponent(query.trim());
+            // Gunakan 'no_live' untuk menghindari video streaming berita
+            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_600_url,thumbnail_480_url&flags=no_live&limit=${limit}&search=${finalQuery}`;
+            
             try {
-                const req = await fetch(url);
-                const res = await req.json();
-                if (!res.list || res.list.length === 0) return null;
-                return res.list;
-            } catch(e) {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.list && data.list.length > 0) return data.list;
+                return null;
+            } catch (e) {
                 return null;
             }
         }
 
         async function loadHome() {
-            homeView.style.display = 'block';
-            playerView.style.display = 'none';
-            gridTarget.innerHTML = '';
-            document.getElementById('loader').style.display = 'block';
+            views.home.style.display = 'block';
+            views.player.style.display = 'none';
+            
+            // Set skeleton saat loading
+            grid.innerHTML = Array(8).fill('<div class="poster skeleton"></div>').join('');
 
-            // Gunakan Query Default yang sudah dioptimalkan
-            const defaultQuery = STRINGS[currentLang].query_trend;
-            let videos = await fetchDM(defaultQuery, 24);
+            const t = CONFIG[lang];
+            let videos = await getVideos(t.queryDefault, 24);
 
-            // Fallback jika API kosong
             if (!videos) {
-                videos = BACKUP_DATA.map(v => ({
-                    id: v.id, title: v.title, 
-                    thumbnail_600_url: `https://www.dailymotion.com/thumbnail/video/${v.id}`
-                }));
-            }
-
-            document.getElementById('loader').style.display = 'none';
-            renderGrid(videos);
-        }
-
-        async function doSearch() {
-            const q = document.getElementById('searchBox').value;
-            if(!q) return;
-
-            gridTarget.innerHTML = '';
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('lbl-trending').innerText = `Results: ${q}`;
-
-            // Tambahkan "eng sub" atau "sub español" otomatis di pencarian jika user lupa nulis
-            let suffix = "";
-            if(currentLang === 'en' && !q.toLowerCase().includes('sub')) suffix = " eng sub";
-            if(currentLang === 'es' && !q.toLowerCase().includes('sub')) suffix = " sub español";
-
-            let videos = await fetchDM(q + suffix, 24);
-            if(!videos) videos = await fetchDM(q, 24); // Coba tanpa suffix jika gagal
-
-            document.getElementById('loader').style.display = 'none';
-            
-            if (!videos) {
-                gridTarget.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#888;">No results found.</div>';
-            } else {
-                renderGrid(videos);
-            }
-        }
-
-        function renderGrid(list) {
-            let html = '';
-            list.forEach(v => {
-                // Pilih gambar resolusi tinggi jika ada
-                const img = v.thumbnail_600_url || v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
-                
-                html += `
-                <a href="?lang=${currentLang}&id=${v.id}" class="card">
-                    <div class="thumb">
-                        <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Preview'">
-                        <div class="tag-lang">${currentLang.toUpperCase()}</div>
-                    </div>
-                    <div class="card-t">${v.title}</div>
-                </a>
-                `;
-            });
-            gridTarget.innerHTML = html;
-        }
-
-        async function playVideo(id) {
-            homeView.style.display = 'none';
-            playerView.style.display = 'block';
-            window.scrollTo(0,0);
-            
-            // Setup Player & Overlay
-            adOverlay.style.display = 'flex'; // Munculkan tombol play palsu
-            
-            // Set Thumbnail video sebagai background overlay biar terlihat asli
-            adOverlay.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
-            
-            dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-theme=dark&sharing-enable=false`;
-            
-            // Get Info
-            try {
-                const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title,tags`);
-                const res = await req.json();
-                const title = res.title || "Watching Video";
-                document.getElementById('vidTitle').innerText = title;
-                
-                // LOAD REKOMENDASI (Tanpa Duplicate)
-                loadRecommendations(title, id);
-            } catch(e) {
-                document.getElementById('vidTitle').innerText = "Drachin Stream";
-                loadRecommendations("", id);
-            }
-        }
-
-        async function loadRecommendations(currentTitle, currentId) {
-            // Ambil kata kunci simple
-            let keywords = "chinese drama";
-            if (currentTitle) {
-                // Bersihkan judul dari simbol aneh
-                const clean = currentTitle.replace(/\[.*?\]/g, '').replace(/\(.*?\)/g, '').replace(/[^\w\s]/gi, '').trim();
-                const words = clean.split(' ').filter(w => w.length > 3);
-                if(words.length > 0) keywords = words.slice(0, 3).join(' '); // Ambil 3 kata pertama
-            }
-
-            let recs = await fetchDM(keywords, 15); // Ambil lebih banyak untuk difilter
-
-            // Jika kosong, pakai backup
-            if(!recs) {
-                recs = BACKUP_DATA.map(v => ({
+                // Gunakan backup sesuai bahasa
+                videos = t.backup.map(v => ({
                     id: v.id, title: v.title, thumbnail_480_url: `https://www.dailymotion.com/thumbnail/video/${v.id}`
                 }));
             }
 
-            // === FILTER DUPLICATE ===
-            // Buang video yang ID-nya sama dengan yang sedang diputar
-            const filteredRecs = recs.filter(v => v.id !== currentId);
-
-            const sideList = document.getElementById('sideList');
-            let html = '';
-            
-            // Tampilkan maksimal 8 rekomendasi
-            filteredRecs.slice(0, 8).forEach(v => {
-                const img = v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
-                html += `
-                <a href="?lang=${currentLang}&id=${v.id}" class="side-item">
-                    <div class="side-thumb">
-                        <img src="${img}" loading="lazy">
-                    </div>
-                    <div class="side-info">
-                        <div class="side-title">${v.title}</div>
-                        <span style="color:${currentLang === 'es' ? '#e50914' : '#3498db'}; font-size:11px; font-weight:bold;">▶ Watch Now</span>
-                    </div>
-                </a>
-                `;
-            });
-            sideList.innerHTML = html;
+            render(videos, grid);
         }
 
-        // Enter key search
-        document.getElementById('searchBox').addEventListener("keypress", function(event) {
-            if (event.key === "Enter") doSearch();
+        async function doSearch() {
+            const val = document.getElementById('searchBox').value;
+            if (!val) return;
+
+            grid.innerHTML = '<div class="poster skeleton"></div><div class="poster skeleton"></div>';
+            document.getElementById('label-trend').innerText = `Search: ${val}`;
+
+            const t = CONFIG[lang];
+            // Memaksa akhiran bahasa agar hasil tidak campur
+            // Contoh: "Love" -> "Love Eng Sub" (jika mode EN)
+            let q = val + t.querySuffix; 
+
+            let videos = await getVideos(q, 24);
+            
+            // Jika pencarian ketat gagal, coba pencarian biasa + filter manual nanti
+            if (!videos) videos = await getVideos(val, 24);
+
+            if (videos) render(videos, grid);
+            else grid.innerHTML = '<div style="color:#888; padding:20px;">No results found.</div>';
+        }
+
+        function render(list, target) {
+            // Pastikan gambar di-render bersih
+            let html = '';
+            list.forEach(v => {
+                const img = v.thumbnail_600_url || v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
+                html += `
+                <div class="card" onclick="openVideo('${v.id}')">
+                    <div class="poster">
+                        <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=No+Img'">
+                        <div class="badge">${lang.toUpperCase()}</div>
+                    </div>
+                    <div class="title">${v.title}</div>
+                </div>
+                `;
+            });
+            target.innerHTML = html;
+        }
+
+        function openVideo(id) {
+            window.location.href = `?lang=${lang}&id=${id}`;
+        }
+
+        // === PLAYER & IKLAN ===
+        async function loadPlayer(id) {
+            views.home.style.display = 'none';
+            views.player.style.display = 'block';
+            window.scrollTo(0,0);
+
+            // Setup Cover & Player
+            adCover.style.display = 'flex';
+            adCover.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
+            frame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&queue-enable=false&ui-highlight=E50914&sharing-enable=false&ui-logo=0`;
+
+            // Judul
+            try {
+                const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
+                const res = await req.json();
+                document.getElementById('vidTitle').innerText = res.title || "Watching Video";
+                loadRecs(res.title, id);
+            } catch(e) {
+                document.getElementById('vidTitle').innerText = "Premium Stream";
+                loadRecs("", id);
+            }
+        }
+
+        function handlePlay() {
+            window.open(AD_LINK, '_blank'); // Cuan
+            adCover.style.display = 'none'; // Buka video
+        }
+
+        function triggerAd() {
+            window.open(AD_LINK, '_blank');
+        }
+
+        async function loadRecs(title, currentId) {
+            const listDiv = document.getElementById('recList');
+            listDiv.innerHTML = '<div style="color:#666; font-size:12px;">Loading...</div>';
+
+            // Smart Keyword Extraction
+            let keyword = "drama";
+            if (title) {
+                // Ambil kata pertama yang panjangnya > 3 huruf
+                const clean = title.replace(/[^\w\s]/gi, '').split(' ').filter(w => w.length > 3);
+                if (clean.length > 0) keyword = clean[0];
+            }
+            
+            // Tambahkan suffix bahasa
+            keyword += CONFIG[lang].querySuffix;
+
+            let recs = await getVideos(keyword, 10);
+            
+            // Filter duplikat ID yang sedang ditonton
+            if(recs) recs = recs.filter(v => v.id !== currentId);
+
+            // Fallback jika kosong
+            if (!recs || recs.length === 0) {
+                recs = CONFIG[lang].backup;
+            }
+
+            let html = '';
+            recs.slice(0, 8).forEach(v => {
+                 const img = v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
+                 html += `
+                 <div class="rec-item" onclick="openVideo('${v.id}')">
+                    <div class="rec-img"><img src="${img}"></div>
+                    <div class="rec-info">${v.title}</div>
+                 </div>
+                 `;
+            });
+            listDiv.innerHTML = html;
+        }
+
+        document.getElementById('searchBox').addEventListener("keypress", function(e) {
+            if (e.key === "Enter") doSearch();
         });
 
         init();

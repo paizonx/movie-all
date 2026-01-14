@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="referrer" content="no-referrer-when-downgrade" />
+  <meta name="robots" content="index,follow" />
+  <title>Video Info</title>
+  <meta name="description" content="Information page to continue to the video page." />
+
+  <style>
+    :root { color-scheme: light; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#f6f7fb;
+      color:#111;
+      line-height:1.45;
+    }
+    .wrap{max-width:860px;margin:0 auto;padding:18px;}
+    .card{
+      background:#fff;border:1px solid #e7e8ee;border-radius:16px;
+      box-shadow:0 6px 22px rgba(0,0,0,.06);overflow:hidden;
+    }
+    .top{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;border-bottom:1px solid #e7e8ee;
+    }
+    .brand{display:flex;gap:10px;align-items:center;}
+    .dot{width:12px;height:12px;border-radius:50%;background:#2b6cff;}
+    .lang{display:flex;gap:8px;align-items:center;}
+    .lang button{
+      border:1px solid #d9dbe6;background:#fff;padding:8px 10px;
+      border-radius:10px;font-weight:700;cursor:pointer;
+    }
+    .lang button[aria-pressed="true"]{
+      border-color:#2b6cff;box-shadow:0 0 0 3px rgba(43,108,255,.12);
+    }
+
+    .content{padding:18px;display:grid;grid-template-columns:1fr;gap:14px;}
+    .hero{
+      border:1px solid #e7e8ee;border-radius:14px;background:#f2f3f8;
+      padding:16px;
+    }
+    .title{font-size:20px;font-weight:800;margin:0 0 6px 0;}
+    .meta{color:#4b4f63;font-size:13px;font-weight:650;margin:0;}
+    code{background:#eef1fb;padding:2px 7px;border-radius:8px;}
+    .box{
+      border:1px solid #e7e8ee;border-radius:14px;background:#fff;padding:14px;
+    }
+    .hidden{display:none;}
+    .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+    .cta a{
+      text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
+      gap:10px;padding:12px 14px;border-radius:14px;font-weight:800;
+    }
+    .primary{background:#2b6cff;color:#fff;border:1px solid #2b6cff;min-width:220px;}
+    .secondary{background:#fff;color:#111;border:1px solid #d9dbe6;}
+    .fine{font-size:12px;color:#5b6078;margin-top:10px;}
+    .warn{
+      background:#fff7e6;border:1px solid #ffe1a3;color:#5a3b00;
+      border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700;
+    }
+    footer{
+      padding:14px 16px;border-top:1px solid #e7e8ee;color:#5b6078;font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card" role="main">
+      <div class="top">
+        <div class="brand">
+          <span class="dot" aria-hidden="true"></span>
+          <div style="font-weight:900">Video Info</div>
+        </div>
+
+        <div class="lang" aria-label="Language">
+          <button id="btnEN" type="button" aria-pressed="true">EN</button>
+          <button id="btnES" type="button" aria-pressed="false">ES</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="hero">
+          <h1 class="title" id="hTitle">Chinese Drama Video</h1>
+          <p class="meta">
+            Source: Dailymotion • ID: <code id="vid">—</code>
+          </p>
+        </div>
+
+        <div class="box">
+          <p id="descEN">
+            This is an information page. Click the button below to continue to the video page.
+          </p>
+          <p id="descES" class="hidden">
+            Esta es una página informativa. Haz clic en el botón para continuar a la página del video.
+          </p>
+
+          <div class="cta" aria-label="Continue">
+            <a id="goBtn" class="primary" href="/" rel="nofollow noopener">
+              <span id="btnLabel">Continue</span>
+              <span aria-hidden="true">›</span>
+            </a>
+
+            <a id="copyBtn" class="secondary" href="#" rel="nofollow">
+              <span id="copyLabel">Copy link</span>
+            </a>
+          </div>
+
+          <div class="fine" id="fineEN">
+            No pop-ups or auto-redirects on this page.
+          </div>
+          <div class="fine hidden" id="fineES">
+            Sin ventanas emergentes ni redirección automática en esta página.
+          </div>
+
+          <div id="warnBox" class="warn hidden" style="margin-top:12px;">
+            Missing or invalid ID. Use: <code>?id=x9n1o8e</code>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <span id="footEN">Click required to continue.</span>
+        <span id="footES" class="hidden">Se requiere clic para continuar.</span>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Helper: language toggle
+    function setLang(lang) {
+      const isEN = (lang === "en");
+      document.getElementById("btnEN").setAttribute("aria-pressed", String(isEN));
+      document.getElementById("btnES").setAttribute("aria-pressed", String(!isEN));
+
+      document.getElementById("descEN").classList.toggle("hidden", !isEN);
+      document.getElementById("fineEN").classList.toggle("hidden", !isEN);
+      document.getElementById("footEN").classList.toggle("hidden", !isEN);
+
+      document.getElementById("descES").classList.toggle("hidden", isEN);
+      document.getElementById("fineES").classList.toggle("hidden", isEN);
+      document.getElementById("footES").classList.toggle("hidden", isEN);
+
+      document.getElementById("btnLabel").textContent = isEN ? "Continue" : "Continuar";
+      document.getElementById("copyLabel").textContent = isEN ? "Copy link" : "Copiar enlace";
+      return isEN ? "en" : "es";
+    }
+
+    const params = new URLSearchParams(location.search);
+    const rawId = (params.get("id") || "").trim();
+    const rawLang = (params.get("lang") || "").toLowerCase();
+
+    // Validasi ID (sederhana dan aman)
+    const isValidDmId = /^[a-zA-Z0-9_-]{5,32}$/.test(rawId);
+
+    // Tentukan bahasa: query param > browser
+    const browserLang = (navigator.language || "en").toLowerCase().startsWith("es") ? "es" : "en";
+    let lang = (rawLang === "es" || rawLang === "en") ? rawLang : browserLang;
+    lang = setLang(lang);
+
+    document.getElementById("btnEN").addEventListener("click", () => { lang = setLang("en"); updateGoLink(); });
+    document.getElementById("btnES").addEventListener("click", () => { lang = setLang("es"); updateGoLink(); });
+
+    const vidEl = document.getElementById("vid");
+    const warnBox = document.getElementById("warnBox");
+    const goBtn = document.getElementById("goBtn");
+
+    function updateGoLink() {
+      // Tujuan: index.html existing Anda (money page) dengan parameter yang sama
+      const dest = new URL("/", location.origin);
+      if (lang) dest.searchParams.set("lang", lang);
+      if (isValidDmId) dest.searchParams.set("id", rawId);
+      goBtn.href = dest.toString();
+    }
+
+    if (isValidDmId) {
+      vidEl.textContent = rawId;
+    } else {
+      vidEl.textContent = "—";
+      warnBox.classList.remove("hidden");
+    }
+
+    updateGoLink();
+
+    // Copy link
+    document.getElementById("copyBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      try {
+        await navigator.clipboard.writeText(location.href);
+        const label = document.getElementById("copyLabel");
+        const original = label.textContent;
+        label.textContent = (lang === "es") ? "¡Copiado!" : "Copied!";
+        setTimeout(() => (label.textContent = original), 1200);
+      } catch (_) {}
+    });
+  </script>
+</body>
+</html>

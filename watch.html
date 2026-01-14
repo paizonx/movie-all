@@ -1,200 +1,306 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="referrer" content="no-referrer-when-downgrade" />
   <meta name="robots" content="index,follow" />
-  <title>Video Info</title>
-  <meta name="description" content="Information page to continue to the video page." />
+  <meta name="theme-color" content="#0f0f0f" />
+
+  <title>MovTubez - Continue</title>
+  <meta name="description" content="Preview page. Continue to the video page." />
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
   <style>
-    :root { color-scheme: light; }
+    :root { --bg:#0f0f0f; --surface:#151515; --surface2:#1e1e1e; --text:#fff; --muted:#a7a7a7; --red:#e50914; }
+    * { box-sizing:border-box; margin:0; padding:0; }
     body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:#f6f7fb;
-      color:#111;
-      line-height:1.45;
+      font-family:'Roboto',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
     }
-    .wrap{max-width:860px;margin:0 auto;padding:18px;}
-    .card{
-      background:#fff;border:1px solid #e7e8ee;border-radius:16px;
-      box-shadow:0 6px 22px rgba(0,0,0,.06);overflow:hidden;
+    a{ color:inherit; text-decoration:none; }
+    .navbar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 16px; height:60px;
+      background:rgba(15,15,15,0.95);
+      backdrop-filter:blur(10px);
+      position:sticky; top:0; z-index:100;
+      border-bottom:1px solid rgba(255,255,255,0.08);
     }
-    .top{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:14px 16px;border-bottom:1px solid #e7e8ee;
-    }
-    .brand{display:flex;gap:10px;align-items:center;}
-    .dot{width:12px;height:12px;border-radius:50%;background:#2b6cff;}
-    .lang{display:flex;gap:8px;align-items:center;}
-    .lang button{
-      border:1px solid #d9dbe6;background:#fff;padding:8px 10px;
-      border-radius:10px;font-weight:700;cursor:pointer;
-    }
-    .lang button[aria-pressed="true"]{
-      border-color:#2b6cff;box-shadow:0 0 0 3px rgba(43,108,255,.12);
+    .logo{ font-size:20px; font-weight:900; display:flex; align-items:center; gap:6px; letter-spacing:.2px; }
+    .logo span{ color:var(--red); font-size:24px; }
+    .lang-pill{
+      font-size:11px; font-weight:900;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.06);
+      color:#ddd;
     }
 
-    .content{padding:18px;display:grid;grid-template-columns:1fr;gap:14px;}
+    .wrapper{ max-width:860px; margin:0 auto; padding:16px; padding-bottom:40px; }
     .hero{
-      border:1px solid #e7e8ee;border-radius:14px;background:#f2f3f8;
-      padding:16px;
+      margin-top:10px;
+      background:linear-gradient(180deg, rgba(229,9,20,0.10), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      padding:14px;
     }
-    .title{font-size:20px;font-weight:800;margin:0 0 6px 0;}
-    .meta{color:#4b4f63;font-size:13px;font-weight:650;margin:0;}
-    code{background:#eef1fb;padding:2px 7px;border-radius:8px;}
-    .box{
-      border:1px solid #e7e8ee;border-radius:14px;background:#fff;padding:14px;
+    .hero h1{ font-size:18px; font-weight:800; line-height:1.35; }
+    .hero p{ margin-top:6px; color:var(--muted); font-size:12px; font-weight:600; }
+
+    /* Player preview (clean) */
+    .player-wrap{ margin-top:14px; }
+    .player-box{
+      position:relative;
+      width:100%;
+      aspect-ratio: 4/5;  /* mirip money page Anda */
+      max-height:75vh;
+      background:#000;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.10);
+      box-shadow:0 10px 40px rgba(0,0,0,0.55);
     }
-    .hidden{display:none;}
-    .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
-    .cta a{
-      text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
-      gap:10px;padding:12px 14px;border-radius:14px;font-weight:800;
+    iframe{
+      width:100%; height:100%;
+      border:0;
+      display:block;
     }
-    .primary{background:#2b6cff;color:#fff;border:1px solid #2b6cff;min-width:220px;}
-    .secondary{background:#fff;color:#111;border:1px solid #d9dbe6;}
-    .fine{font-size:12px;color:#5b6078;margin-top:10px;}
+
+    /* Overlay preview (optional, premium feel) */
+    .overlay{
+      position:absolute; inset:0; z-index:5;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      background-size:cover;
+      background-position:center;
+    }
+    .overlay::before{
+      content:"";
+      position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.70));
+      backdrop-filter: blur(4px);
+    }
+    .play-ring{
+      position:relative; z-index:6;
+      width:72px; height:72px; border-radius:50%;
+      background:rgba(229,9,20,0.92);
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 0 28px rgba(229,9,20,0.55);
+      animation:pulse 2s infinite;
+    }
+    .play-ring::after{ content:"▶"; font-size:30px; margin-left:4px; }
+    .taptext{
+      position:absolute; bottom:40px; z-index:6;
+      font-size:13px; font-weight:800; letter-spacing:1px;
+      color:#fff;
+      opacity:0.95;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(229,9,20,0.55); }
+      70%{ box-shadow:0 0 0 18px rgba(229,9,20,0); }
+      100%{ box-shadow:0 0 0 0 rgba(229,9,20,0); }
+    }
+
+    /* Continue area */
+    .info{
+      margin-top:16px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      padding:14px;
+    }
+    .title{
+      font-size:16px; font-weight:800; line-height:1.35;
+      margin-bottom:10px;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:12px; font-weight:600;
+      margin-bottom:14px;
+    }
+
+    .btn{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:15px 14px;
+      font-weight:900;
+      font-size:14px;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    .btn-primary{
+      background:#fff;
+      color:#000;
+      box-shadow:0 4px 18px rgba(255,255,255,0.10);
+    }
+    .btn-primary:active{ transform:scale(0.99); }
+
+    .note{
+      margin-top:10px;
+      color:#6f6f6f;
+      font-size:11px;
+      line-height:1.4;
+    }
+
     .warn{
-      background:#fff7e6;border:1px solid #ffe1a3;color:#5a3b00;
-      border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700;
+      margin-top:14px;
+      background:#2a1c00;
+      border:1px solid #5a3b00;
+      color:#ffd79a;
+      border-radius:14px;
+      padding:12px;
+      font-size:12px;
+      font-weight:800;
+      display:none;
     }
-    footer{
-      padding:14px 16px;border-top:1px solid #e7e8ee;color:#5b6078;font-size:12px;
+
+    .footer{
+      text-align:center;
+      padding:28px 12px 10px;
+      color:#666;
+      font-size:12px;
     }
+    code{ background:#1a1a1a; padding:2px 6px; border-radius:8px; border:1px solid rgba(255,255,255,0.10); }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card" role="main">
-      <div class="top">
-        <div class="brand">
-          <span class="dot" aria-hidden="true"></span>
-          <div style="font-weight:900">Video Info</div>
-        </div>
+  <nav class="navbar">
+    <a class="logo" href="/"><span>▶</span> MovTubez</a>
+    <div class="lang-pill" id="langPill">EN</div>
+  </nav>
 
-        <div class="lang" aria-label="Language">
-          <button id="btnEN" type="button" aria-pressed="true">EN</button>
-          <button id="btnES" type="button" aria-pressed="false">ES</button>
-        </div>
-      </div>
+  <div class="wrapper">
+    <div class="hero">
+      <h1 id="heroTitle">Preview</h1>
+      <p id="heroDesc">Tap play to preview, then continue to the video page.</p>
+    </div>
 
-      <div class="content">
-        <div class="hero">
-          <h1 class="title" id="hTitle">Chinese Drama Video</h1>
-          <p class="meta">
-            Source: Dailymotion • ID: <code id="vid">—</code>
-          </p>
-        </div>
+    <div class="player-wrap">
+      <div class="player-box">
+        <!-- Preview iframe: we keep it muted to reduce friction -->
+        <iframe id="dmFrame"
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+          allowfullscreen
+          referrerpolicy="no-referrer"
+          src="">
+        </iframe>
 
-        <div class="box">
-          <p id="descEN">
-            This is an information page. Click the button below to continue to the video page.
-          </p>
-          <p id="descES" class="hidden">
-            Esta es una página informativa. Haz clic en el botón para continuar a la página del video.
-          </p>
-
-          <div class="cta" aria-label="Continue">
-            <a id="goBtn" class="primary" href="/" rel="nofollow noopener">
-              <span id="btnLabel">Continue</span>
-              <span aria-hidden="true">›</span>
-            </a>
-
-            <a id="copyBtn" class="secondary" href="#" rel="nofollow">
-              <span id="copyLabel">Copy link</span>
-            </a>
-          </div>
-
-          <div class="fine" id="fineEN">
-            No pop-ups or auto-redirects on this page.
-          </div>
-          <div class="fine hidden" id="fineES">
-            Sin ventanas emergentes ni redirección automática en esta página.
-          </div>
-
-          <div id="warnBox" class="warn hidden" style="margin-top:12px;">
-            Missing or invalid ID. Use: <code>?id=x9n1o8e</code>
-          </div>
+        <!-- Overlay: user click removes overlay (no ads, no popups) -->
+        <div class="overlay" id="overlay">
+          <div class="play-ring"></div>
+          <div class="taptext" id="tapText">TAP TO PREVIEW</div>
         </div>
       </div>
+    </div>
 
-      <footer>
-        <span id="footEN">Click required to continue.</span>
-        <span id="footES" class="hidden">Se requiere clic para continuar.</span>
-      </footer>
+    <div class="info">
+      <div class="title" id="mainTitle">Continue to watch</div>
+      <div class="sub" id="subTitle">You will be redirected to the full video page.</div>
+
+      <button class="btn btn-primary" id="continueBtn" type="button">CONTINUE TO WATCH</button>
+
+      <div class="note" id="noteText">
+        No ads on this preview page. Video content is provided by the source platform.
+        ID: <code id="vidCode">—</code>
+      </div>
+
+      <div class="warn" id="warnBox">
+        Invalid or missing ID. Use: <code>?lang=en&id=x9n1o8e</code>
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2026 MovTubez
     </div>
   </div>
 
   <script>
-    // Helper: language toggle
-    function setLang(lang) {
-      const isEN = (lang === "en");
-      document.getElementById("btnEN").setAttribute("aria-pressed", String(isEN));
-      document.getElementById("btnES").setAttribute("aria-pressed", String(!isEN));
-
-      document.getElementById("descEN").classList.toggle("hidden", !isEN);
-      document.getElementById("fineEN").classList.toggle("hidden", !isEN);
-      document.getElementById("footEN").classList.toggle("hidden", !isEN);
-
-      document.getElementById("descES").classList.toggle("hidden", isEN);
-      document.getElementById("fineES").classList.toggle("hidden", isEN);
-      document.getElementById("footES").classList.toggle("hidden", isEN);
-
-      document.getElementById("btnLabel").textContent = isEN ? "Continue" : "Continuar";
-      document.getElementById("copyLabel").textContent = isEN ? "Copy link" : "Copiar enlace";
-      return isEN ? "en" : "es";
-    }
+    // ----- Config copy -----
+    const COPY = {
+      en: {
+        pill: "EN",
+        heroTitle: "Preview",
+        heroDesc: "Tap play to preview, then continue to the video page.",
+        tap: "TAP TO PREVIEW",
+        mainTitle: "Continue to watch",
+        subTitle: "You will be redirected to the full video page.",
+        btn: "CONTINUE TO WATCH",
+        warn: "Invalid or missing ID. Use: ?lang=en&id=x9n1o8e"
+      },
+      es: {
+        pill: "ES",
+        heroTitle: "Vista previa",
+        heroDesc: "Toca play para ver la vista previa y luego continúa a la página del video.",
+        tap: "TOCA PARA VER",
+        mainTitle: "Continuar para ver",
+        subTitle: "Serás dirigido a la página completa del video.",
+        btn: "CONTINUAR PARA VER",
+        warn: "ID inválido o faltante. Usa: ?lang=es&id=x9n1o8e"
+      }
+    };
 
     const params = new URLSearchParams(location.search);
-    const rawId = (params.get("id") || "").trim();
-    const rawLang = (params.get("lang") || "").toLowerCase();
+    const id = (params.get("id") || "").trim();
+    const langParam = (params.get("lang") || "").toLowerCase();
+    const lang = (langParam === "es") ? "es" : "en"; // sesuai kebutuhan Anda (pisah EN/ES)
 
-    // Validasi ID (sederhana dan aman)
-    const isValidDmId = /^[a-zA-Z0-9_-]{5,32}$/.test(rawId);
+    // Basic ID validation
+    const ok = /^[a-zA-Z0-9_-]{5,32}$/.test(id);
 
-    // Tentukan bahasa: query param > browser
-    const browserLang = (navigator.language || "en").toLowerCase().startsWith("es") ? "es" : "en";
-    let lang = (rawLang === "es" || rawLang === "en") ? rawLang : browserLang;
-    lang = setLang(lang);
+    // Apply language
+    const t = COPY[lang];
+    document.getElementById("langPill").textContent = t.pill;
+    document.getElementById("heroTitle").textContent = t.heroTitle;
+    document.getElementById("heroDesc").textContent = t.heroDesc;
+    document.getElementById("tapText").textContent = t.tap;
+    document.getElementById("mainTitle").textContent = t.mainTitle;
+    document.getElementById("subTitle").textContent = t.subTitle;
+    document.getElementById("continueBtn").textContent = t.btn;
 
-    document.getElementById("btnEN").addEventListener("click", () => { lang = setLang("en"); updateGoLink(); });
-    document.getElementById("btnES").addEventListener("click", () => { lang = setLang("es"); updateGoLink(); });
-
-    const vidEl = document.getElementById("vid");
+    // Build preview iframe + overlay background
     const warnBox = document.getElementById("warnBox");
-    const goBtn = document.getElementById("goBtn");
+    const vidCode = document.getElementById("vidCode");
+    const dmFrame = document.getElementById("dmFrame");
+    const overlay = document.getElementById("overlay");
 
-    function updateGoLink() {
-      // Tujuan: index.html existing Anda (money page) dengan parameter yang sama
-      const dest = new URL("/", location.origin);
-      if (lang) dest.searchParams.set("lang", lang);
-      if (isValidDmId) dest.searchParams.set("id", rawId);
-      goBtn.href = dest.toString();
-    }
-
-    if (isValidDmId) {
-      vidEl.textContent = rawId;
+    if (!ok) {
+      warnBox.style.display = "block";
+      warnBox.textContent = t.warn;
+      vidCode.textContent = "—";
+      overlay.style.display = "none";
     } else {
-      vidEl.textContent = "—";
-      warnBox.classList.remove("hidden");
+      vidCode.textContent = id;
+
+      // Preview embed:
+      // - muted=1 to reduce user friction
+      // - autoplay=0 (safe) — overlay click will just reveal the player
+      // If you want autoplay on preview after click, we can toggle src then.
+      dmFrame.src = `https://www.dailymotion.com/embed/video/${encodeURIComponent(id)}?autoplay=0&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
+
+      // Overlay background thumbnail (premium look)
+      overlay.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${encodeURIComponent(id)}')`;
     }
 
-    updateGoLink();
+    // Overlay click: remove overlay only (no ads)
+    overlay.addEventListener("click", () => {
+      overlay.style.display = "none";
+      // Optional: if you want start playing automatically AFTER click:
+      // dmFrame.src = `https://www.dailymotion.com/embed/video/${encodeURIComponent(id)}?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
+    });
 
-    // Copy link
-    document.getElementById("copyBtn").addEventListener("click", async (e) => {
-      e.preventDefault();
-      try {
-        await navigator.clipboard.writeText(location.href);
-        const label = document.getElementById("copyLabel");
-        const original = label.textContent;
-        label.textContent = (lang === "es") ? "¡Copiado!" : "Copied!";
-        setTimeout(() => (label.textContent = original), 1200);
-      } catch (_) {}
+    // Continue button: go to your existing money page (index.html) with same lang & id
+    document.getElementById("continueBtn").addEventListener("click", () => {
+      if (!ok) return;
+      const dest = new URL("/", location.origin);
+      dest.searchParams.set("lang", lang);
+      dest.searchParams.set("id", id);
+      location.href = dest.toString();
     });
   </script>
 </body>

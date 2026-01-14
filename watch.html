@@ -12,15 +12,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
   <style>
-    :root { --bg:#0f0f0f; --surface:#151515; --text:#fff; --muted:#9a9a9a; --red:#e50914; }
+    :root { --bg:#0f0f0f; --surface:#151515; --text:#fff; --red:#e50914; }
     * { box-sizing:border-box; margin:0; padding:0; }
-    body{
-      font-family:'Roboto',sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      overflow-x:hidden;
-    }
+    body{ font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
     a{ color:inherit; text-decoration:none; }
+
     .navbar{
       display:flex; align-items:center; justify-content:space-between;
       padding:0 16px; height:60px;
@@ -31,7 +27,6 @@
     }
     .logo{ font-size:20px; font-weight:900; display:flex; align-items:center; gap:6px; letter-spacing:.2px; }
     .logo span{ color:var(--red); font-size:24px; }
-
     .lang-pill{
       font-size:11px; font-weight:900;
       padding:6px 10px; border-radius:999px;
@@ -48,7 +43,7 @@
     .player-box{
       position:relative;
       width:100%;
-      aspect-ratio: 9/16;          /* portrait */
+      aspect-ratio: 9/16;
       max-height:78vh;
       background:#000;
       border-radius:16px;
@@ -56,21 +51,17 @@
       border:1px solid rgba(255,255,255,0.10);
       box-shadow:0 10px 40px rgba(0,0,0,0.55);
     }
-    iframe{
-      width:100%; height:100%;
-      border:0;
-      display:block;
-    }
+    iframe{ width:100%; height:100%; border:0; display:block; }
 
-    /* Minimal overlay (tap to show) */
-    .overlay{
+    /* Tap-to-start overlay */
+    .tap-overlay{
       position:absolute; inset:0; z-index:5;
       display:flex; align-items:center; justify-content:center;
       cursor:pointer;
       background-size:cover;
       background-position:center;
     }
-    .overlay::before{
+    .tap-overlay::before{
       content:"";
       position:absolute; inset:0;
       background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.72));
@@ -91,14 +82,39 @@
       100%{ box-shadow:0 0 0 0 rgba(229,9,20,0); }
     }
 
-    .actions{
-      margin-top:14px;
-      background:var(--surface);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:16px;
-      padding:12px;
+    /* Continue modal (pop-up after 60s) */
+    .gate{
+      position:absolute; inset:0; z-index:20;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      cursor:pointer; /* klik mana aja */
     }
-    .btn{
+    .gate::before{
+      content:"";
+      position:absolute; inset:0;
+      background:rgba(0,0,0,0.72);
+      backdrop-filter: blur(6px);
+    }
+    .gate-card{
+      position:relative;
+      width:min(420px, 92vw);
+      background:rgba(21,21,21,0.96);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+      text-align:center;
+      cursor:pointer; /* klik card juga */
+    }
+    .gate-title{
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:.3px;
+      margin-bottom:10px;
+    }
+    .gate-btn{
       width:100%;
       border:none;
       border-radius:14px;
@@ -111,10 +127,11 @@
       color:#000;
       box-shadow:0 4px 18px rgba(255,255,255,0.10);
     }
-    .btn:active{ transform:scale(0.99); }
+    .gate-btn:active{ transform:scale(0.99); }
 
+    /* Warning */
     .warn{
-      margin-top:12px;
+      margin-top:14px;
       background:#2a1c00;
       border:1px solid #5a3b00;
       color:#ffd79a;
@@ -148,72 +165,113 @@
         src="">
       </iframe>
 
-      <div class="overlay" id="overlay">
+      <!-- Start overlay -->
+      <div class="tap-overlay" id="tapOverlay">
         <div class="play-ring"></div>
+      </div>
+
+      <!-- Continue pop-up after 60s (klik mana aja => redirect) -->
+      <div class="gate" id="gate" aria-label="Continue overlay">
+        <div class="gate-card" id="gateCard">
+          <div class="gate-title" id="gateTitle">Continue to watch</div>
+          <button class="gate-btn" id="gateBtn" type="button">CONTINUE TO WATCH</button>
+        </div>
       </div>
     </div>
 
-    <div class="actions">
-      <button class="btn" id="continueBtn" type="button">CONTINUE TO WATCH</button>
-      <div class="warn" id="warnBox">
-        Invalid or missing ID. Example: <code>?lang=en&id=x9n1o8e</code>
-      </div>
+    <div class="warn" id="warnBox">
+      Invalid or missing ID. Example: <code>?lang=en&id=x9n1o8e</code>
     </div>
   </div>
 
   <script>
-    // Minimal text (only EN/ES for button), no ads, no popups, no auto-redirect.
-
     const COPY = {
-      en: { pill: "EN", btn: "CONTINUE TO WATCH", err: "Invalid or missing ID. Example: ?lang=en&id=x9n1o8e" },
-      es: { pill: "ES", btn: "CONTINUAR PARA VER", err: "ID inválido o faltante. Ejemplo: ?lang=es&id=x9n1o8e" }
+      en: { pill:"EN", title:"Continue to watch", btn:"CONTINUE TO WATCH", err:"Invalid or missing ID. Example: ?lang=en&id=x9n1o8e" },
+      es: { pill:"ES", title:"Continuar para ver", btn:"CONTINUAR PARA VER", err:"ID inválido o faltante. Ejemplo: ?lang=es&id=x9n1o8e" }
     };
 
     const params = new URLSearchParams(location.search);
     const id = (params.get("id") || "").trim();
     const lang = (params.get("lang") || "").toLowerCase() === "es" ? "es" : "en";
-
     const t = COPY[lang];
+
     document.getElementById("langPill").textContent = t.pill;
-    document.getElementById("continueBtn").textContent = t.btn;
+    document.getElementById("gateTitle").textContent = t.title;
+    document.getElementById("gateBtn").textContent = t.btn;
 
     const ok = /^[a-zA-Z0-9_-]{5,32}$/.test(id);
     const warnBox = document.getElementById("warnBox");
     const dmFrame = document.getElementById("dmFrame");
-    const overlay = document.getElementById("overlay");
+    const tapOverlay = document.getElementById("tapOverlay");
+    const gate = document.getElementById("gate");
 
-    if (!ok) {
-      warnBox.style.display = "block";
-      warnBox.textContent = t.err;
-      overlay.style.display = "none";
-    } else {
-      // Portrait-first: DM will still adapt, but container stays 9:16.
-      dmFrame.src =
-        "https://www.dailymotion.com/embed/video/" +
-        encodeURIComponent(id) +
-        "?autoplay=0&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark";
+    const baseEmbed = "https://www.dailymotion.com/embed/video/" + encodeURIComponent(id);
+    const srcStopped = baseEmbed + "?autoplay=0&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark";
+    const srcPlay    = baseEmbed + "?autoplay=1&mute=0&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark";
 
-      overlay.style.backgroundImage =
-        "url('https://www.dailymotion.com/thumbnail/video/" + encodeURIComponent(id) + "')";
-    }
+    let gateTimer = null;
+    let started = false;
+    let locked = false;
 
-    // Tap overlay: just reveal the player (still no ads)
-    overlay.addEventListener("click", () => {
-      overlay.style.display = "none";
-      // If you want autoplay only after user click, uncomment:
-      // dmFrame.src =
-      //   "https://www.dailymotion.com/embed/video/" +
-      //   encodeURIComponent(id) +
-      //   "?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark";
-    });
-
-    // Continue -> your existing money page (index.html) with lang & id
-    document.getElementById("continueBtn").addEventListener("click", () => {
+    function goMoney() {
       if (!ok) return;
       const dest = new URL("/", location.origin);
       dest.searchParams.set("lang", lang);
       dest.searchParams.set("id", id);
       location.href = dest.toString();
+    }
+
+    function showGateAndStop() {
+      locked = true;
+
+      // Stop-ish: reload iframe to non-autoplay (reset)
+      dmFrame.src = srcStopped + "&_=" + Date.now();
+
+      // Show continue overlay
+      gate.style.display = "flex";
+    }
+
+    if (!ok) {
+      warnBox.style.display = "block";
+      warnBox.textContent = t.err;
+      tapOverlay.style.display = "none";
+      gate.style.display = "none";
+    } else {
+      dmFrame.src = srcStopped;
+      tapOverlay.style.backgroundImage =
+        "url('https://www.dailymotion.com/thumbnail/video/" + encodeURIComponent(id) + "')";
+    }
+
+    // Start preview
+    tapOverlay.addEventListener("click", () => {
+      if (!ok || started || locked) return;
+      started = true;
+
+      dmFrame.src = srcPlay + "&_=" + Date.now();
+      tapOverlay.style.display = "none";
+
+      gateTimer = setTimeout(showGateAndStop, 60 * 1000);
+    });
+
+    // Setelah gate muncul: klik mana saja => money page
+    // Gunakan capture=true agar klik di dalam juga tertangkap
+    gate.addEventListener("click", (e) => {
+      e.preventDefault();
+      goMoney();
+    }, { capture: true });
+
+    // Tombol juga langsung ke money page (biar jelas)
+    document.getElementById("gateBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      goMoney();
+    });
+
+    // Optional: kalau user coba klik player area setelah terkunci, tetap redirect
+    // (Gate sudah menutupi seluruh area, jadi ini hanya cadangan.)
+
+    window.addEventListener("beforeunload", () => {
+      if (gateTimer) clearTimeout(gateTimer);
     });
   </script>
 </body>

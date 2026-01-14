@@ -7,13 +7,12 @@
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0f0f0f" />
 
-  <title>MovTubez - Continue</title>
-  <meta name="description" content="Preview page. Continue to the video page." />
+  <title>MovTubez</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
   <style>
-    :root { --bg:#0f0f0f; --surface:#151515; --surface2:#1e1e1e; --text:#fff; --muted:#a7a7a7; --red:#e50914; }
+    :root { --bg:#0f0f0f; --surface:#151515; --text:#fff; --muted:#9a9a9a; --red:#e50914; }
     * { box-sizing:border-box; margin:0; padding:0; }
     body{
       font-family:'Roboto',sans-serif;
@@ -32,32 +31,25 @@
     }
     .logo{ font-size:20px; font-weight:900; display:flex; align-items:center; gap:6px; letter-spacing:.2px; }
     .logo span{ color:var(--red); font-size:24px; }
+
     .lang-pill{
       font-size:11px; font-weight:900;
       padding:6px 10px; border-radius:999px;
       border:1px solid rgba(255,255,255,0.18);
       background:rgba(255,255,255,0.06);
       color:#ddd;
+      text-transform:uppercase;
+      letter-spacing:.6px;
     }
 
-    .wrapper{ max-width:860px; margin:0 auto; padding:16px; padding-bottom:40px; }
-    .hero{
-      margin-top:10px;
-      background:linear-gradient(180deg, rgba(229,9,20,0.10), rgba(255,255,255,0.02));
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:16px;
-      padding:14px;
-    }
-    .hero h1{ font-size:18px; font-weight:800; line-height:1.35; }
-    .hero p{ margin-top:6px; color:var(--muted); font-size:12px; font-weight:600; }
+    .wrapper{ max-width:860px; margin:0 auto; padding:14px 14px 40px; }
 
-    /* Player preview (clean) */
-    .player-wrap{ margin-top:14px; }
+    /* Portrait-first player */
     .player-box{
       position:relative;
       width:100%;
-      aspect-ratio: 4/5;  /* mirip money page Anda */
-      max-height:75vh;
+      aspect-ratio: 9/16;          /* portrait */
+      max-height:78vh;
       background:#000;
       border-radius:16px;
       overflow:hidden;
@@ -70,7 +62,7 @@
       display:block;
     }
 
-    /* Overlay preview (optional, premium feel) */
+    /* Minimal overlay (tap to show) */
     .overlay{
       position:absolute; inset:0; z-index:5;
       display:flex; align-items:center; justify-content:center;
@@ -81,48 +73,31 @@
     .overlay::before{
       content:"";
       position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.70));
+      background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.72));
       backdrop-filter: blur(4px);
     }
     .play-ring{
       position:relative; z-index:6;
-      width:72px; height:72px; border-radius:50%;
+      width:74px; height:74px; border-radius:50%;
       background:rgba(229,9,20,0.92);
       display:flex; align-items:center; justify-content:center;
       box-shadow:0 0 28px rgba(229,9,20,0.55);
       animation:pulse 2s infinite;
     }
     .play-ring::after{ content:"▶"; font-size:30px; margin-left:4px; }
-    .taptext{
-      position:absolute; bottom:40px; z-index:6;
-      font-size:13px; font-weight:800; letter-spacing:1px;
-      color:#fff;
-      opacity:0.95;
-    }
     @keyframes pulse{
       0%{ box-shadow:0 0 0 0 rgba(229,9,20,0.55); }
       70%{ box-shadow:0 0 0 18px rgba(229,9,20,0); }
       100%{ box-shadow:0 0 0 0 rgba(229,9,20,0); }
     }
 
-    /* Continue area */
-    .info{
-      margin-top:16px;
+    .actions{
+      margin-top:14px;
       background:var(--surface);
       border:1px solid rgba(255,255,255,0.08);
       border-radius:16px;
-      padding:14px;
+      padding:12px;
     }
-    .title{
-      font-size:16px; font-weight:800; line-height:1.35;
-      margin-bottom:10px;
-    }
-    .sub{
-      color:var(--muted);
-      font-size:12px; font-weight:600;
-      margin-bottom:14px;
-    }
-
     .btn{
       width:100%;
       border:none;
@@ -132,23 +107,14 @@
       font-size:14px;
       text-transform:uppercase;
       cursor:pointer;
-    }
-    .btn-primary{
       background:#fff;
       color:#000;
       box-shadow:0 4px 18px rgba(255,255,255,0.10);
     }
-    .btn-primary:active{ transform:scale(0.99); }
-
-    .note{
-      margin-top:10px;
-      color:#6f6f6f;
-      font-size:11px;
-      line-height:1.4;
-    }
+    .btn:active{ transform:scale(0.99); }
 
     .warn{
-      margin-top:14px;
+      margin-top:12px;
       background:#2a1c00;
       border:1px solid #5a3b00;
       color:#ffd79a;
@@ -158,14 +124,12 @@
       font-weight:800;
       display:none;
     }
-
-    .footer{
-      text-align:center;
-      padding:28px 12px 10px;
-      color:#666;
-      font-size:12px;
+    code{
+      background:#1a1a1a;
+      padding:2px 6px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.10);
     }
-    code{ background:#1a1a1a; padding:2px 6px; border-radius:8px; border:1px solid rgba(255,255,255,0.10); }
   </style>
 </head>
 
@@ -176,125 +140,74 @@
   </nav>
 
   <div class="wrapper">
-    <div class="hero">
-      <h1 id="heroTitle">Preview</h1>
-      <p id="heroDesc">Tap play to preview, then continue to the video page.</p>
-    </div>
+    <div class="player-box">
+      <iframe id="dmFrame"
+        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+        allowfullscreen
+        referrerpolicy="no-referrer"
+        src="">
+      </iframe>
 
-    <div class="player-wrap">
-      <div class="player-box">
-        <!-- Preview iframe: we keep it muted to reduce friction -->
-        <iframe id="dmFrame"
-          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-          allowfullscreen
-          referrerpolicy="no-referrer"
-          src="">
-        </iframe>
-
-        <!-- Overlay: user click removes overlay (no ads, no popups) -->
-        <div class="overlay" id="overlay">
-          <div class="play-ring"></div>
-          <div class="taptext" id="tapText">TAP TO PREVIEW</div>
-        </div>
+      <div class="overlay" id="overlay">
+        <div class="play-ring"></div>
       </div>
     </div>
 
-    <div class="info">
-      <div class="title" id="mainTitle">Continue to watch</div>
-      <div class="sub" id="subTitle">You will be redirected to the full video page.</div>
-
-      <button class="btn btn-primary" id="continueBtn" type="button">CONTINUE TO WATCH</button>
-
-      <div class="note" id="noteText">
-        No ads on this preview page. Video content is provided by the source platform.
-        ID: <code id="vidCode">—</code>
-      </div>
-
+    <div class="actions">
+      <button class="btn" id="continueBtn" type="button">CONTINUE TO WATCH</button>
       <div class="warn" id="warnBox">
-        Invalid or missing ID. Use: <code>?lang=en&id=x9n1o8e</code>
+        Invalid or missing ID. Example: <code>?lang=en&id=x9n1o8e</code>
       </div>
-    </div>
-
-    <div class="footer">
-      © 2026 MovTubez
     </div>
   </div>
 
   <script>
-    // ----- Config copy -----
+    // Minimal text (only EN/ES for button), no ads, no popups, no auto-redirect.
+
     const COPY = {
-      en: {
-        pill: "EN",
-        heroTitle: "Preview",
-        heroDesc: "Tap play to preview, then continue to the video page.",
-        tap: "TAP TO PREVIEW",
-        mainTitle: "Continue to watch",
-        subTitle: "You will be redirected to the full video page.",
-        btn: "CONTINUE TO WATCH",
-        warn: "Invalid or missing ID. Use: ?lang=en&id=x9n1o8e"
-      },
-      es: {
-        pill: "ES",
-        heroTitle: "Vista previa",
-        heroDesc: "Toca play para ver la vista previa y luego continúa a la página del video.",
-        tap: "TOCA PARA VER",
-        mainTitle: "Continuar para ver",
-        subTitle: "Serás dirigido a la página completa del video.",
-        btn: "CONTINUAR PARA VER",
-        warn: "ID inválido o faltante. Usa: ?lang=es&id=x9n1o8e"
-      }
+      en: { pill: "EN", btn: "CONTINUE TO WATCH", err: "Invalid or missing ID. Example: ?lang=en&id=x9n1o8e" },
+      es: { pill: "ES", btn: "CONTINUAR PARA VER", err: "ID inválido o faltante. Ejemplo: ?lang=es&id=x9n1o8e" }
     };
 
     const params = new URLSearchParams(location.search);
     const id = (params.get("id") || "").trim();
-    const langParam = (params.get("lang") || "").toLowerCase();
-    const lang = (langParam === "es") ? "es" : "en"; // sesuai kebutuhan Anda (pisah EN/ES)
+    const lang = (params.get("lang") || "").toLowerCase() === "es" ? "es" : "en";
 
-    // Basic ID validation
-    const ok = /^[a-zA-Z0-9_-]{5,32}$/.test(id);
-
-    // Apply language
     const t = COPY[lang];
     document.getElementById("langPill").textContent = t.pill;
-    document.getElementById("heroTitle").textContent = t.heroTitle;
-    document.getElementById("heroDesc").textContent = t.heroDesc;
-    document.getElementById("tapText").textContent = t.tap;
-    document.getElementById("mainTitle").textContent = t.mainTitle;
-    document.getElementById("subTitle").textContent = t.subTitle;
     document.getElementById("continueBtn").textContent = t.btn;
 
-    // Build preview iframe + overlay background
+    const ok = /^[a-zA-Z0-9_-]{5,32}$/.test(id);
     const warnBox = document.getElementById("warnBox");
-    const vidCode = document.getElementById("vidCode");
     const dmFrame = document.getElementById("dmFrame");
     const overlay = document.getElementById("overlay");
 
     if (!ok) {
       warnBox.style.display = "block";
-      warnBox.textContent = t.warn;
-      vidCode.textContent = "—";
+      warnBox.textContent = t.err;
       overlay.style.display = "none";
     } else {
-      vidCode.textContent = id;
+      // Portrait-first: DM will still adapt, but container stays 9:16.
+      dmFrame.src =
+        "https://www.dailymotion.com/embed/video/" +
+        encodeURIComponent(id) +
+        "?autoplay=0&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark";
 
-      // Preview embed:
-      // - muted=1 to reduce user friction
-      // - autoplay=0 (safe) — overlay click will just reveal the player
-      // If you want autoplay on preview after click, we can toggle src then.
-      dmFrame.src = `https://www.dailymotion.com/embed/video/${encodeURIComponent(id)}?autoplay=0&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
-
-      // Overlay background thumbnail (premium look)
-      overlay.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${encodeURIComponent(id)}')`;
+      overlay.style.backgroundImage =
+        "url('https://www.dailymotion.com/thumbnail/video/" + encodeURIComponent(id) + "')";
     }
 
-    // Overlay click: remove overlay only (no ads)
+    // Tap overlay: just reveal the player (still no ads)
     overlay.addEventListener("click", () => {
       overlay.style.display = "none";
-      // Optional: if you want start playing automatically AFTER click:
-      // dmFrame.src = `https://www.dailymotion.com/embed/video/${encodeURIComponent(id)}?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
+      // If you want autoplay only after user click, uncomment:
+      // dmFrame.src =
+      //   "https://www.dailymotion.com/embed/video/" +
+      //   encodeURIComponent(id) +
+      //   "?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark";
     });
 
-    // Continue button: go to your existing money page (index.html) with same lang & id
+    // Continue -> your existing money page (index.html) with lang & id
     document.getElementById("continueBtn").addEventListener("click", () => {
       if (!ok) return;
       const dest = new URL("/", location.origin);

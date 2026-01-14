@@ -82,14 +82,14 @@
       100%{ box-shadow:0 0 0 0 rgba(229,9,20,0); }
     }
 
-    /* Continue modal (pop-up after 60s) */
+    /* Continue overlay (after 60s): click anywhere => redirect */
     .gate{
       position:absolute; inset:0; z-index:20;
       display:none;
       align-items:center;
       justify-content:center;
       padding:16px;
-      cursor:pointer; /* klik mana aja */
+      cursor:pointer;
     }
     .gate::before{
       content:"";
@@ -106,13 +106,7 @@
       padding:16px;
       box-shadow:0 20px 60px rgba(0,0,0,0.6);
       text-align:center;
-      cursor:pointer; /* klik card juga */
-    }
-    .gate-title{
-      font-size:16px;
-      font-weight:900;
-      letter-spacing:.3px;
-      margin-bottom:10px;
+      cursor:pointer;
     }
     .gate-btn{
       width:100%;
@@ -129,7 +123,6 @@
     }
     .gate-btn:active{ transform:scale(0.99); }
 
-    /* Warning */
     .warn{
       margin-top:14px;
       background:#2a1c00;
@@ -165,15 +158,12 @@
         src="">
       </iframe>
 
-      <!-- Start overlay -->
       <div class="tap-overlay" id="tapOverlay">
         <div class="play-ring"></div>
       </div>
 
-      <!-- Continue pop-up after 60s (klik mana aja => redirect) -->
       <div class="gate" id="gate" aria-label="Continue overlay">
         <div class="gate-card" id="gateCard">
-          <div class="gate-title" id="gateTitle">Continue to watch</div>
           <button class="gate-btn" id="gateBtn" type="button">CONTINUE TO WATCH</button>
         </div>
       </div>
@@ -186,8 +176,8 @@
 
   <script>
     const COPY = {
-      en: { pill:"EN", title:"Continue to watch", btn:"CONTINUE TO WATCH", err:"Invalid or missing ID. Example: ?lang=en&id=x9n1o8e" },
-      es: { pill:"ES", title:"Continuar para ver", btn:"CONTINUAR PARA VER", err:"ID inválido o faltante. Ejemplo: ?lang=es&id=x9n1o8e" }
+      en: { pill:"EN", btn:"CONTINUE TO WATCH", err:"Invalid or missing ID. Example: ?lang=en&id=x9n1o8e" },
+      es: { pill:"ES", btn:"CONTINUAR PARA VER", err:"ID inválido o faltante. Ejemplo: ?lang=es&id=x9n1o8e" }
     };
 
     const params = new URLSearchParams(location.search);
@@ -196,7 +186,6 @@
     const t = COPY[lang];
 
     document.getElementById("langPill").textContent = t.pill;
-    document.getElementById("gateTitle").textContent = t.title;
     document.getElementById("gateBtn").textContent = t.btn;
 
     const ok = /^[a-zA-Z0-9_-]{5,32}$/.test(id);
@@ -211,7 +200,6 @@
 
     let gateTimer = null;
     let started = false;
-    let locked = false;
 
     function goMoney() {
       if (!ok) return;
@@ -221,13 +209,8 @@
       location.href = dest.toString();
     }
 
-    function showGateAndStop() {
-      locked = true;
-
-      // Stop-ish: reload iframe to non-autoplay (reset)
-      dmFrame.src = srcStopped + "&_=" + Date.now();
-
-      // Show continue overlay
+    function showGateOnly() {
+      // IMPORTANT: video tetap memutar (tidak reload iframe)
       gate.style.display = "flex";
     }
 
@@ -237,38 +220,35 @@
       tapOverlay.style.display = "none";
       gate.style.display = "none";
     } else {
-      dmFrame.src = srcStopped;
+      dmFrame.src = srcStopped; // initial
       tapOverlay.style.backgroundImage =
         "url('https://www.dailymotion.com/thumbnail/video/" + encodeURIComponent(id) + "')";
     }
 
     // Start preview
     tapOverlay.addEventListener("click", () => {
-      if (!ok || started || locked) return;
+      if (!ok || started) return;
       started = true;
 
       dmFrame.src = srcPlay + "&_=" + Date.now();
       tapOverlay.style.display = "none";
 
-      gateTimer = setTimeout(showGateAndStop, 60 * 1000);
+      // after 60s: show continue overlay (video continues behind)
+      gateTimer = setTimeout(showGateOnly, 60 * 1000);
     });
 
-    // Setelah gate muncul: klik mana saja => money page
-    // Gunakan capture=true agar klik di dalam juga tertangkap
+    // Gate click anywhere => money page
     gate.addEventListener("click", (e) => {
       e.preventDefault();
       goMoney();
     }, { capture: true });
 
-    // Tombol juga langsung ke money page (biar jelas)
+    // Button also goes to money page
     document.getElementById("gateBtn").addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       goMoney();
     });
-
-    // Optional: kalau user coba klik player area setelah terkunci, tetap redirect
-    // (Gate sudah menutupi seluruh area, jadi ini hanya cadangan.)
 
     window.addEventListener("beforeunload", () => {
       if (gateTimer) clearTimeout(gateTimer);

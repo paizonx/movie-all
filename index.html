@@ -14,10 +14,17 @@
     <script defer type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
 
     <script>
+        // Disable Right Click
         document.addEventListener('contextmenu', event => event.preventDefault()); 
+        
+        // Disable Keyboard Shortcuts (F12, Ctrl+U, Ctrl+S, Ctrl+Shift+I)
         document.onkeydown = function(e) {
-            if (e.keyCode == 123) return false; 
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            if (e.keyCode == 123) return false; // F12
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) return false; // Ctrl+S
         }
     </script>
 
@@ -31,7 +38,7 @@
             background-color: var(--bg); 
             color: var(--text); 
             overflow-x: hidden;
-            -webkit-user-select: none; user-select: none;
+            -webkit-user-select: none; user-select: none; /* Anti Select Text */
         }
         a { text-decoration: none; color: inherit; transition: 0.2s; }
 
@@ -76,9 +83,8 @@
         .player-box { 
             position: relative; 
             width: 100%; 
-            /* Rasio 4:5 = Aman untuk Vertikal maupun Landscape di HP */
-            aspect-ratio: 4/5; 
-            max-height: 75vh;
+            aspect-ratio: 16/9; /* Default landscape, nanti diatur JS */
+            max-height: 80vh;
             background: #000; margin: 0 auto; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
         }
@@ -91,7 +97,7 @@
         /* OVERLAY PLAYER */
         #overlayLayer { 
             position: absolute; inset: 0; z-index: 20; 
-            background: #000; background-size: cover; background-position: center; 
+            background-color: #000; background-size: cover; background-position: center; 
             display: flex; align-items: center; justify-content: center; cursor: pointer; 
         }
         #overlayBackdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
@@ -176,8 +182,8 @@
             </div>
 
             <div style="padding: 10px 0;">
-                <div class="player-box">
-                    <iframe id="dmFrame" 
+                <div class="player-box" id="playerBoxShell">
+                    <iframe id="mainFrame" 
                         allow="autoplay; fullscreen; encrypted-media; picture-in-picture" 
                         allowfullscreen 
                         style="display:none;">
@@ -230,11 +236,12 @@
         
         const homeView = document.getElementById('homeView');
         const playerView = document.getElementById('playerView');
-        const dmFrame = document.getElementById('dmFrame');
+        const mainFrame = document.getElementById('mainFrame');
         const overlayLayer = document.getElementById('overlayLayer');
         const vidTitle = document.getElementById('vidTitle');
         const gridTarget = document.getElementById('gridTarget');
         const searchBox = document.getElementById('searchBox');
+        const playerBoxShell = document.getElementById('playerBoxShell');
 
         function init() {
             lang = urlParams.get('lang') === 'es' ? 'es' : 'en';
@@ -256,19 +263,14 @@
             document.getElementById('btn-es').className = lang === 'es' ? 'lang-btn active' : 'lang-btn';
         }
 
-        // === LOGIKA IKLAN & PLAY (FIXED) ===
+        // === LOGIKA IKLAN ===
         function klikIklan() {
-            window.open(AD_LINK, '_blank'); // Buka Iklan
-            
-            // Sembunyikan Cover
+            window.open(AD_LINK, '_blank'); 
             overlayLayer.style.display = 'none';
-            
-            // Video sudah di-set autoplay=1 di renderPlayer, jadi otomatis terlihat
-            // Kita tidak perlu reload iframe agar tidak error
         }
         function bukaIklan() { window.open(AD_LINK, '_blank'); }
 
-        // === API LOGIC ===
+        // === API LOGIC (DAILYMOTION ONLY) ===
         async function fetchAPI(keyword, limit=24) {
             const q = encodeURIComponent(keyword);
             const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_480_url,views_total&limit=${limit}&sort=relevance&search=${q}`;
@@ -286,7 +288,6 @@
             const keyword = CONFIG[lang].queryHome; 
             let videos = await fetchAPI(keyword, 30);
             
-            // Fallback
             if(!videos) videos = await fetchAPI(lang === 'en' ? "Chinese Drama" : "Drama Chino", 30);
 
             document.getElementById('loader').style.display = 'none';
@@ -329,30 +330,51 @@
             gridTarget.innerHTML = html;
         }
 
-        // === RENDER PLAYER YANG AMAN ===
+        // === UNIVERSAL RENDER PLAYER (DM & REELY) ===
         async function renderPlayer(id) {
             homeView.style.display = 'none';
             playerView.style.display = 'block';
             window.scrollTo(0,0);
             
-            dmFrame.style.display = 'block';
+            mainFrame.style.display = 'block';
             
-            // TRIK AUTOPLAY: autoplay=1 dan mute=1 (Bisu)
-            // Ini agar browser mengizinkan video jalan di latar belakang.
-            // Saat user klik "Tap to Watch", video sudah jalan, user tinggal unmute.
-            dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
-            
-            // Tampilkan Cover Iklan
-            overlayLayer.style.display = 'flex';
-            overlayLayer.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
+            // DETEKSI TIPE ID
+            // Jika panjang ID > 20 karakter, kita anggap itu UUID dari REELY
+            if(id.length > 20) {
+                // --- MODE REELY ---
+                mainFrame.src = `https://embed.reely.live/embed?v=${id}`;
+                
+                // Gunakan cover placeholder karena Reely tidak punya API public untuk cover
+                overlayLayer.style.display = 'flex';
+                overlayLayer.style.backgroundImage = `url('https://via.placeholder.com/640x360/111/fff?text=Click+to+Play')`;
+                
+                // Judul generik
+                vidTitle.innerText = "External Stream (Live)";
+                
+                // Kosongkan rekomendasi (side list)
+                document.getElementById('sideList').innerHTML = '<div style="color:#666; font-size:12px;">No recommendations for external link.</div>';
 
-            try {
-                const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
-                const res = await req.json();
-                vidTitle.innerText = res.title || "Watching Video";
-            } catch(e) { vidTitle.innerText = "Premium Stream"; }
+                // Ubah rasio box jadi 16:9 agar pas dengan player Reely
+                playerBoxShell.style.aspectRatio = "16/9";
 
-            loadRecs(id);
+            } else {
+                // --- MODE DAILYMOTION ---
+                mainFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
+                
+                overlayLayer.style.display = 'flex';
+                overlayLayer.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
+                
+                // Ubah rasio box jadi 4:5 agar pas di HP (vertikal friendly)
+                playerBoxShell.style.aspectRatio = "4/5";
+
+                try {
+                    const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
+                    const res = await req.json();
+                    vidTitle.innerText = res.title || "Watching Video";
+                } catch(e) { vidTitle.innerText = "Premium Stream"; }
+
+                loadRecs(id);
+            }
         }
 
         async function loadRecs(currentId) {

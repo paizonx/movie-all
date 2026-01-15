@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
     
-    <title>Drachin - Universal Stream</title>
+    <title>Drachin - Vertical Stream</title>
     <meta name="theme-color" content="#0f0f0f">
     
     <link rel="manifest" href="/manifest.json">
@@ -14,17 +14,11 @@
     <script defer type="text/javascript" src="https://ridernoodleacerbity.com/c9/c0/46/c9c04611f8fb3b0b21da4b49fb98d3fa.js"></script>
 
     <script>
-        // Disable Right Click
         document.addEventListener('contextmenu', event => event.preventDefault()); 
-        
-        // Disable Keyboard Shortcuts (F12, Ctrl+U, Ctrl+S, Ctrl+Shift+I)
         document.onkeydown = function(e) {
-            if (e.keyCode == 123) return false; // F12
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
-            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) return false; // Ctrl+S
+            if (e.keyCode == 123) return false; 
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
+            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) return false; 
         }
     </script>
 
@@ -38,11 +32,11 @@
             background-color: var(--bg); 
             color: var(--text); 
             overflow-x: hidden;
-            -webkit-user-select: none; user-select: none; /* Anti Select Text */
+            -webkit-user-select: none; user-select: none;
         }
         a { text-decoration: none; color: inherit; transition: 0.2s; }
 
-        /* NAVBAR GLASS */
+        /* NAVBAR */
         .navbar { 
             display: flex; align-items: center; justify-content: space-between; 
             padding: 0 16px; height: 60px; 
@@ -62,7 +56,7 @@
         .lang-btn.active { background: var(--red); color: white; border-color: var(--red); }
 
         /* CONTAINER */
-        .wrapper { max-width: 800px; margin: 0 auto; min-height: 90vh; padding-bottom: 40px; }
+        .wrapper { max-width: 600px; margin: 0 auto; min-height: 90vh; padding-bottom: 40px; }
 
         /* SEARCH BAR */
         .search-container { padding: 15px; display: flex; gap: 10px; position: sticky; top: 60px; z-index: 90; background: #0f0f0f; }
@@ -71,47 +65,50 @@
             padding: 12px 20px; border-radius: 50px; color: #fff; 
             outline: none; font-size: 14px;
         }
-        .search-input:focus { border-color: var(--red); background: #2a2a2a; }
         .search-btn { 
             background: #333; border: 1px solid #444; color: #fff; 
             padding: 0 20px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 13px;
         }
 
-        /* === PLAYER VIDEO STABIL === */
+        /* === PLAYER VIDEO (TIKTOK STYLE 9:16) === */
         #playerView { display: none; }
         
         .player-box { 
             position: relative; 
             width: 100%; 
-            aspect-ratio: 16/9; /* Default landscape, nanti diatur JS */
-            max-height: 80vh;
+            /* KUNCI: Rasio 9:16 (Vertikal Full) */
+            aspect-ratio: 9/16; 
+            max-height: 85vh; 
             background: #000; margin: 0 auto; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
+            border-radius: 12px;
+            overflow: hidden;
         }
         
         .player-box iframe { 
             width: 100%; height: 100%; border: 0; 
-            display: block; position: absolute; top:0; left:0; 
+            display: block; position: absolute; top:0; left:0; z-index: 1;
         }
 
-        /* OVERLAY PLAYER */
+        /* OVERLAY PLAYER (TRANSPARENT FOR AUTO PREVIEW) */
         #overlayLayer { 
             position: absolute; inset: 0; z-index: 20; 
-            background-color: #000; background-size: cover; background-position: center; 
+            background-color: transparent; /* TRANSPARAN: Agar player asli terlihat */
             display: flex; align-items: center; justify-content: center; cursor: pointer; 
         }
-        #overlayBackdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
+        /* Backdrop tipis biar tombol play terlihat jelas di atas video */
+        #overlayBackdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.2); }
         
         .play-btn-fake { 
-            position: relative; z-index: 21; width: 70px; height: 70px; 
+            position: relative; z-index: 21; width: 80px; height: 80px; 
             background: rgba(229, 9, 20, 0.9); border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
             cursor: pointer; box-shadow: 0 0 30px rgba(229, 9, 20, 0.6); 
             animation: pulse 2s infinite;
         }
-        .play-btn-fake::after { content: '▶'; font-size: 30px; color: white; margin-left: 5px; }
+        .play-btn-fake::after { content: '▶'; font-size: 35px; color: white; margin-left: 6px; }
         
-        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(229,9,20,0.7);} 70% {box-shadow: 0 0 0 15px rgba(229,9,20,0);} 100% {box-shadow: 0 0 0 0 rgba(229,9,20,0);} }
+        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(229,9,20,0.7);} 70% {box-shadow: 0 0 0 20px rgba(229,9,20,0);} 100% {box-shadow: 0 0 0 0 rgba(229,9,20,0);} }
 
         /* INFO AREA */
         .info-area { padding: 20px 15px; }
@@ -138,7 +135,7 @@
         
         .card { display: flex; flex-direction: column; cursor: pointer; }
         .thumb { 
-            position: relative; width: 100%; aspect-ratio: 2/3; 
+            position: relative; width: 100%; aspect-ratio: 9/16; 
             background: #222; border-radius: 8px; overflow: hidden; 
         }
         .thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -150,7 +147,9 @@
         #loader { text-align: center; padding: 80px 20px; color: #888; font-size: 12px; }
         .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 40px; font-size: 12px; color: #666; }
         
-        .side-item { display:flex; gap:12px; padding:10px; background:#1a1a1a; border-radius:8px; align-items:center; cursor:pointer; border:1px solid #222; }
+        /* SIDE RECOMMENDATIONS */
+        .side-item { display:flex; gap:12px; padding:10px; background:#1a1a1a; border-radius:8px; align-items:center; cursor:pointer; border:1px solid #222; transition: background 0.2s; }
+        .side-item:hover { background: #252525; }
     </style>
 </head>
 <body>
@@ -178,27 +177,26 @@
 
         <div id="playerView">
             <div onclick="goHome()" style="padding:15px 0; color:#aaa; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; border-bottom: 1px solid #222;">
-                <span style="font-size:18px;">&larr;</span> Back
+                <span style="font-size:18px;">&larr;</span> Back to Home
             </div>
 
-            <div style="padding: 10px 0;">
-                <div class="player-box" id="playerBoxShell">
+            <div style="padding: 0; background: #000;">
+                <div class="player-box">
                     <iframe id="mainFrame" 
                         allow="autoplay; fullscreen; encrypted-media; picture-in-picture" 
-                        allowfullscreen 
-                        style="display:none;">
+                        allowfullscreen>
                     </iframe>
                     
                     <div id="overlayLayer" onclick="klikIklan()">
                         <div id="overlayBackdrop"></div>
                         <div class="play-btn-fake"></div>
-                        <div style="position:absolute; bottom:40px; color:white; font-size:14px; font-weight:600; z-index:21; letter-spacing: 1px;">TAP TO WATCH</div>
+                        <div style="position:absolute; bottom:40px; color:white; font-size:14px; font-weight:600; z-index:21; letter-spacing: 1px;">TAP TO PLAY</div>
                     </div>
                 </div>
             </div>
 
             <div class="info-area">
-                <h1 id="vidTitle" class="main-title">...</h1>
+                <h1 id="vidTitle" class="main-title">Loading Title...</h1>
 
                 <button class="dl-btn" onclick="bukaIklan()">⬇ DOWNLOAD EPISODE</button>
 
@@ -210,7 +208,7 @@
                     </div>
                 </div>
 
-                <h4 style="margin-top:30px; margin-bottom:15px; font-size:16px; color:#ddd;">More Like This</h4>
+                <h4 style="margin-top:30px; margin-bottom:15px; font-size:16px; color:#ddd; border-bottom:1px solid #333; padding-bottom:10px;">You May Like</h4>
                 <div id="sideList" style="display:flex; flex-direction:column; gap:12px;"></div>
             </div>
         </div>
@@ -227,8 +225,8 @@
         const AD_LINK = "https://ridernoodleacerbity.com/pu4v8n14t?key=280fea026bf240b90dd4b3343468c40f";
 
         const CONFIG = {
-            en: { ph: "Search Drama...", trend: "Trending (Eng Sub)", dl: "⬇ DOWNLOAD VIDEO", queryHome: "Chinese Drama Eng Sub", badge: "ENG" },
-            es: { ph: "Buscar Drama...", trend: "Tendencias (Español)", dl: "⬇ DESCARGAR VIDEO", queryHome: "Drama Chino Sub Español", badge: "ESP" }
+            en: { ph: "Search Drama...", trend: "Trending (Eng Sub)", queryHome: "Chinese Drama Eng Sub", badge: "ENG" },
+            es: { ph: "Buscar Drama...", trend: "Tendencias (Español)", queryHome: "Drama Chino Sub Español", badge: "ESP" }
         };
 
         let lang = 'en';
@@ -241,14 +239,15 @@
         const vidTitle = document.getElementById('vidTitle');
         const gridTarget = document.getElementById('gridTarget');
         const searchBox = document.getElementById('searchBox');
-        const playerBoxShell = document.getElementById('playerBoxShell');
 
         function init() {
             lang = urlParams.get('lang') === 'es' ? 'es' : 'en';
             updateUI();
             
             const currentId = urlParams.get('id');
-            if(currentId) renderPlayer(currentId);
+            const manualTitle = urlParams.get('title'); 
+            
+            if(currentId) renderPlayer(currentId, manualTitle);
             else loadHome();
         }
 
@@ -263,14 +262,12 @@
             document.getElementById('btn-es').className = lang === 'es' ? 'lang-btn active' : 'lang-btn';
         }
 
-        // === LOGIKA IKLAN ===
         function klikIklan() {
             window.open(AD_LINK, '_blank'); 
-            overlayLayer.style.display = 'none';
+            overlayLayer.style.display = 'none'; // Hilangkan overlay agar user bisa klik player asli
         }
         function bukaIklan() { window.open(AD_LINK, '_blank'); }
 
-        // === API LOGIC (DAILYMOTION ONLY) ===
         async function fetchAPI(keyword, limit=24) {
             const q = encodeURIComponent(keyword);
             const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_480_url,views_total&limit=${limit}&sort=relevance&search=${q}`;
@@ -284,12 +281,9 @@
         async function loadHome() {
             gridTarget.innerHTML = '';
             document.getElementById('loader').style.display = 'block';
-
             const keyword = CONFIG[lang].queryHome; 
             let videos = await fetchAPI(keyword, 30);
-            
             if(!videos) videos = await fetchAPI(lang === 'en' ? "Chinese Drama" : "Drama Chino", 30);
-
             document.getElementById('loader').style.display = 'none';
             if(videos) renderGrid(videos);
             else gridTarget.innerHTML = '<div style="color:#888; text-align:center; padding:20px;">No content.</div>';
@@ -298,15 +292,12 @@
         async function doSearch() {
             const q = searchBox.value;
             if(!q) return;
-
             gridTarget.innerHTML = '';
             document.getElementById('loader').style.display = 'block';
             document.getElementById('sectionTitle').innerText = "Search: " + q;
-
             const suffix = lang === 'en' ? " Eng Sub" : " Sub Español";
             let videos = await fetchAPI(q + suffix, 24);
             if(!videos) videos = await fetchAPI(q, 24);
-
             document.getElementById('loader').style.display = 'none';
             if(videos) renderGrid(videos);
             else gridTarget.innerHTML = '<div style="color:#888; text-align:center; padding:20px;">No results.</div>';
@@ -330,43 +321,29 @@
             gridTarget.innerHTML = html;
         }
 
-        // === UNIVERSAL RENDER PLAYER (DM & REELY) ===
-        async function renderPlayer(id) {
+        // === AUTO PREVIEW PLAYER ===
+        // Teknik: Iframe di-load langsung, tapi ditutup layer transparan untuk iklan
+        async function renderPlayer(id, customTitle) {
             homeView.style.display = 'none';
             playerView.style.display = 'block';
             window.scrollTo(0,0);
             
-            mainFrame.style.display = 'block';
-            
-            // DETEKSI TIPE ID
-            // Jika panjang ID > 20 karakter, kita anggap itu UUID dari REELY
+            // RESET OVERLAY AGAR IKLAN AKTIF LAGI
+            overlayLayer.style.display = 'flex'; 
+
+            // 1. REELY (External)
             if(id.length > 20) {
-                // --- MODE REELY ---
+                // Reely embed langsung dimuat
                 mainFrame.src = `https://embed.reely.live/embed?v=${id}`;
                 
-                // Gunakan cover placeholder karena Reely tidak punya API public untuk cover
-                overlayLayer.style.display = 'flex';
-                overlayLayer.style.backgroundImage = `url('https://via.placeholder.com/640x360/111/fff?text=Click+to+Play')`;
-                
-                // Judul generik
-                vidTitle.innerText = "External Stream (Live)";
-                
-                // Kosongkan rekomendasi (side list)
-                document.getElementById('sideList').innerHTML = '<div style="color:#666; font-size:12px;">No recommendations for external link.</div>';
-
-                // Ubah rasio box jadi 16:9 agar pas dengan player Reely
-                playerBoxShell.style.aspectRatio = "16/9";
+                vidTitle.innerText = customTitle ? decodeURIComponent(customTitle) : "Universal HD Stream";
+                loadRecs(null); 
 
             } else {
-                // --- MODE DAILYMOTION ---
+                // 2. DAILYMOTION
+                // Autoplay=1 mute=1 agar langsung gerak di background (sebagai preview)
                 mainFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
                 
-                overlayLayer.style.display = 'flex';
-                overlayLayer.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
-                
-                // Ubah rasio box jadi 4:5 agar pas di HP (vertikal friendly)
-                playerBoxShell.style.aspectRatio = "4/5";
-
                 try {
                     const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
                     const res = await req.json();
@@ -379,21 +356,24 @@
 
         async function loadRecs(currentId) {
             const sideList = document.getElementById('sideList');
-            sideList.innerHTML = '<div style="color:#666; font-size:12px;">Loading...</div>';
+            sideList.innerHTML = '<div style="color:#666; font-size:12px;">Loading recommendations...</div>';
+            
             const keyword = CONFIG[lang].queryHome; 
             const recs = await fetchAPI(keyword, 12);
+            
             if (!recs) { sideList.innerHTML = ''; return; }
 
-            const filtered = recs.filter(v => v.id !== currentId).slice(0, 8);
+            const filtered = currentId ? recs.filter(v => v.id !== currentId).slice(0, 8) : recs.slice(0, 8);
+            
             let html = '';
             filtered.forEach(v => {
                  const img = v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
                  html += `
                  <a href="?lang=${lang}&id=${v.id}" class="side-item">
-                    <div style="width:70px; aspect-ratio:2/3; background:#000; border-radius:4px; overflow:hidden; flex-shrink:0;">
+                    <div style="width:70px; aspect-ratio:9/16; background:#000; border-radius:4px; overflow:hidden; flex-shrink:0;">
                         <img src="${img}" style="width:100%;height:100%;object-fit:cover;">
                     </div>
-                    <div style="font-size:12px; font-weight:500; color:#ccc; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                    <div style="font-size:13px; font-weight:500; color:#ddd; line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
                         ${v.title}
                     </div>
                  </a>`;

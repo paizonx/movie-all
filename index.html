@@ -3,384 +3,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="referrer" content="no-referrer">
-    
-    <title>Drachin - Universal Stream</title>
+    <title>Dracinz - Stream & Download HD</title>
     <meta name="theme-color" content="#0f0f0f">
-    
-    <link rel="manifest" href="/manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
-    <script defer type="text/javascript" src="https://physicallylee.com/2b/e3/7f/2be37fde9a56c69556680d0cdc9994b2.js"></script>
-
-    <script>
-        document.addEventListener('contextmenu', event => event.preventDefault()); 
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123) return false; 
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
-        }
-    </script>
-
+    <meta name="description" content="Watch the latest movies, TV shows, and trending videos in high quality for free.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* === TEMA DARK MODE PREMIUM === */
-        :root { --bg: #0f0f0f; --surface: #1e1e1e; --text: #fff; --red: #e50914; --gold: #ffd700; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: 'Roboto', sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
+        :root {
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --border: #333333;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --brand: #ff0000;
+            --brand-hover: #cc0000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
             overflow-x: hidden;
-            -webkit-user-select: none; user-select: none;
+            line-height: 1.5;
         }
-        a { text-decoration: none; color: inherit; transition: 0.2s; }
 
-        /* NAVBAR GLASS */
-        .navbar { 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 16px; height: 60px; 
-            background: rgba(15,15,15,0.95); 
+        a { text-decoration: none; color: inherit; }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            height: 64px;
+            background: rgba(15, 15, 15, 0.95);
             backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 100; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
-        }
-        .logo { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
-        .logo span { color: var(--red); font-size: 24px; }
-        
-        .lang-switch { display: flex; gap: 8px; }
-        .lang-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ccc;
-            padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer;
-        }
-        .lang-btn.active { background: var(--red); color: white; border-color: var(--red); }
-
-        /* CONTAINER */
-        .wrapper { max-width: 800px; margin: 0 auto; min-height: 90vh; padding-bottom: 40px; }
-
-        /* SEARCH BAR */
-        .search-container { padding: 15px; display: flex; gap: 10px; position: sticky; top: 60px; z-index: 90; background: #0f0f0f; }
-        .search-input { 
-            width: 100%; background: #222; border: 1px solid #333; 
-            padding: 12px 20px; border-radius: 50px; color: #fff; 
-            outline: none; font-size: 14px;
-        }
-        .search-input:focus { border-color: var(--red); background: #2a2a2a; }
-        .search-btn { 
-            background: #333; border: 1px solid #444; color: #fff; 
-            padding: 0 20px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
         }
 
-        /* === PLAYER VIDEO STABIL === */
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span { color: var(--brand); font-size: 26px; }
+
+        .btn-app {
+            background: var(--brand);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+
+        .btn-app:hover { background: var(--brand-hover); }
+
+        /* --- LAYOUT --- */
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* --- SEARCH SECTION --- */
+        .hero-search {
+            padding: 24px 16px;
+            background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
+        }
+
+        .search-container {
+            display: flex;
+            background: #222;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--brand);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            color: #fff;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .search-btn {
+            background: var(--brand);
+            border: none;
+            color: #fff;
+            padding: 0 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* --- CONTENT GRID --- */
+        #homeView { padding: 16px; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        @media(min-width: 768px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:active { transform: scale(0.96); }
+
+        .thumb {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2/3;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .thumb.landscape { aspect-ratio: 16/9; }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-meta {
+            margin-top: 10px;
+        }
+
+        .card-t {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        .tag-source {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 3px 8px;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .tag-movie { background: #e62117; }
+        .tag-tv { background: #00b894; }
+        .tag-video { background: #0984e3; }
+        .tag-videy { background: #f39c12; }
+
+        /* --- PLAYER VIEW --- */
         #playerView { display: none; }
-        
-        .player-box { 
-            position: relative; 
-            width: 100%; 
-            /* Rasio 4:5 = Aman untuk Vertikal maupun Landscape di HP */
-            aspect-ratio: 4/5; 
-            max-height: 75vh;
-            background: #000; margin: 0 auto; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
+
+        .back-nav {
+            padding: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg);
         }
-        
-        .player-box iframe { 
-            width: 100%; height: 100%; border: 0; 
-            display: block; position: absolute; top:0; left:0; 
+
+        .player-container {
+            width: 100%;
+            background: #000;
+            position: relative;
+        }
+
+        .mode-vertical { aspect-ratio: 9/16; max-height: 80vh; margin: 0 auto; }
+        .mode-landscape { aspect-ratio: 16/9; }
+
+        .player-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         /* OVERLAY PLAYER */
-        #overlayLayer { 
-            position: absolute; inset: 0; z-index: 20; 
-            background: #000; background-size: cover; background-position: center; 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+        #overlayLayer {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            background-color: #000;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
-        #overlayBackdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
-        
-        .play-btn-fake { 
-            position: relative; z-index: 21; width: 70px; height: 70px; 
-            background: rgba(229, 9, 20, 0.9); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; box-shadow: 0 0 30px rgba(229, 9, 20, 0.6); 
+
+        #overlayLayer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .play-icon {
+            position: relative;
+            z-index: 51;
+            width: 80px;
+            height: 80px;
+            background: var(--brand);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(255,0,0,0.5);
             animation: pulse 2s infinite;
         }
-        .play-btn-fake::after { content: '▶'; font-size: 30px; color: white; margin-left: 5px; }
-        
-        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(229,9,20,0.7);} 70% {box-shadow: 0 0 0 15px rgba(229,9,20,0);} 100% {box-shadow: 0 0 0 0 rgba(229,9,20,0);} }
+
+        .play-icon::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 25px solid white;
+            margin-left: 5px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .tap-text {
+            position: relative;
+            z-index: 51;
+            margin-top: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
 
         /* INFO AREA */
-        .info-area { padding: 20px 15px; }
-        .main-title { font-size: 18px; font-weight: 700; line-height: 1.4; margin-bottom: 20px; color: #fff; }
-        
-        .native-ad { 
-            background: #151515; border: 1px solid #252525; border-radius: 12px; 
-            padding: 10px; margin: 20px 0; min-height: 250px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            width: 100%; overflow: hidden; 
-        }
-        
-        .dl-btn { 
-            display: block; width: 100%; background: #fff; color: #000; 
-            text-align: center; padding: 15px; border-radius: 12px; 
-            font-weight: 800; font-size: 14px; cursor: pointer; border: none; 
-            margin-bottom: 15px; text-transform: uppercase; 
-            box-shadow: 0 4px 15px rgba(255,255,255,0.1); 
+        .content-details { padding: 20px 16px; }
+        .content-title { font-size: 20px; font-weight: 800; margin-bottom: 16px; }
+
+        .dl-section {
+            margin: 20px 0;
         }
 
-        /* GRID CONTENT */
-        #homeView { display: block; padding: 0 10px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; row-gap: 20px; }
-        
-        .card { display: flex; flex-direction: column; cursor: pointer; }
-        .thumb { 
-            position: relative; width: 100%; aspect-ratio: 2/3; 
-            background: #222; border-radius: 8px; overflow: hidden; 
+        .btn-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: #fff;
+            color: #000;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
         }
-        .thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .card-t { font-size: 13px; font-weight: 500; margin-top: 8px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #e0e0e0; }
-        
-        .tag-hot { position:absolute; top:5px; left:5px; padding:2px 6px; font-size:9px; font-weight:900; border-radius:4px; color:white; background: var(--red); }
-        .tag-lang { position:absolute; top:5px; right:5px; padding:2px 6px; font-size:9px; font-weight:900; border-radius:4px; color:black; background: var(--gold); }
-        
-        #loader { text-align: center; padding: 80px 20px; color: #888; font-size: 12px; }
-        .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 40px; font-size: 12px; color: #666; }
-        
-        .side-item { display:flex; gap:12px; padding:10px; background:#1a1a1a; border-radius:8px; align-items:center; cursor:pointer; border:1px solid #222; }
+
+        /* NATIVE AD */
+        .ad-placeholder {
+            background: #151515;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-height: 200px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* UTILS */
+        .loading { text-align: center; padding: 50px; color: var(--text-secondary); font-weight: 600; }
+
+        .footer {
+            padding: 40px 16px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .footer a { color: var(--text-primary); margin: 0 8px; }
     </style>
+    <!-- Ad Script Emulation -->
+    <script src="https://thinnerwithdrewforbear.com/2e/a1/21/2ea12153a74996b501c2507cb4eebc96.js"></script>
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="?" class="logo"><span>▶</span> Drachin</a>
-        <div class="lang-switch">
-            <button id="btn-en" class="lang-btn" onclick="changeLang('en')">EN</button>
-            <button id="btn-es" class="lang-btn" onclick="changeLang('es')">ES</button>
-        </div>
+        <a href="?" class="logo"><span>▶</span> DRACINZ</a>
+        <a href="https://thinnerwithdrewforbear.com/hwb3cmd6y?key=1c3f46a40e0e5deafd89c38ccc6afb86" target="_blank" class="btn-app">GET MOBILE APP</a>
     </nav>
 
-    <div id="loader" style="display:none;">Loading...</div>
-
     <div class="wrapper">
+        
+        <!-- HOME VIEW -->
         <div id="homeView">
-            <div class="search-container">
-                <input type="text" id="searchBox" class="search-input" placeholder="Search Title...">
-                <button class="search-btn" onclick="doSearch()">GO</button>
+            <div class="hero-search">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search Movies, Drama, or TV Shows...">
+                    <button class="search-btn" id="searchBtn">SEARCH</button>
+                </div>
             </div>
-            
-            <h3 id="sectionTitle" style="margin:20px 0; color:#f1f1f1; border-left: 4px solid var(--red); padding-left: 10px; font-size: 16px;">Trending Now</h3>
-            <div class="grid" id="gridTarget"></div>
+
+            <div class="section-header" style="margin-top: 20px;">
+                <h2 class="section-title" id="gridTitle">Trending Content</h2>
+            </div>
+            <div class="grid" id="mainGrid"></div>
+            <div id="loader" class="loading" style="display:none;">Fetching Content...</div>
         </div>
 
+        <!-- PLAYER VIEW -->
         <div id="playerView">
-            <div onclick="goHome()" style="padding:15px 0; color:#aaa; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; border-bottom: 1px solid #222;">
-                <span style="font-size:18px;">&larr;</span> Back
+            <div class="back-nav" onclick="window.location.href='?'">
+                <span>&larr;</span> Back to Browse
             </div>
 
-            <div style="padding: 10px 0;">
-                <div class="player-box">
-                    <iframe id="dmFrame" 
-                        allow="autoplay; fullscreen; encrypted-media; picture-in-picture" 
-                        allowfullscreen 
-                        style="display:none;">
-                    </iframe>
-                    
-                    <div id="overlayLayer" onclick="klikIklan()">
-                        <div id="overlayBackdrop"></div>
-                        <div class="play-btn-fake"></div>
-                        <div style="position:absolute; bottom:40px; color:white; font-size:14px; font-weight:600; z-index:21; letter-spacing: 1px;">TAP TO WATCH</div>
-                    </div>
+            <div id="videoContainer" class="player-container mode-landscape">
+                <iframe id="mainPlayer" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                
+                <div id="overlayLayer" onclick="handlePlayerClick()">
+                    <div class="play-icon"></div>
+                    <div class="tap-text">Tap to Play HD</div>
                 </div>
             </div>
 
-            <div class="info-area">
-                <h1 id="vidTitle" class="main-title">...</h1>
+            <div class="content-details">
+                <h1 id="contentTitle" class="content-title">Loading title...</h1>
+                
+                <div class="dl-section">
+                    <button class="btn-download" onclick="triggerAd()">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h3l-4 4-4-4h3z"/></svg>
+                        Download in 1080p HD
+                    </button>
+                </div>
 
-                <button class="dl-btn" onclick="bukaIklan()">⬇ DOWNLOAD EPISODE</button>
-
-                <div class="native-ad">
+                <div class="ad-placeholder">
                     <div style="width:100%; text-align:center;">
-                        <span style="color:#444; font-size:10px; display:block; margin-bottom:10px;">SPONSORED</span>
-                        <script async="async" data-cfasync="false" src="https://physicallylee.com/dab5d294c7141f053a3a03ad471d3d4e/invoke.js"></script>
-                        <div id="container-dab5d294c7141f053a3a03ad471d3d4e"></div>
+                        <span style="color:#444; font-size:9px; margin-bottom:8px; display:block;">SPONSORED AD</span>
+                        <script async="async" data-cfasync="false" src="https://thinnerwithdrewforbear.com/54f40a4ce292a9187e0b9a0feb507f92/invoke.js"></script>
+                        <div id="container-54f40a4ce292a9187e0b9a0feb507f92"></div>
                     </div>
                 </div>
 
-                <h4 style="margin-top:30px; margin-bottom:15px; font-size:16px; color:#ddd;">More Like This</h4>
-                <div id="sideList" style="display:flex; flex-direction:column; gap:12px;"></div>
+                <h3 class="section-title" style="margin: 30px 0 15px;">You May Also Like</h3>
+                <div id="recsGrid" class="grid"></div>
             </div>
         </div>
     </div>
 
-    <div class="footer">
-        &copy; 2026 Drachin Stream.
-        <span id="histats_counter"></span>
-        <script type="text/javascript">var _Hasync= _Hasync|| []; _Hasync.push(['Histats.start', '1,4879497,4,0,0,0,00010000']); _Hasync.push(['Histats.fasi', '1']); _Hasync.push(['Histats.track_hits', '']); (function() { var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true; hs.src = ('//s10.histats.com/js15_as.js'); (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs); })();</script>
-        <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4879497&101" alt="" border="0"></a></noscript>
-    </div>
+    <footer class="footer">
+        <p>&copy; 2025 Dracinz Media. For educational and promotional purposes.</p>
+        <div style="margin-top: 15px;">
+            <a href="#">Privacy Policy</a>
+            <a href="#">DMCA</a>
+            <a href="#">Contact Us</a>
+        </div>
+    </footer>
 
     <script>
-        const AD_LINK = "https://physicallylee.com/xxih11wz?key=f34388748a7d98860b1db63830c66151";
+        const TMDB_KEY = "b9f961d942ecf6cb23575ffb5231ff13";
+        const AD_DIRECT_LINK = "https://thinnerwithdrewforbear.com/hwb3cmd6y?key=1c3f46a40e0e5deafd89c38ccc6afb86";
 
-        const CONFIG = {
-            en: { ph: "Search Drama...", trend: "Trending (Eng Sub)", dl: "⬇ DOWNLOAD VIDEO", queryHome: "Chinese Drama Eng Sub", badge: "ENG" },
-            es: { ph: "Buscar Drama...", trend: "Tendencias (Español)", dl: "⬇ DESCARGAR VIDEO", queryHome: "Drama Chino Sub Español", badge: "ESP" }
+        const elements = {
+            home: document.getElementById('homeView'),
+            player: document.getElementById('playerView'),
+            mainGrid: document.getElementById('mainGrid'),
+            recsGrid: document.getElementById('recsGrid'),
+            searchInput: document.getElementById('searchInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            gridTitle: document.getElementById('gridTitle'),
+            loader: document.getElementById('loader'),
+            mainPlayer: document.getElementById('mainPlayer'),
+            overlay: document.getElementById('overlayLayer'),
+            contentTitle: document.getElementById('contentTitle'),
+            videoContainer: document.getElementById('videoContainer')
         };
 
-        let lang = 'en';
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        const homeView = document.getElementById('homeView');
-        const playerView = document.getElementById('playerView');
-        const dmFrame = document.getElementById('dmFrame');
-        const overlayLayer = document.getElementById('overlayLayer');
-        const vidTitle = document.getElementById('vidTitle');
-        const gridTarget = document.getElementById('gridTarget');
-        const searchBox = document.getElementById('searchBox');
+        const params = new URLSearchParams(window.location.search);
+        const activeId = params.get('id');
 
-        function init() {
-            lang = urlParams.get('lang') === 'es' ? 'es' : 'en';
-            updateUI();
-            
-            const currentId = urlParams.get('id');
-            if(currentId) renderPlayer(currentId);
-            else loadHome();
+        // --- CORE LOGIC ---
+
+        function triggerAd() {
+            window.open(AD_DIRECT_LINK, '_blank');
         }
 
-        function changeLang(code) { window.location.href = `?lang=${code}`; }
-        function goHome() { window.location.href = `?lang=${lang}`; }
-
-        function updateUI() {
-            const t = CONFIG[lang];
-            searchBox.placeholder = t.ph;
-            document.getElementById('sectionTitle').innerText = t.trend;
-            document.getElementById('btn-en').className = lang === 'en' ? 'lang-btn active' : 'lang-btn';
-            document.getElementById('btn-es').className = lang === 'es' ? 'lang-btn active' : 'lang-btn';
+        function handlePlayerClick() {
+            triggerAd();
+            elements.overlay.style.display = 'none';
+            const currentSrc = elements.mainPlayer.src;
+            if(!currentSrc.includes('autoplay=1')) {
+                if (currentSrc.includes('videy.co')) {
+                     elements.mainPlayer.src = currentSrc;
+                } else {
+                     elements.mainPlayer.src = currentSrc + (currentSrc.includes('?') ? '&' : '?') + 'autoplay=1';
+                }
+            }
         }
 
-        // === LOGIKA IKLAN & PLAY (FIXED) ===
-        function klikIklan() {
-            window.open(AD_LINK, '_blank'); // Buka Iklan
-            
-            // Sembunyikan Cover
-            overlayLayer.style.display = 'none';
-            
-            // Video sudah di-set autoplay=1 di renderPlayer, jadi otomatis terlihat
-            // Kita tidak perlu reload iframe agar tidak error
-        }
-        function bukaIklan() { window.open(AD_LINK, '_blank'); }
-
-        // === API LOGIC ===
-        async function fetchAPI(keyword, limit=24) {
-            const q = encodeURIComponent(keyword);
-            const url = `https://api.dailymotion.com/videos?fields=id,title,thumbnail_480_url,views_total&limit=${limit}&sort=relevance&search=${q}`;
+        async function fetchTMDB(endpoint, queryParams = "") {
             try {
-                const req = await fetch(url);
-                const res = await req.json();
-                return res.list && res.list.length > 0 ? res.list : null;
-            } catch(e) { return null; }
+                const res = await fetch(`https://api.themoviedb.org/3/${endpoint}?api_key=${TMDB_KEY}${queryParams}`);
+                return await res.json();
+            } catch (e) {
+                console.error("TMDB Error", e);
+                return null;
+            }
         }
 
-        async function loadHome() {
-            gridTarget.innerHTML = '';
-            document.getElementById('loader').style.display = 'block';
+        function buildCard(item, source = 'tmdb-movie') {
+            let id, title, thumb, type, tagClass;
 
-            const keyword = CONFIG[lang].queryHome; 
-            let videos = await fetchAPI(keyword, 30);
-            
-            // Fallback
-            if(!videos) videos = await fetchAPI(lang === 'en' ? "Chinese Drama" : "Drama Chino", 30);
+            if (source === 'dm') {
+                id = item.id;
+                title = item.title;
+                thumb = item.thumbnail_480_url;
+                type = 'VIDEO';
+                tagClass = 'tag-video';
+            } else if (source === 'videy') {
+                id = 'videy:' + item.id;
+                title = item.title || "Videy Content";
+                thumb = 'https://via.placeholder.com/500x280/1a1a1a/ffffff?text=Videy+Content';
+                type = 'VIDEY';
+                tagClass = 'tag-videy';
+            } else {
+                const isTv = source === 'tmdb-tv' || item.first_air_date;
+                id = (isTv ? 'tv:' : 'movie:') + item.id;
+                title = item.title || item.name;
+                thumb = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster';
+                type = isTv ? 'TV SHOW' : 'MOVIE';
+                tagClass = isTv ? 'tag-tv' : 'tag-movie';
+            }
 
-            document.getElementById('loader').style.display = 'none';
-            if(videos) renderGrid(videos);
-            else gridTarget.innerHTML = '<div style="color:#888; text-align:center; padding:20px;">No content.</div>';
+            return `
+                <a href="?id=${id}" class="card">
+                    <div class="thumb ${source === 'dm' || source === 'videy' ? 'landscape' : ''}">
+                        <img src="${thumb}" loading="lazy" alt="${title}">
+                        <div class="tag-source ${tagClass}">${type}</div>
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-t">${title}</div>
+                    </div>
+                </a>
+            `;
         }
 
         async function doSearch() {
-            const q = searchBox.value;
-            if(!q) return;
+            const query = elements.searchInput.value.trim();
+            if(!query) return;
 
-            gridTarget.innerHTML = '';
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('sectionTitle').innerText = "Search: " + q;
+            elements.gridTitle.innerText = `Search results for "${query}"`;
+            elements.mainGrid.innerHTML = "";
+            elements.loader.style.display = 'block';
 
-            const suffix = lang === 'en' ? " Eng Sub" : " Sub Español";
-            let videos = await fetchAPI(q + suffix, 24);
-            if(!videos) videos = await fetchAPI(q, 24);
+            let html = "";
 
-            document.getElementById('loader').style.display = 'none';
-            if(videos) renderGrid(videos);
-            else gridTarget.innerHTML = '<div style="color:#888; text-align:center; padding:20px;">No results.</div>';
-        }
+            const movies = await fetchTMDB('search/movie', `&query=${encodeURIComponent(query)}`);
+            if(movies?.results) movies.results.slice(0, 8).forEach(m => html += buildCard(m, 'tmdb-movie'));
 
-        function renderGrid(list) {
-            let html = '';
-            const badgeText = CONFIG[lang].badge;
-            list.forEach(v => {
-                const img = v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
-                html += `
-                <a href="?lang=${lang}&id=${v.id}" class="card">
-                    <div class="thumb">
-                        <img src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Img'">
-                        <div class="tag-hot">HOT</div>
-                        <div class="tag-lang">${badgeText}</div>
-                    </div>
-                    <div class="card-t">${v.title}</div>
-                </a>`;
-            });
-            gridTarget.innerHTML = html;
-        }
-
-        // === RENDER PLAYER YANG AMAN ===
-        async function renderPlayer(id) {
-            homeView.style.display = 'none';
-            playerView.style.display = 'block';
-            window.scrollTo(0,0);
-            
-            dmFrame.style.display = 'block';
-            
-            // TRIK AUTOPLAY: autoplay=1 dan mute=1 (Bisu)
-            // Ini agar browser mengizinkan video jalan di latar belakang.
-            // Saat user klik "Tap to Watch", video sudah jalan, user tinggal unmute.
-            dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=1&queue-enable=false&ui-logo=0&sharing-enable=false&ui-theme=dark`;
-            
-            // Tampilkan Cover Iklan
-            overlayLayer.style.display = 'flex';
-            overlayLayer.style.backgroundImage = `url('https://www.dailymotion.com/thumbnail/video/${id}')`;
+            const tv = await fetchTMDB('search/tv', `&query=${encodeURIComponent(query)}`);
+            if(tv?.results) tv.results.slice(0, 4).forEach(t => html += buildCard(t, 'tmdb-tv'));
 
             try {
-                const req = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
-                const res = await req.json();
-                vidTitle.innerText = res.title || "Watching Video";
-            } catch(e) { vidTitle.innerText = "Premium Stream"; }
+                const dmRes = await fetch(`https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_480_url&limit=8`);
+                const dmData = await dmRes.json();
+                if(dmData.list) dmData.list.forEach(v => html += buildCard(v, 'dm'));
+            } catch(e) {}
 
-            loadRecs(id);
+            elements.loader.style.display = 'none';
+            elements.mainGrid.innerHTML = html || '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">No content found.</div>';
         }
 
-        async function loadRecs(currentId) {
-            const sideList = document.getElementById('sideList');
-            sideList.innerHTML = '<div style="color:#666; font-size:12px;">Loading...</div>';
-            const keyword = CONFIG[lang].queryHome; 
-            const recs = await fetchAPI(keyword, 12);
-            if (!recs) { sideList.innerHTML = ''; return; }
-
-            const filtered = recs.filter(v => v.id !== currentId).slice(0, 8);
-            let html = '';
-            filtered.forEach(v => {
-                 const img = v.thumbnail_480_url || `https://www.dailymotion.com/thumbnail/video/${v.id}`;
-                 html += `
-                 <a href="?lang=${lang}&id=${v.id}" class="side-item">
-                    <div style="width:70px; aspect-ratio:2/3; background:#000; border-radius:4px; overflow:hidden; flex-shrink:0;">
-                        <img src="${img}" style="width:100%;height:100%;object-fit:cover;">
-                    </div>
-                    <div style="font-size:12px; font-weight:500; color:#ccc; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
-                        ${v.title}
-                    </div>
-                 </a>`;
-            });
-            sideList.innerHTML = html;
+        async function initHome() {
+            elements.loader.style.display = 'block';
+            const data = await fetchTMDB('trending/all/day');
+            let html = "";
+            if(data?.results) {
+                data.results.forEach(item => {
+                    html += buildCard(item);
+                });
+            }
+            elements.mainGrid.innerHTML = html;
+            elements.loader.style.display = 'none';
         }
 
-        searchBox.addEventListener("keypress", (e) => { if(e.key==="Enter") doSearch(); });
-        init();
+        async function initPlayer(id) {
+            elements.home.style.display = 'none';
+            elements.player.style.display = 'block';
+            
+            let finalId = id;
+            let type = 'movie';
+
+            if (id.includes(':')) {
+                const parts = id.split(':');
+                type = parts[0];
+                finalId = parts[1];
+            }
+
+            if (type === 'tv' || type === 'movie') {
+                elements.videoContainer.className = "player-container mode-landscape";
+                const details = await fetchTMDB(`${type}/${finalId}`);
+                elements.contentTitle.innerText = details?.title || details?.name || "Watch Content";
+                document.title = elements.contentTitle.innerText + " - Dracinz";
+                
+                if (details?.backdrop_path) {
+                   elements.overlay.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${details.backdrop_path})`;
+                }
+                elements.mainPlayer.src = `https://vidsrc.to/embed/${type}/${finalId}`;
+
+            } else if (type === 'videy') {
+                elements.videoContainer.className = "player-container mode-landscape";
+                elements.mainPlayer.src = `https://videy.co/v?id=${finalId}`;
+                elements.contentTitle.innerText = "Videy Premium Content (" + finalId + ")";
+                elements.overlay.style.backgroundImage = 'none';
+
+            } else {
+                elements.videoContainer.className = "player-container mode-vertical";
+                elements.mainPlayer.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
+                
+                try {
+                    const dmInfo = await fetch(`https://api.dailymotion.com/video/${id}?fields=title,thumbnail_720_url`);
+                    const dmData = await dmInfo.json();
+                    elements.contentTitle.innerText = dmData.title;
+                    elements.overlay.style.backgroundImage = `url(${dmData.thumbnail_720_url})`;
+                } catch(e) {}
+            }
+
+            const recs = await fetchTMDB('movie/popular', '&page=2');
+            let recsHtml = "";
+            if(recs?.results) {
+                recs.results.slice(0, 6).forEach(r => recsHtml += buildCard(r));
+            }
+            elements.recsGrid.innerHTML = recsHtml;
+        }
+
+        // --- EVENT LISTENERS ---
+        elements.searchBtn.onclick = doSearch;
+        elements.searchInput.onkeypress = (e) => { if(e.key === 'Enter') doSearch(); };
+
+        // --- BOOT ---
+        if (activeId) {
+            initPlayer(activeId);
+        } else {
+            initHome();
+        }
     </script>
+
+    <!-- Histats -->
+    <span id="histats_counter" style="display:none;"></span>
+    <script type="text/javascript">var _Hasync= _Hasync|| [];
+    _Hasync.push(['Histats.start', '1,4654540,4,0,0,0,00010000']);
+    _Hasync.push(['Histats.fasi', '1']);
+    _Hasync.push(['Histats.track_hits', '']);
+    (function() {
+    var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+    hs.src = ('//s10.histats.com/js15_as.js');
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+    })();</script>
 </body>
 </html>

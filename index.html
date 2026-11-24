@@ -1,387 +1,795 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dracinz - Stream & Download</title>
-    <meta name="theme-color" content="#0f0f0f">
-    <meta name="description" content="Watch high quality videos and download for free.">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        /* === DARK MODE THEME === */
-        :root { --bg: #0f0f0f; --surface: #1e1e1e; --text: #fff; --gray: #aaa; --red: #ff0000; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
-        a { text-decoration: none; color: inherit; }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dracinz - Portal Film & Streaming Legal</title>
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="description" content="Tonton trailer resmi, video Dailymotion, dan film open-source dengan kualitas HD.">
 
-        /* NAVBAR */
-        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 60px; background: rgba(15,15,15,0.98); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
-        .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
-        .logo span { color: var(--red); font-size: 24px; }
-        .btn-vip { background: var(--red); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; text-transform: uppercase; }
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        /* CONTAINER */
-        .wrapper { max-width: 1000px; margin: 0 auto; min-height: 90vh; }
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        /* SEARCH BAR */
-        .search-container { padding: 15px 0; display: flex; gap: 10px; }
-        .search-input { 
-            width: 100%; background: #222; border: 1px solid #333; 
-            padding: 12px 15px; border-radius: 25px; color: #fff; outline: none;
-            font-size: 14px;
-        }
-        .search-input:focus { border-color: var(--red); }
-        .search-btn {
-            background: #222; border: 1px solid #333; color: #fff;
-            padding: 0 20px; border-radius: 25px; cursor: pointer; font-weight: bold;
-        }
-
-        /* === PLAYER VIDEO === */
-        #playerView { display: none; }
-        
-        .player-box { 
-            position: relative; 
-            width: 100%; 
-            background: #000; 
-            margin: 0 auto;
-            transition: aspect-ratio 0.3s ease;
-        }
-
-        .mode-vertical { aspect-ratio: 9/16; max-height: 85vh; width: 100%; } 
-        .mode-landscape { aspect-ratio: 16/9; max-width: 100%; }
-
-        .player-box iframe, .player-box video { width: 100%; height: 100%; border: 0; display: block; position: absolute; top:0; left:0; }
-
-        /* OVERLAY FAKE PLAYER (Money Maker) */
-        #overlayLayer {
-            position: absolute; inset: 0; z-index: 20;
-            background: url('https://cdn.videy.co/DEFAULT_THUMB.jpg') no-repeat center center;
-            background-size: cover;
-            display: flex; align-items: center; justify-content: center;
-        }
-        #overlayBackdrop {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-        }
-        .play-btn-fake {
-            position: relative; z-index: 21;
-            width: 75px; height: 75px;
-            background: rgba(255,0,0,0.9);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 25px rgba(255,0,0,0.6);
-            animation: pulse 2s infinite;
-        }
-        .play-btn-fake::after { content: '▶'; font-size: 32px; color: white; margin-left: 5px; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-
-        /* INFO AREA */
-        .info-area { padding: 15px; }
-        .main-title { font-size: 18px; font-weight: 700; line-height: 1.4; margin-bottom: 15px; }
-        
-        /* Native Ad Container */
-        .native-ad { 
-            background: #111; border: 1px dashed #333; border-radius: 8px; 
-            padding: 10px; margin: 20px 0; min-height: 250px; 
-            display: flex; align-items: center; justify-content: center; 
-            width: 100%; overflow: hidden;
-        }
-
-        /* DOWNLOAD BUTTON (Direct Link) */
-        .dl-btn {
-            display: block; width: 100%; background: #fff; color: #000;
-            text-align: center; padding: 14px; border-radius: 8px;
-            font-weight: 800; font-size: 16px; cursor: pointer; border: none;
-            margin-bottom: 10px; text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
-        }
-        .dl-btn:hover { background: #eee; }
-
-        /* === GRID === */
-        #homeView { display: block; padding: 15px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; row-gap: 20px; }
-        @media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; } }
-
-        .card { display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; }
-        .card:hover { transform: scale(1.02); }
-        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; border-radius: 8px; overflow: hidden; }
-        .thumb.poster-mode { aspect-ratio: 2/3; } /* Poster TMDB */
-        .thumb img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .card-t { font-size: 14px; font-weight: 500; margin-top: 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #f1f1f1; }
-        
-        .tag-source { position:absolute; top:5px; left:5px; padding:2px 6px; font-size:10px; font-weight:bold; border-radius:4px; color:white; }
-        .tag-tmdb { background: #e62117; } /* Merah utk Film */
-        .tag-dm { background: #2563eb; } /* Biru utk Video */
-
-        /* LOADING */
-        #loader { text-align: center; padding: 80px 20px; color: #888; }
-        
-        /* FOOTER */
-        .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #222; margin-top: 20px; font-size: 12px; color: #666; }
-        .footer a { color: #888; text-decoration: none; }
-    </style>
-
-    <script src="https://thinnerwithdrewforbear.com/2e/a1/21/2ea12153a74996b501c2507cb4eebc96.js"></script>
-</head>
-<body>
-
-    <nav class="navbar">
-        <a href="?" class="logo"><span>▶</span> Dracinz</a>
-        <div>
-            <a href="https://thinnerwithdrewforbear.com/hwb3cmd6y?key=1c3f46a40e0e5deafd89c38ccc6afb86" target="_blank" class="btn-vip">Get App</a>
-        </div>
-    </nav>
-
-    <div id="loader" style="display:none;"><h3>Searching...</h3></div>
-
-    <div class="wrapper">
-
-        <div id="homeView">
-            
-            <div class="search-container">
-                <input type="text" id="searchBox" class="search-input" placeholder="Search Movies or Drama...">
-                <button class="search-btn" onclick="doDualSearch()">GO</button>
-            </div>
-
-            <h3 id="sectionTitle" style="margin-bottom:15px; color:#ddd;">Popular Movies</h3>
-            <div class="grid" id="gridTarget"></div>
-        </div>
-
-        <div id="playerView">
-            <div onclick="window.location.href='?'" style="padding:15px; color:#aaa; font-size:14px; border-bottom:1px solid #222; cursor:pointer; display:flex; align-items:center; gap:5px;">
-                <span>&larr;</span> Back to Search
-            </div>
-
-            <div id="playerBox" class="player-box mode-vertical">
-                <iframe id="dmFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
-
-                <div id="overlayLayer" onclick="klikIklan()">
-                    <div id="overlayBackdrop"></div>
-                    <div class="play-btn-fake"></div>
-                    <div style="position:absolute; bottom:25px; color:white; font-size:15px; font-weight:500; z-index:21;">Tap to Play</div>
-                </div>
-            </div>
-
-            <div class="info-area">
-                <h1 id="vidTitle" class="main-title">...</h1>
-
-                <button class="dl-btn" onclick="bukaIklan()">
-                    ⬇ DOWNLOAD HD VIDEO
-                </button>
-
-                <div class="native-ad">
-                    <div style="width:100%; text-align:center;">
-                        <span style="color:#444; font-size:10px; margin-bottom:5px; display:block;">SPONSORED AD</span>
-                        <script async="async" data-cfasync="false" src="https://thinnerwithdrewforbear.com/54f40a4ce292a9187e0b9a0feb507f92/invoke.js"></script>
-                        <div id="container-54f40a4ce292a9187e0b9a0feb507f92"></div>
-                    </div>
-                </div>
-
-                <div style="display:flex; gap:12px; align-items:center; margin-top:20px;">
-                    <div style="width:42px; height:42px; background:#cc0000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">DR</div>
-                    <div>
-                        <div style="font-weight:bold;">Dracinz Official</div>
-                        <div style="font-size:12px; color:#aaa;">New Videos Daily</div>
-                    </div>
-                </div>
-
-                <h4 style="margin-top:35px; margin-bottom:15px; font-size:16px;">Recommended for you</h4>
-                <div id="sideList" style="display:flex; flex-direction:column; gap:15px;"></div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="footer">
-        &copy; 2025 Dracinz Inc. All rights reserved.<br>
-        <div style="margin-top:10px;">
-            <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
-        </div>
-        
-        <span id="histats_counter" style="display:none;"></span>
-        <script type="text/javascript">var _Hasync= _Hasync|| [];
-        _Hasync.push(['Histats.start', '1,4654540,4,0,0,0,00010000']);
-        _Hasync.push(['Histats.fasi', '1']);
-        _Hasync.push(['Histats.track_hits', '']);
-        (function() {
-        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-        hs.src = ('//s10.histats.com/js15_as.js');
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-        })();</script>
-    </div>
-
+    <!-- Tailwind Config -->
     <script>
-        const TMDB_KEY = "b9f961d942ecf6cb23575ffb5231ff13"; // API Key TMDB Anda
-        const AD_LINK = "https://thinnerwithdrewforbear.com/hwb3cmd6y?key=1c3f46a40e0e5deafd89c38ccc6afb86";
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-neutral-950 text-neutral-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-600 selection:text-white">
 
+    <!-- ================= NAVBAR ================= -->
+    <header class="sticky top-0 z-50 bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <button onclick="goHome()" class="flex items-center gap-2 text-xl sm:text-2xl font-extrabold tracking-tight focus:outline-none group">
+                <span class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-600/30 group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+                <span>Dracinz<span class="text-brand-500">.</span></span>
+            </button>
+
+            <!-- Search Form (Desktop) -->
+            <form onsubmit="handleSearch(event)" class="hidden md:flex flex-1 max-w-md relative">
+                <input
+                    type="text"
+                    id="searchInputDesktop"
+                    placeholder="Cari film TMDB atau video Dailymotion..."
+                    class="w-full bg-neutral-900 border border-neutral-800 rounded-full py-2 pl-4 pr-12 text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors"
+                >
+                <button type="submit" aria-label="Cari" class="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-brand-600 hover:bg-brand-700 text-white transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"/></svg>
+                </button>
+            </form>
+
+            <!-- Action Badge -->
+            <div class="flex items-center gap-2">
+                <button onclick="loadCategory('opensource')" class="px-3.5 py-2 rounded-full bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-xs sm:text-sm font-semibold text-neutral-200 transition-colors">
+                    Film Gratis (MP4)
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Form (Mobile) -->
+        <div class="md:hidden px-4 pb-3">
+            <form onsubmit="handleSearch(event)" class="relative">
+                <input
+                    type="text"
+                    id="searchInputMobile"
+                    placeholder="Cari film atau video..."
+                    class="w-full bg-neutral-900 border border-neutral-800 rounded-full py-2.5 pl-4 pr-12 text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-brand-500"
+                >
+                <button type="submit" aria-label="Cari" class="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-full bg-brand-600 text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"/></svg>
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 hidden items-center gap-3 bg-neutral-900 border border-neutral-700 text-white px-4 py-3 rounded-xl shadow-2xl text-sm font-medium max-w-xs">
+        <span id="toastMsg">Pesan notifikasi</span>
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ========== HOME VIEW ========== -->
+        <section id="homeView" class="space-y-8">
+            <!-- Hero Featured Movie Banner -->
+            <div id="heroBanner" class="relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 min-h-[280px] sm:min-h-[380px] flex items-end p-6 sm:p-10 shadow-2xl">
+                <div class="animate-pulse w-full space-y-3">
+                    <div class="h-8 bg-neutral-800 rounded-lg w-1/2"></div>
+                    <div class="h-4 bg-neutral-800 rounded-lg w-3/4"></div>
+                </div>
+            </div>
+
+            <!-- Category Navigation Pills -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 w-full sm:w-auto">
+                    <button onclick="loadCategory('popular')" data-cat="popular" class="cat-btn px-4 py-2 rounded-full text-sm font-semibold bg-brand-600 text-white transition-colors whitespace-nowrap">
+                        Populer
+                    </button>
+                    <button onclick="loadCategory('now_playing')" data-cat="now_playing" class="cat-btn px-4 py-2 rounded-full text-sm font-semibold bg-neutral-900 text-neutral-300 hover:bg-neutral-800 border border-neutral-800 transition-colors whitespace-nowrap">
+                        Sedang Tayang
+                    </button>
+                    <button onclick="loadCategory('top_rated')" data-cat="top_rated" class="cat-btn px-4 py-2 rounded-full text-sm font-semibold bg-neutral-900 text-neutral-300 hover:bg-neutral-800 border border-neutral-800 transition-colors whitespace-nowrap">
+                        Rating Tertinggi
+                    </button>
+                    <button onclick="loadCategory('opensource')" data-cat="opensource" class="cat-btn px-4 py-2 rounded-full text-sm font-semibold bg-neutral-900 text-neutral-300 hover:bg-neutral-800 border border-neutral-800 transition-colors whitespace-nowrap">
+                        Film Full Legal (MP4)
+                    </button>
+                </div>
+                <h2 id="sectionHeading" class="text-lg font-bold text-neutral-200 hidden sm:block">Film Populer</h2>
+            </div>
+
+            <!-- Movie / Video Grid -->
+            <div id="gridTarget" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+                <!-- Cards injected dynamically -->
+            </div>
+        </section>
+
+        <!-- ========== PLAYER VIEW ========== -->
+        <section id="playerView" class="hidden space-y-6">
+            <!-- Top Navigation Bar inside Player -->
+            <div class="flex items-center justify-between gap-4">
+                <button onclick="goHome()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-sm font-semibold text-neutral-200 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+                    Kembali ke Beranda
+                </button>
+                <span id="playerSourceBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-600/20 text-brand-500 border border-brand-600/30">
+                    TMDB TRAILER
+                </span>
+            </div>
+
+            <!-- Layout: Main Player + Sidebar Recommendations -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- Left/Main Column (2/3 width on desktop) -->
+                <div class="lg:col-span-2 space-y-5">
+                    <!-- Responsive Video Player Container -->
+                    <div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl flex items-center justify-center">
+                        <!-- Iframe or HTML5 Video injected dynamically -->
+                    </div>
+
+                    <!-- Video Selector (if TMDB has multiple trailers/clips) -->
+                    <div id="videoSelectorWrap" class="hidden space-y-2">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Pilih Video / Trailer Tersedia:</p>
+                        <div id="videoSelectorList" class="flex gap-2 overflow-x-auto pb-2"></div>
+                    </div>
+
+                    <!-- Movie Details Card -->
+                    <div class="bg-neutral-900/70 border border-neutral-800 rounded-2xl p-5 sm:p-6 space-y-4">
+                        <div class="flex flex-wrap items-start justify-between gap-3">
+                            <div class="space-y-1">
+                                <h1 id="vidTitle" class="text-xl sm:text-2xl font-extrabold text-white leading-snug">Memuat judul...</h1>
+                                <div id="vidMeta" class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-neutral-400"></div>
+                            </div>
+                            <button onclick="copyShareLink()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs sm:text-sm font-semibold text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                                Bagikan
+                            </button>
+                        </div>
+
+                        <!-- Genres -->
+                        <div id="vidGenres" class="flex flex-wrap gap-2"></div>
+
+                        <!-- Synopsis -->
+                        <p id="vidOverview" class="text-sm sm:text-base text-neutral-300 leading-relaxed"></p>
+
+                        <!-- Legal Watch Providers (Where to stream full movie) -->
+                        <div id="watchProvidersWrap" class="hidden pt-4 border-t border-neutral-800 space-y-3">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                Tonton Film Penuh Secara Legal di:
+                            </h3>
+                            <div id="watchProvidersList" class="flex flex-wrap items-center gap-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Recommendations -->
+                <aside class="space-y-4">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <span class="w-1.5 h-5 bg-brand-600 rounded-full"></span>
+                        Rekomendasi Untuk Anda
+                    </h3>
+                    <div id="sideList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                        <!-- Recommendations injected dynamically -->
+                    </div>
+                </aside>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="border-t border-neutral-900 bg-neutral-950 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+            <p>&copy; 2026 Dracinz Portal. Data film didukung oleh <span class="text-neutral-300 font-semibold">TMDB API</span>.</p>
+            <p>Hanya memutar trailer resmi, video Dailymotion, dan film Open-Source/Creative Commons.</p>
+        </div>
+    </footer>
+
+    <!-- ================= APPLICATION LOGIC ================= -->
+    <script>
+        // ==========================================
+        // 1. KONFIGURASI & DATA OPEN-SOURCE LEGAL
+        // ==========================================
+        const TMDB_KEY = "b9f961d942ecf6cb23575ffb5231ff13";
+        const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
+        const TMDB_BACKDROP = "https://image.tmdb.org/t/p/original";
+
+        /**
+         * Contoh katalog film full legal (Creative Commons / Open Source)
+         * Anda dapat mengganti URL mp4 di bawah dengan URL server video legal milik Anda sendiri (misal: AWS S3, Cloudflare R2, Bunny.net).
+         */
+        const OPEN_SOURCE_MOVIES = [
+            {
+                id: "os:bbb",
+                title: "Big Buck Bunny (Full Movie - HD)",
+                year: "2008",
+                rating: "8.2",
+                genres: ["Animasi", "Komedi", "Open Source"],
+                poster: "https://placehold.co/500x750/1e293b/ffffff?text=Big+Buck+Bunny",
+                backdrop: "https://placehold.co/1280x720/1e293b/ffffff?text=Big+Buck+Bunny+HD",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                overview: "Film animasi pendek open-source karya Blender Institute. Mengisahkan kelinci raksasa baik hati yang membalas kejahilan tiga hewan pengerat nakal di hutan."
+            },
+            {
+                id: "os:sintel",
+                title: "Sintel (Full Movie - HD)",
+                year: "2010",
+                rating: "8.5",
+                genres: ["Animasi", "Fantasi", "Aksi"],
+                poster: "https://placehold.co/500x750/3b0764/ffffff?text=Sintel+Movie",
+                backdrop: "https://placehold.co/1280x720/3b0764/ffffff?text=Sintel+HD",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+                overview: "Seorang gadis muda bernama Sintel melakukan perjalanan berbahaya melintasi negeri untuk mencari sahabat naga kecilnya yang hilang."
+            },
+            {
+                id: "os:tears",
+                title: "Tears of Steel (Full Movie - Sci-Fi)",
+                year: "2012",
+                rating: "7.8",
+                genres: ["Sci-Fi", "Aksi", "Open Source"],
+                poster: "https://placehold.co/500x750/0f172a/ffffff?text=Tears+of+Steel",
+                backdrop: "https://placehold.co/1280x720/0f172a/ffffff?text=Tears+of+Steel+HD",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+                overview: "Di masa depan distopia di Amsterdam, sekelompok pejuang dan ilmuwan berkumpul untuk mencoba menyelamatkan dunia dari robot destruktif."
+            }
+        ];
+
+        // Elemen DOM
         const homeView = document.getElementById('homeView');
         const playerView = document.getElementById('playerView');
-        const playerBox = document.getElementById('playerBox');
-        const dmFrame = document.getElementById('dmFrame');
-        const overlayLayer = document.getElementById('overlayLayer');
-        const vidTitle = document.getElementById('vidTitle');
+        const heroBanner = document.getElementById('heroBanner');
         const gridTarget = document.getElementById('gridTarget');
-        const searchBox = document.getElementById('searchBox');
+        const sectionHeading = document.getElementById('sectionHeading');
+        const playerContainer = document.getElementById('playerContainer');
+        const videoSelectorWrap = document.getElementById('videoSelectorWrap');
+        const videoSelectorList = document.getElementById('videoSelectorList');
+        const vidTitle = document.getElementById('vidTitle');
+        const vidMeta = document.getElementById('vidMeta');
+        const vidGenres = document.getElementById('vidGenres');
+        const vidOverview = document.getElementById('vidOverview');
+        const watchProvidersWrap = document.getElementById('watchProvidersWrap');
+        const watchProvidersList = document.getElementById('watchProvidersList');
+        const sideList = document.getElementById('sideList');
+        const playerSourceBadge = document.getElementById('playerSourceBadge');
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentId = urlParams.get('id');
-
-        function klikIklan() {
-            window.open(AD_LINK, '_blank'); 
-            overlayLayer.style.display = 'none';
-            const src = dmFrame.src;
-            if(!src.includes('autoplay=1')) dmFrame.src = src.replace('autoplay=0', 'autoplay=1');
+        // ==========================================
+        // 2. UTILITAS (TOAST, CLIPBOARD, LOADING)
+        // ==========================================
+        let toastTimer = null;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 3000);
         }
 
-        function bukaIklan() { window.open(AD_LINK, '_blank'); }
-
-        // === SEARCH: TMDB + DAILYMOTION (HYBRID) ===
-        async function doDualSearch() {
-            const query = searchBox.value;
-            if(!query) return;
-
-            document.getElementById('sectionTitle').innerText = "Results for: " + query;
-            gridTarget.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Searching...</div>';
-
-            let combinedResults = "";
-
-            // 1. CARI TMDB (FILM)
+        function copyShareLink() {
+            const url = window.location.href;
+            const tempInput = document.createElement('input');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
             try {
-                const resTMDB = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
-                const dataTMDB = await resTMDB.json();
-                if(dataTMDB.results) {
-                    dataTMDB.results.forEach(m => {
-                        if(m.poster_path) {
-                            const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
-                            combinedResults += createCard(`tmdb:${m.id}`, m.title, thumb, 'poster-mode', 'MOVIE', 'tag-tmdb');
-                        }
-                    });
-                }
-            } catch(e) {}
-
-            // 2. CARI DAILYMOTION (VIDEO)
-            try {
-                const resDM = await fetch(`https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_480_url&limit=12`);
-                const dataDM = await resDM.json();
-                if(dataDM.list) {
-                    dataDM.list.forEach(v => {
-                        combinedResults += createCard(v.id, v.title, v.thumbnail_480_url, '', 'VIDEO', 'tag-dm');
-                    });
-                }
-            } catch(e) {}
-
-            if(combinedResults === "") {
-                gridTarget.innerHTML = '<div style="text-align:center; padding:20px;">No results found.</div>';
-            } else {
-                gridTarget.innerHTML = combinedResults;
+                document.execCommand('copy');
+                showToast('Tautan berhasil disalin ke clipboard!');
+            } catch (e) {
+                showToast('Gagal menyalin tautan.');
             }
+            document.body.removeChild(tempInput);
         }
 
-        function createCard(id, title, thumb, mode, tagText, tagClass) {
-            return `
-            <a href="?id=${id}" class="card">
-                <div class="thumb ${mode}">
-                    <img src="${thumb}" loading="lazy">
-                    <div class="tag-source ${tagClass}">${tagText}</div>
-                </div>
-                <div class="card-t">${title}</div>
-            </a>`;
+        function renderSkeletonGrid(count = 10) {
+            let html = '';
+            for (let i = 0; i < count; i++) {
+                html += `
+                <div class="animate-pulse space-y-2.5">
+                    <div class="aspect-[2/3] bg-neutral-900 rounded-xl border border-neutral-800"></div>
+                    <div class="h-4 bg-neutral-900 rounded w-3/4"></div>
+                    <div class="h-3 bg-neutral-900 rounded w-1/2"></div>
+                </div>`;
+            }
+            gridTarget.innerHTML = html;
         }
 
-        searchBox.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") doDualSearch();
+        // ==========================================
+        // 3. NAVIGASI & ROUTING (BERBASIS HASH)
+        // ==========================================
+        function goHome() {
+            // Hentikan pemutar video agar suara tidak bocor di latar belakang
+            playerContainer.innerHTML = '';
+            window.location.hash = '';
+            playerView.classList.add('hidden');
+            homeView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openItem(itemId) {
+            window.location.hash = `watch=${encodeURIComponent(itemId)}`;
+            renderPlayer(itemId);
+        }
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash;
+            if (hash.startsWith('#watch=')) {
+                const id = decodeURIComponent(hash.replace('#watch=', ''));
+                renderPlayer(id);
+            } else {
+                playerContainer.innerHTML = '';
+                playerView.classList.add('hidden');
+                homeView.classList.remove('hidden');
+            }
         });
 
-        // === INIT ===
-        async function init() {
-            if (currentId) {
-                renderPlayer(currentId);
-            } else {
-                loadHomeContent();
+        // ==========================================
+        // 4. RENDER KARTU & KATEGORI BERANDA
+        // ==========================================
+        function createCardHTML({ id, title, thumb, subtitle, rating, badgeText, badgeColor, isLandscape = false }) {
+            const aspectClass = isLandscape ? 'aspect-video' : 'aspect-[2/3]';
+            const fallbackImg = `https://placehold.co/500x750/171717/737373?text=${encodeURIComponent(title.slice(0, 18))}`;
+
+            return `
+            <article onclick="openItem('${id}')" class="group cursor-pointer flex flex-col gap-2 focus:outline-none">
+                <div class="relative w-full ${aspectClass} bg-neutral-900 rounded-xl overflow-hidden border border-neutral-800/80 shadow-md group-hover:border-brand-500/60 transition-all duration-300">
+                    <img
+                        src="${thumb}"
+                        alt="${title.replace(/"/g, '&quot;')}"
+                        loading="lazy"
+                        onerror="this.onerror=null;this.src='${fallbackImg}';"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    >
+                    <!-- Play Hover Overlay -->
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="w-12 h-12 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-lg scale-90 group-hover:scale-100 transition-transform">
+                            <svg class="w-6 h-6 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </span>
+                    </div>
+                    <!-- Source Badge -->
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide text-white ${badgeColor} shadow">
+                        ${badgeText}
+                    </span>
+                    <!-- Rating Badge -->
+                    ${rating ? `
+                    <span class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md text-[11px] font-bold bg-black/75 backdrop-blur-sm text-amber-400 flex items-center gap-0.5">
+                        ★ ${rating}
+                    </span>` : ''}
+                </div>
+                <div class="px-0.5">
+                    <h3 class="text-sm font-semibold text-neutral-100 line-clamp-2 group-hover:text-brand-500 transition-colors leading-snug">${title}</h3>
+                    ${subtitle ? `<p class="text-xs text-neutral-400 mt-0.5">${subtitle}</p>` : ''}
+                </div>
+            </article>`;
+        }
+
+        function renderHeroBanner(movie) {
+            if (!movie) return;
+            const backdrop = movie.backdrop_path
+                ? `${TMDB_BACKDROP}${movie.backdrop_path}`
+                : `https://placehold.co/1280x720/171717/525252?text=${encodeURIComponent(movie.title)}`;
+            const year = movie.release_date ? movie.release_date.slice(0, 4) : '';
+            const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+
+            heroBanner.innerHTML = `
+                <img src="${backdrop}" alt="${movie.title}" class="absolute inset-0 w-full h-full object-cover opacity-50" onerror="this.style.display='none'">
+                <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/50 to-transparent"></div>
+                <div class="relative z-10 max-w-2xl space-y-3">
+                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+                        <span class="px-2.5 py-1 rounded-full bg-brand-600 text-white">Trending Hari Ini</span>
+                        <span class="px-2.5 py-1 rounded-full bg-neutral-900/80 border border-neutral-700 text-amber-400">★ ${rating}</span>
+                        ${year ? `<span class="text-neutral-300">${year}</span>` : ''}
+                    </div>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">${movie.title}</h1>
+                    <p class="text-xs sm:text-sm text-neutral-300 line-clamp-3 leading-relaxed">${movie.overview || 'Tonton trailer resmi dan temukan platform streaming legal untuk film ini.'}</p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="openItem('tmdb:${movie.id}')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-600/30 transition-all">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            Tonton Trailer & Info
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setActiveCategoryUI(cat) {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = "cat-btn px-4 py-2 rounded-full text-sm font-semibold bg-brand-600 text-white transition-colors whitespace-nowrap";
+                } else {
+                    btn.className = "cat-btn px-4 py-2 rounded-full text-sm font-semibold bg-neutral-900 text-neutral-300 hover:bg-neutral-800 border border-neutral-800 transition-colors whitespace-nowrap";
+                }
+            });
+        }
+
+        async function loadCategory(category = 'popular') {
+            // Pastikan kembali ke tampilan beranda
+            if (!playerView.classList.contains('hidden')) {
+                goHome();
+            }
+            setActiveCategoryUI(category);
+
+            if (category === 'opensource') {
+                sectionHeading.textContent = "Film Full Legal (HTML5 MP4)";
+                gridTarget.innerHTML = OPEN_SOURCE_MOVIES.map(m => createCardHTML({
+                    id: m.id,
+                    title: m.title,
+                    thumb: m.poster,
+                    subtitle: `${m.year} • Full Movie`,
+                    rating: m.rating,
+                    badgeText: "MP4 FULL",
+                    badgeColor: "bg-emerald-600"
+                })).join('');
+                return;
+            }
+
+            const titles = {
+                popular: "Film Populer",
+                now_playing: "Sedang Tayang di Bioskop",
+                top_rated: "Film Rating Tertinggi"
+            };
+            sectionHeading.textContent = titles[category] || "Film Populer";
+            renderSkeletonGrid(10);
+
+            try {
+                const res = await fetch(`https://api.themoviedb.org/3/movie/${category}?api_key=${TMDB_KEY}&language=id-ID&page=1`);
+                if (!res.ok) throw new Error('Gagal mengambil data TMDB');
+                const data = await res.json();
+
+                if (data.results && data.results.length > 0) {
+                    if (category === 'popular') {
+                        renderHeroBanner(data.results[0]);
+                    }
+                    gridTarget.innerHTML = data.results.filter(m => m.poster_path).map(m => createCardHTML({
+                        id: `tmdb:${m.id}`,
+                        title: m.title,
+                        thumb: `${TMDB_IMG}${m.poster_path}`,
+                        subtitle: m.release_date ? m.release_date.slice(0, 4) : 'TMDB',
+                        rating: m.vote_average ? m.vote_average.toFixed(1) : null,
+                        badgeText: "TRAILER",
+                        badgeColor: "bg-brand-600"
+                    })).join('');
+                } else {
+                    gridTarget.innerHTML = `<p class="col-span-full text-center text-neutral-400 py-10">Tidak ada film ditemukan.</p>`;
+                }
+            } catch (err) {
+                console.error(err);
+                gridTarget.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Terjadi kesalahan memuat data TMDB. Periksa koneksi internet Anda.</p>`;
             }
         }
 
-        // === HOME: HANYA TMDB POPULAR (SESUAI REQUEST) ===
-        async function loadHomeContent() {
+        // ==========================================
+        // 5. PENCARIAN HYBRID (TMDB + DAILYMOTION)
+        // ==========================================
+        async function handleSearch(event) {
+            event.preventDefault();
+            const desktopVal = document.getElementById('searchInputDesktop').value.trim();
+            const mobileVal = document.getElementById('searchInputMobile').value.trim();
+            const query = desktopVal || mobileVal;
+
+            if (!query) {
+                showToast("Masukkan kata kunci pencarian terlebih dahulu.");
+                return;
+            }
+
+            // Sinkronkan kedua input
+            document.getElementById('searchInputDesktop').value = query;
+            document.getElementById('searchInputMobile').value = query;
+
+            if (!playerView.classList.contains('hidden')) {
+                goHome();
+            }
+            setActiveCategoryUI('');
+            sectionHeading.textContent = `Hasil Pencarian: "${query}"`;
+            renderSkeletonGrid(10);
+
+            let combinedHTML = '';
+
+            // 1. Cari di TMDB
             try {
-                const tmdbRes = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}`);
-                const tmdbData = await tmdbRes.json();
-                
-                let html = '';
-                if(tmdbData.results) {
-                    tmdbData.results.forEach(m => {
-                        if(m.poster_path) {
-                            const thumb = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
-                            html += createCard(`tmdb:${m.id}`, m.title, thumb, 'poster-mode', 'MOVIE', 'tag-tmdb');
-                        }
+                const resTMDB = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&language=id-ID&query=${encodeURIComponent(query)}`);
+                const dataTMDB = await resTMDB.json();
+                if (dataTMDB.results) {
+                    dataTMDB.results.filter(m => m.poster_path).slice(0, 12).forEach(m => {
+                        combinedHTML += createCardHTML({
+                            id: `tmdb:${m.id}`,
+                            title: m.title,
+                            thumb: `${TMDB_IMG}${m.poster_path}`,
+                            subtitle: m.release_date ? m.release_date.slice(0, 4) : 'Film',
+                            rating: m.vote_average ? m.vote_average.toFixed(1) : null,
+                            badgeText: "TMDB",
+                            badgeColor: "bg-brand-600"
+                        });
                     });
                 }
-                gridTarget.innerHTML = html;
-            } catch(e) {
-                gridTarget.innerHTML = "Error loading movies.";
-            }
-        }
+            } catch (e) { console.warn("TMDB search error:", e); }
 
-        async function renderPlayer(id) {
-            document.getElementById('homeView').style.display = 'none';
-            document.getElementById('playerView').style.display = 'block';
-
-            let title = "Watch Video";
-            
-            // LOGIKA PEMUTAR
-            if (/^\d+$/.test(id) || id.startsWith('tmdb:')) {
-                // TMDB MOVIE -> LANDSCAPE
-                const tmdbId = id.replace('tmdb:', '');
-                playerBox.className = "player-box mode-landscape";
-                try {
-                    const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_KEY}`);
-                    const data = await res.json();
-                    if(data.title) title = data.title;
-                } catch(e){}
-                dmFrame.src = `https://vidsrc.xyz/embed/movie/${tmdbId}`;
-                
-            } else if (id.startsWith('http')) {
-                // DIRECT LINK -> VERTICAL
-                playerBox.className = "player-box mode-vertical"; 
-                dmFrame.src = id;
-            } else {
-                // DAILYMOTION -> VERTICAL (Asumsi Short/Drama)
-                playerBox.className = "player-box mode-vertical"; 
-                try {
-                    const resDM = await fetch(`https://api.dailymotion.com/video/${id}?fields=title`);
-                    const dataDM = await resDM.json();
-                    if(dataDM.title) title = dataDM.title;
-                } catch(e){}
-                dmFrame.src = `https://www.dailymotion.com/embed/video/${id}?autoplay=0&queue-enable=false&ui-logo=0&sharing-enable=false`;
-            }
-
-            vidTitle.textContent = title;
-            document.title = title;
-            
-            overlayLayer.style.display = 'flex';
-
-            // REKOMENDASI (TMDB Popular)
-            const sideList = document.getElementById('sideList');
+            // 2. Cari di Dailymotion
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&page=2`);
-                const data = await res.json();
-                let sideHtml = '';
-                data.results.slice(0, 6).forEach(m => {
-                    const thumb = `https://image.tmdb.org/t/p/w200${m.poster_path}`;
-                    sideHtml += `
-                    <a href="?id=tmdb:${m.id}" style="display:flex; gap:10px; color:inherit;">
-                        <div style="width:70px; aspect-ratio:2/3; background:#222; border-radius:4px; overflow:hidden; flex-shrink:0;">
-                            <img src="${thumb}" style="width:100%; height:100%; object-fit:cover;">
-                        </div>
-                        <div style="font-size:13px; font-weight:500; line-height:1.3;">${m.title}</div>
-                    </a>`;
-                });
-                sideList.innerHTML = sideHtml;
-            } catch(e){}
+                const resDM = await fetch(`https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&fields=id,title,thumbnail_480_url&limit=8`);
+                const dataDM = await resDM.json();
+                if (dataDM.list) {
+                    dataDM.list.forEach(v => {
+                        combinedHTML += createCardHTML({
+                            id: `dm:${v.id}`,
+                            title: v.title,
+                            thumb: v.thumbnail_480_url,
+                            subtitle: "Dailymotion Video",
+                            rating: null,
+                            badgeText: "VIDEO",
+                            badgeColor: "bg-blue-600"
+                        });
+                    });
+                }
+            } catch (e) { console.warn("Dailymotion search error:", e); }
+
+            if (!combinedHTML) {
+                gridTarget.innerHTML = `<p class="col-span-full text-center text-neutral-400 py-12">Tidak ada hasil untuk "${query}".</p>`;
+            } else {
+                gridTarget.innerHTML = combinedHTML;
+            }
         }
 
-        init();
+        // ==========================================
+        // 6. PEMUTAR VIDEO (YOUTUBE / DAILYMOTION / HTML5 MP4)
+        // ==========================================
+        function mountYouTubePlayer(youtubeKey) {
+            playerContainer.innerHTML = `
+                <iframe
+                    src="https://www.youtube.com/embed/${youtubeKey}?autoplay=1&rel=0&modestbranding=1"
+                    title="YouTube Video Player"
+                    class="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                    allowfullscreen
+                ></iframe>`;
+        }
+
+        async function renderPlayer(rawId) {
+            homeView.classList.add('hidden');
+            playerView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Reset state
+            videoSelectorWrap.classList.add('hidden');
+            videoSelectorList.innerHTML = '';
+            watchProvidersWrap.classList.add('hidden');
+            watchProvidersList.innerHTML = '';
+            vidGenres.innerHTML = '';
+            vidMeta.innerHTML = '';
+            vidOverview.textContent = '';
+            playerContainer.innerHTML = `<div class="text-neutral-400 text-sm animate-pulse">Menyiapkan pemutar video...</div>`;
+
+            // --- CASE A: FILM OPEN-SOURCE (HTML5 MP4 PLAYER) ---
+            if (rawId.startsWith('os:')) {
+                const movie = OPEN_SOURCE_MOVIES.find(m => m.id === rawId);
+                if (!movie) {
+                    showToast("Video tidak ditemukan.");
+                    return goHome();
+                }
+
+                playerSourceBadge.textContent = "HTML5 FULL STREAM (MP4)";
+                vidTitle.textContent = movie.title;
+                vidMeta.innerHTML = `<span>${movie.year}</span> • <span class="text-amber-400 font-semibold">★ ${movie.rating}</span> • <span>Full HD MP4</span>`;
+                vidGenres.innerHTML = movie.genres.map(g => `<span class="px-2.5 py-1 rounded-lg bg-neutral-800 text-xs text-neutral-300 font-medium">${g}</span>`).join('');
+                vidOverview.textContent = movie.overview;
+
+                playerContainer.innerHTML = `
+                    <video controls autoplay playsinline poster="${movie.backdrop}" class="w-full h-full bg-black">
+                        <source src="${movie.videoUrl}" type="video/mp4">
+                        Browser Anda tidak mendukung pemutar video HTML5.
+                    </video>`;
+
+                loadRecommendations(null);
+                return;
+            }
+
+            // --- CASE B: VIDEO DAILYMOTION ---
+            if (rawId.startsWith('dm:')) {
+                const dmId = rawId.replace('dm:', '');
+                playerSourceBadge.textContent = "DAILYMOTION PLAYER";
+                playerContainer.innerHTML = `
+                    <iframe
+                        src="https://www.dailymotion.com/embed/video/${dmId}?autoplay=1"
+                        class="w-full h-full border-0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen
+                    ></iframe>`;
+
+                try {
+                    const res = await fetch(`https://api.dailymotion.com/video/${dmId}?fields=title,description,owner.screenname`);
+                    const data = await res.json();
+                    vidTitle.textContent = data.title || "Video Dailymotion";
+                    vidMeta.innerHTML = `<span>Channel: ${data['owner.screenname'] || 'Dailymotion'}</span>`;
+                    vidOverview.textContent = data.description ? data.description.replace(/<[^>]*>?/gm, '') : "Menampilkan streaming video resmi dari Dailymotion.";
+                } catch (e) {
+                    vidTitle.textContent = "Video Dailymotion";
+                }
+
+                loadRecommendations(null);
+                return;
+            }
+
+            // --- CASE C: FILM TMDB (TRAILER RESMI + WATCH PROVIDERS) ---
+            const tmdbId = rawId.replace('tmdb:', '');
+            playerSourceBadge.textContent = "TMDB OFFICIAL TRAILER";
+
+            try {
+                // Ambil detail film (fallback ke en-US jika sinopsis id-ID kosong)
+                const [resID, resEN, resVideos, resProviders] = await Promise.all([
+                    fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_KEY}&language=id-ID`),
+                    fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_KEY}&language=en-US`),
+                    fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/videos?api_key=${TMDB_KEY}&language=en-US`),
+                    fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/watch/providers?api_key=${TMDB_KEY}`)
+                ]);
+
+                const dataID = await resID.json();
+                const dataEN = await resEN.json();
+                const dataVideos = await resVideos.json();
+                const dataProviders = await resProviders.json();
+
+                const title = dataID.title || dataEN.title || "Detail Film";
+                const overview = dataID.overview || dataEN.overview || "Sinopsis belum tersedia.";
+                const year = dataID.release_date ? dataID.release_date.slice(0, 4) : '';
+                const runtime = dataID.runtime ? `${dataID.runtime} menit` : '';
+                const rating = dataID.vote_average ? dataID.vote_average.toFixed(1) : 'N/A';
+
+                vidTitle.textContent = title;
+                document.title = `${title} - Dracinz`;
+                vidMeta.innerHTML = `
+                    ${year ? `<span>${year}</span>` : ''}
+                    ${runtime ? `<span>• ${runtime}</span>` : ''}
+                    <span class="text-amber-400 font-semibold">• ★ ${rating}</span>
+                `;
+                if (dataID.genres && dataID.genres.length > 0) {
+                    vidGenres.innerHTML = dataID.genres.map(g => `<span class="px-2.5 py-1 rounded-lg bg-neutral-800 text-xs text-neutral-300 font-medium">${g.name}</span>`).join('');
+                }
+                vidOverview.textContent = overview;
+
+                // Cari Video YouTube (Prioritaskan Official Trailer -> Trailer -> Teaser -> Clip)
+                const ytVideos = (dataVideos.results || []).filter(v => v.site === 'YouTube');
+                ytVideos.sort((a, b) => {
+                    const score = (v) => (v.type === 'Trailer' && v.official ? 4 : v.type === 'Trailer' ? 3 : v.type === 'Teaser' ? 2 : 1);
+                    return score(b) - score(a);
+                });
+
+                if (ytVideos.length > 0) {
+                    mountYouTubePlayer(ytVideos[0].key);
+
+                    // Jika ada lebih dari 1 video, tampilkan tombol pemilih video
+                    if (ytVideos.length > 1) {
+                        videoSelectorWrap.classList.remove('hidden');
+                        videoSelectorList.innerHTML = ytVideos.slice(0, 6).map((v, idx) => `
+                            <button
+                                onclick="mountYouTubePlayer('${v.key}')"
+                                class="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-brand-600 border border-neutral-800 text-xs font-medium text-neutral-200 whitespace-nowrap transition-colors"
+                            >
+                                ▶ ${v.type}: ${v.name.slice(0, 28)}${v.name.length > 28 ? '...' : ''}
+                            </button>
+                        `).join('');
+                    }
+                } else {
+                    // Fallback jika film belum memiliki trailer di TMDB
+                    const backdrop = dataID.backdrop_path ? `${TMDB_BACKDROP}${dataID.backdrop_path}` : '';
+                    playerContainer.innerHTML = `
+                        <div class="relative w-full h-full flex flex-col items-center justify-center p-6 text-center bg-neutral-900">
+                            ${backdrop ? `<img src="${backdrop}" class="absolute inset-0 w-full h-full object-cover opacity-25">` : ''}
+                            <div class="relative z-10 space-y-2 max-w-md">
+                                <p class="text-lg font-bold text-white">Trailer Resmi Belum Tersedia</p>
+                                <p class="text-xs sm:text-sm text-neutral-300">TMDB belum menyediakan tautan trailer YouTube untuk film ini. Cek daftar platform streaming legal di bawah.</p>
+                            </div>
+                        </div>`;
+                }
+
+                // Tampilkan Watch Providers (Prioritaskan Indonesia 'ID', fallback 'US')
+                const regionData = dataProviders.results?.ID || dataProviders.results?.US;
+                const flatrate = regionData?.flatrate || regionData?.rent || regionData?.buy;
+                if (flatrate && flatrate.length > 0) {
+                    watchProvidersWrap.classList.remove('hidden');
+                    watchProvidersList.innerHTML = flatrate.slice(0, 6).map(p => `
+                        <a href="${regionData.link}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 pr-3 pl-1.5 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 transition-colors">
+                            <img src="https://image.tmdb.org/t/p/w92${p.logo_path}" alt="${p.provider_name}" class="w-7 h-7 rounded-lg object-cover">
+                            <span class="text-xs font-semibold text-white">${p.provider_name}</span>
+                        </a>
+                    `).join('');
+                }
+
+                loadRecommendations(tmdbId);
+
+            } catch (err) {
+                console.error(err);
+                playerContainer.innerHTML = `<div class="text-red-400 text-sm p-6 text-center">Gagal memuat informasi film dari TMDB.</div>`;
+            }
+        }
+
+        // ==========================================
+        // 7. REKOMENDASI SIDEBAR
+        // ==========================================
+        async function loadRecommendations(tmdbId) {
+            sideList.innerHTML = `<div class="text-xs text-neutral-500 animate-pulse">Memuat rekomendasi...</div>`;
+            try {
+                const endpoint = tmdbId
+                    ? `https://api.themoviedb.org/3/movie/${tmdbId}/recommendations?api_key=${TMDB_KEY}&language=id-ID&page=1`
+                    : `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&language=id-ID&page=2`;
+
+                let res = await fetch(endpoint);
+                let data = await res.json();
+
+                // Jika rekomendasi spesifik kosong, fallback ke film populer
+                if (!data.results || data.results.length === 0) {
+                    res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}&language=id-ID&page=2`);
+                    data = await res.json();
+                }
+
+                const items = (data.results || []).filter(m => m.poster_path).slice(0, 6);
+                sideList.innerHTML = items.map(m => `
+                    <div onclick="openItem('tmdb:${m.id}')" class="flex gap-3 p-2 rounded-xl bg-neutral-900/60 hover:bg-neutral-800/90 border border-neutral-800/80 cursor-pointer transition-colors group">
+                        <img
+                            src="https://image.tmdb.org/t/p/w200${m.poster_path}"
+                            alt="${m.title.replace(/"/g, '&quot;')}"
+                            loading="lazy"
+                            class="w-16 aspect-[2/3] object-cover rounded-lg flex-shrink-0 bg-neutral-800"
+                        >
+                        <div class="flex flex-col justify-center min-w-0">
+                            <h4 class="text-sm font-semibold text-neutral-100 group-hover:text-brand-500 line-clamp-2 leading-snug transition-colors">${m.title}</h4>
+                            <div class="flex items-center gap-2 mt-1.5 text-xs text-neutral-400">
+                                <span class="text-amber-400 font-semibold">★ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</span>
+                                <span>•</span>
+                                <span>${m.release_date ? m.release_date.slice(0, 4) : ''}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                sideList.innerHTML = `<div class="text-xs text-neutral-500">Gagal memuat rekomendasi.</div>`;
+            }
+        }
+
+        // ==========================================
+        // 8. INISIALISASI APLIKASI
+        // ==========================================
+        function initApp() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#watch=')) {
+                const id = decodeURIComponent(hash.replace('#watch=', ''));
+                loadCategory('popular'); // Muat data beranda di belakang layar
+                renderPlayer(id);
+            } else {
+                loadCategory('popular');
+            }
+        }
+
+        initApp();
     </script>
 </body>
 </html>
